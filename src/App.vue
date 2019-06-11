@@ -2,7 +2,10 @@
   <div id="app">  
     <el-container>
       <el-aside>
-          <h3>交通信息发布管理平台</h3>
+          <h3 class="yk-sys-title">
+            <img class="yk-top" src="static/images/logo.png">
+            <span class="yk-title">交通信息发布平台</span>
+          </h3>
           <el-menu
             default-active="1-1"
             class="el-menu-vertical-demo"
@@ -40,11 +43,13 @@
         </el-aside>
         <el-main>
           <el-header>
-            <div class="yk-block">
-              <i class="el-icon-message"></i>消息
+            <div class="yk-block">              
+              <img class="yk-ico-msg" src="static/images/ico-msg.png">
+              消息
             </div>
-            <div class="yk-block">
-              <i class="el-icon-s-custom"></i>用户
+            <div class="yk-block">              
+              <img class="yk-ico-user" src="static/images/ico-user.png">
+              用户
             </div>
           </el-header>
           <router-view/>
@@ -90,8 +95,11 @@ export default {
 }
 .el-aside{
   width: 260px!important;
-  background: #032757;
+  background: #101113;
   color: #ffffff;
+}
+.el-menu-item{
+  color: #B5B5B5;
 }
 
 .el-menu-item-group__title{
@@ -103,6 +111,7 @@ export default {
 .el-submenu__title{
   /* background: #353585; */
   font-size: 16px;
+  color: #B5B5B5!important;
 }
 
 .el-main{
@@ -112,19 +121,48 @@ export default {
 .el-header{
   height: 62px!important;
   line-height: 62px!important;
-  background: #ccc;
+  background: #FFFFFF;
   padding: 0px;
   text-align: right;
 }
 
 .el-menu{
   color: #ffffff!important;
+  background: #101113;
+  border-right: 0px;
 }
+
 /* .is-active{
   color: #fff!important;
   background: #F49308!important;
 } */
 
+/* .is-active{
+  color: #F59307!important;
+} */
+
+.el-menu-item{
+  font-size: 16px;
+}
+.el-menu-item:hover{
+    outline: 0 !important;
+    background: #21272F !important;
+}
+.el-menu-item.is-active {
+    color: #F59307 !important;
+    background: #21272F !important;
+    border-right: 3px solid #f59307;
+    
+}
+.el-submenu__title:hover{
+    outline: 0 !important;
+    background: #21272F !important;
+}
+
+.el-submenu__icon-arrow{
+  margin-left: 10px;
+  right: auto;
+}
 
 
 .yk-menu-item{
@@ -134,5 +172,30 @@ export default {
   display: inline-block;
   margin-right: 20px;
   cursor: pointer;
+}
+.yk-title{
+  display: inline-block;
+  vertical-align: top;
+  height: 38px;
+  line-height: 38px;
+}
+.yk-sys-title{
+    margin-top: 0px;
+    padding: 12px;
+    font-size: 20px;
+    background:#21272F;
+}
+.yk-top{
+  vertical-align: top;
+}
+.yk-menuItem:hover{
+  background:#21272F!important;
+}
+
+.yk-ico-msg{
+  height: 18px;
+}
+.yk-ico-user{
+  width: 22px;
 }
 </style>
