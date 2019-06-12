@@ -35,6 +35,14 @@
                 label="管理">
             </el-table-column>
         </el-table>
+
+        <el-row class="yk-paging">
+            <el-pagination
+                background
+                layout="prev, pager, next"
+                :total="1000">
+            </el-pagination>
+        </el-row>
     </div>
 </template>
 <script>
@@ -66,7 +74,9 @@ export default {
         }
     },
     methods: {
-
+        initData(){
+            
+        }
     },
     created(){
 
@@ -81,6 +91,11 @@ export default {
 
 .el-table td, .el-table th{
     padding: 5px 0px!important;
+}
+
+.yk-paging{
+    padding: 5px 10px;
+    text-align: right;
 }
 </style>
 

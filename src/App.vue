@@ -124,6 +124,7 @@ export default {
   background: #FFFFFF;
   padding: 0px;
   text-align: right;
+  border-bottom: 1px solid #f2f1f1;
 }
 
 .el-menu{
