@@ -31,10 +31,8 @@
 
         <el-form-item label="默认广播频率" prop="frequency">
             <el-input size="mini" v-model="data.frequency">
-              
-            </el-input>
-
-            <el-select class="yk-unit" v-model="data.frequencyUnit" placeholder="请选择">
+              <template slot="append">
+                <el-select class="yk-unit" v-model="data.frequencyUnit" placeholder="请选择">
                 <el-option
                   v-for="item in selectUnitList"
                   :key="item.value"
@@ -42,6 +40,10 @@
                   :value="item.key">
                 </el-option>
               </el-select>
+              </template>
+            </el-input>
+
+            
         </el-form-item>
         
         <el-form-item label="默认信息内容" prop="content">
@@ -222,6 +224,8 @@
     clip: rect(0 0 0 0);
 }
 .yk-unit{
-  width: 100px;
+  width: 90px;
+  /* width: 100px;
+  float: right; */
 }
 </style>

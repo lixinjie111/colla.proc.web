@@ -1,11 +1,13 @@
 <template>
     <div class="yk-container">
         <el-row class="yk-search">
-            <el-select size="mini" v-model="search.type">
+            <label>信息类型：</label>
+            <el-input size="mini" v-model="search.code" class="yk-w180"></el-input>
+            <!-- <el-select size="mini" v-model="search.type">
                 <template v-for="(item,index) in typeList">
                     <el-option :key="index" :label="item.name" :value="item.key">{{item.name}}</el-option>
                 </template>
-            </el-select>
+            </el-select> -->
             <el-button size="mini" @click="handleSearch();">查询</el-button>
             <el-button size="mini" @click="handleFlush();">刷新</el-button>
             <el-button class="yk-right" size="mini" @click="handleAdd();">新增</el-button>
@@ -54,7 +56,7 @@
         </el-table>
 
         <el-row class="yk-paging">
-            <el-pagination
+            <el-pagination                
                 background
                 layout="prev, pager, next"               
                 :page-size="this.paging.size"
@@ -95,6 +97,7 @@ export default {
                 index: 0,
                 size: 10,
                 total: 0,
+                mini: true,
             },
             popData: {
                 title: '提示',
@@ -106,7 +109,7 @@ export default {
             dataList: [],
             typeList: [],
             search: {
-                type: '',
+                code: '',
             }
         }
     },
@@ -130,7 +133,7 @@ export default {
         initData(){
             let url = 'event/info/queryPage';
             let params = {
-                eventCategory: this.search.type,
+                code: this.search.code,
                 "page": {    
                     "pageIndex": this.paging.index,
                     "pageSize": this.paging.size,
@@ -165,24 +168,25 @@ export default {
                     }
                 }
             );
+
+        },
+        getTypeCnName(type){
+            if(!this.typeList){
+                this.initTypeList(type)
+            }else{
+                
+            }
         },
         handleSearch(){
-            console.log('handle search --- ' + this.search.type);
-            debugger
             this.initData();
         },
         handleFlush(){
-            this.search.type = '';
+            this.search.code = '';
             this.initData();
         },
         handleOk(){
             this.popData.visible = false;
-
-            console.log('popData.data --- ' + JSON.stringify(this.popData.data))
-            debugger
-
             this.successBack(this.popData.data);
-
         },
         handleCancel(){
             this.popData.visible = false
@@ -361,6 +365,9 @@ export default {
 .yk-paging{
     padding: 5px 10px;
     text-align: right;
+}
+.yk-w180{
+    width: 180px;
 }
 </style>
 
