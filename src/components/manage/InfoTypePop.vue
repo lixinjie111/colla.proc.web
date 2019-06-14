@@ -15,7 +15,7 @@
             <el-input size="mini" v-model="data.name"></el-input>
         </el-form-item>
 
-        <el-form-item label="信息类型ICON" required>
+        <el-form-item label="信息类型图标" required>
                        
           <el-input size="mini" placeholder="请输入内容" v-model="data.icon">
             <template slot="append">
@@ -41,9 +41,7 @@
                 </el-option>
               </el-select>
               </template>
-            </el-input>
-
-            
+            </el-input>            
         </el-form-item>
         
         <el-form-item label="默认信息内容" prop="content">

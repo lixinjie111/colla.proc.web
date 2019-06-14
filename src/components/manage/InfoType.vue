@@ -17,14 +17,19 @@
                 border
                 style="width: 100%">
             <el-table-column
-                prop="id"
                 label="序号"
-                width="180">
+                type="index"
+                width="60">
+                <template slot-scope="scope">
+                    <span>
+                        {{scope.$index + paging.index * paging.size + 1}}
+                    </span>
+                </template>
             </el-table-column>
             <el-table-column
                 prop="code"
                 label="信息类型"
-                width="180">
+                >
             </el-table-column>
             <el-table-column
                 prop="eventCategory"
@@ -32,7 +37,7 @@
             </el-table-column>
             <el-table-column
                 prop="icon"
-                label="ICON">
+                label="图标">
             </el-table-column>
             <el-table-column
                 prop="content"

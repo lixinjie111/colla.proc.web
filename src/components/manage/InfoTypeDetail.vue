@@ -8,7 +8,7 @@
             <!-- <el-input size="mini" v-model="data.name" disabled></el-input> -->
             {{data.name}}
         </el-form-item>
-        <el-form-item label="信息类型ICON：" prop="name">
+        <el-form-item label="信息类型图标：" prop="name">
             
             <el-image :src="iconPath"></el-image>
         </el-form-item>

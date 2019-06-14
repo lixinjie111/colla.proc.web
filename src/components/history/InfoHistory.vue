@@ -22,7 +22,7 @@
                     <label>发布时间：</label>
                     <el-date-picker 
                         size="mini"
-                        v-model="value1"
+                        v-model="search.publishTime"
                         type="datetimerange"
                         range-separator="至"
                         start-placeholder="开始日期"
@@ -55,45 +55,53 @@
                 border
                 style="width: 100%">
             <el-table-column
-                prop="id"
                 label="序号"
-               >
+                type="index"
+                width="60">
+                <template slot-scope="scope">
+                    <span>
+                        {{scope.$index + paging.index * paging.size + 1}}
+                    </span>
+                </template>
             </el-table-column>
             <el-table-column
-                prop="name"
+                prop="taskCode"
                 label="信息编号"
                 >
             </el-table-column>
             <el-table-column
-                prop="name"
+                prop="eventType"
                 label="信息类型">
             </el-table-column>
             <el-table-column
-                prop="name"
+                prop="status"
                 label="信息状态">
             </el-table-column>
             <el-table-column
-                prop="name"
+                prop="longitude,latitude "
                 label="中心位置">
+                <template slot-scope="scope">
+                    {{scope.row.longitude}} , {{scope.row.latitude}}
+                </template>
             </el-table-column>
             <el-table-column
-                prop="name"
+                prop="beginTime"
                 label="发布时间">
             </el-table-column>
             <el-table-column
-                prop="name"
+                prop="endTime"
                 label="失效时间">
             </el-table-column>
             <el-table-column
-                prop="name"
+                prop="content"
                 label="信息内容">
             </el-table-column>
             <el-table-column
-                prop="name"
+                prop="sendNumber"
                 label="下发次数">
             </el-table-column>
             <el-table-column
-                prop="name"
+                prop="datasource"
                 label="信息来源">
             </el-table-column>
         </el-table>
@@ -102,7 +110,9 @@
             <el-pagination
                 background
                 layout="prev, pager, next"
-                :total="1000">
+                :page-size="this.paging.size"
+                :total="this.paging.total"
+                @current-change="pagingChange">
             </el-pagination>
         </el-row>
     </div>
@@ -113,7 +123,8 @@ export default {
         return {
             dataList: [],
             search: {
-
+                code: '',
+                publishTime: '',
             },
             paging: {
                 index: 0,
@@ -127,9 +138,9 @@ export default {
             this.initData();
         },
         initData(){
-            let url = 'event/info/queryPage';
+            let url = 'event/task/queryPage';
             let params = {
-                code: this.search.code,
+                // code: this.search.code,
                 "page": {    
                     "pageIndex": this.paging.index,
                     "pageSize": this.paging.size,
@@ -155,6 +166,10 @@ export default {
             this.search.code = '';
             this.initData();
         },
+        pagingChange(value){
+            this.paging.index = value - 1;
+            this.initData();
+        }
     },
     created(){
         this.init();
