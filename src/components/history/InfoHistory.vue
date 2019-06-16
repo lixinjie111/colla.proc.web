@@ -5,14 +5,14 @@
             <!-- <el-col :span="6"> -->
                 <div class="yk-block">
                     <label>信息类型：</label>
-                    <el-input size="mini" v-model="search.code" class="yk-w180"></el-input>
+                    <el-input size="mini" v-model="search.eventType" class="yk-w180"></el-input>
                 </div>                
             <!-- </el-col> -->
             
             <!-- <el-col :span="6"> -->
                 <div class="yk-block">
                     <label>信息状态：</label>
-                    <el-input size="mini" v-model="search.code" class="yk-w180"></el-input>
+                    <el-input size="mini" v-model="search.status" class="yk-w180"></el-input>
                 </div>
                 
             <!-- </el-col> -->
@@ -35,7 +35,7 @@
             <!-- <el-col :span="6"> -->
                 <div class="yk-block">
                    <label>信息来源：</label>
-                    <el-input size="mini" v-model="search.code" class="yk-w180"></el-input> 
+                    <el-input size="mini" v-model="search.datasource" class="yk-w180"></el-input> 
                 </div>                
             <!-- </el-col> -->
             <!-- <el-select size="mini" v-model="search.type">
@@ -118,13 +118,20 @@
     </div>
 </template>
 <script>
+
+import TDate from '@/common/date.js'
+
 export default {
     data(){
         return {
             dataList: [],
             search: {
-                code: '',
+                eventType: '',
+                status: '',                
                 publishTime: '',
+                startTime: '',
+                endTime: '',
+                datasource: '',
             },
             paging: {
                 index: 0,
@@ -135,12 +142,34 @@ export default {
     },
     methods: {
         init(){
+            this.initSearch();
+            this.initPaging();
             this.initData();
         },
-        initData(){
+        initPaging(){
+            this.paging.index = 0;
+            this.paging.total = 0;
+            this.paging.size = 10;
+        },
+        initSearch(){
+            this.search = {
+                eventType: '',
+                status: '',                
+                publishTime: '',
+                startTime: '',
+                endTime: '',
+                datasource: '',
+            };
+        },
+        initData(type){
             let url = 'event/task/queryPage';
             let params = {
                 // code: this.search.code,
+                eventType: this.search.eventType,
+                status: this.search.status,
+                beginTime: this.search.startTime,
+                expirationTime: this.search.endTime,
+                datasource: this.search.datasource,
                 "page": {    
                     "pageIndex": this.paging.index,
                     "pageSize": this.paging.size,
@@ -154,16 +183,25 @@ export default {
                         this.paging.total = response.data.totalCount;
                         
                     } else {                     
-                        this.$store.dispatch("showPrompt", "获取设备列表失败  ！"); 
+                        this.$message("showPrompt", "获取设备列表失败  ！"); 
                     }
                 }
             );
         },
         handleSearch(){
+            // console.log('this.search.publishTime --- ' + this.search.publishTime);
+            // debugger
+            if(Array.isArray(this.search.publishTime)){                
+                let start = this.search.publishTime[0];
+                let end = this.search.publishTime[1];
+                this.search.startTime = TDate.formatTime(start);
+                this.search.endTime = TDate.formatTime(end);
+            }
+            
             this.initData();
         },
         handleFlush(){
-            this.search.code = '';
+            this.initSearch();
             this.initData();
         },
         pagingChange(value){

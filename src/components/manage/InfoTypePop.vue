@@ -32,12 +32,12 @@
         <el-form-item label="默认广播频率" prop="frequency">
             <el-input size="mini" v-model="data.frequency">
               <template slot="append">
-                <el-select class="yk-unit" v-model="data.frequencyUnit" placeholder="请选择">
+                <el-select class="yk-unit" v-model="ruleForm.frequencyUnit" placeholder="请选择" @change="frequencyUnitChange">
                 <el-option
-                  v-for="item in selectUnitList"
+                  v-for="item in frequencyUnitList"
                   :key="item.value"
                   :label="item.name"
-                  :value="item.key">
+                  :value="item">
                 </el-option>
               </el-select>
               </template>
@@ -70,8 +70,7 @@
           // { id: 3 ,name: '交通管制',value: 3},
           // { id: 4 ,name: '天气信息',value: 4},
         ],
-        selectUnit: '',
-        selectUnitList: [],
+        frequencyUnitList: [],
         ruleForm: {
           name: '',
           eventCategory: '',
@@ -123,7 +122,7 @@
                     this.typeList = response.data ? response.data : [];
                     
                 } else {                     
-                    this.$store.dispatch("showPrompt", "获取类型失败  ！"); 
+                    this.$message( "获取类型失败 ！"); 
                 }
             }
         );
@@ -137,13 +136,14 @@
             response => {
                 if (response.status >= 200 && response.status < 300) {
 
-                    this.selectUnitList = response.data ? response.data : [];
-                    if(this.selectUnitList.length){
-                      this.selectUnit = this.selectUnitList[0].value;
+                    this.frequencyUnitList = response.data ? response.data : [];
+                    if(this.frequencyUnitList.length){
+                                           
+                      // this.ruleForm.frequencyUnit = this.frequencyUnitList[0];
                     }
                    
                 } else {                     
-                    this.$store.dispatch("showPrompt", "获取单位失败  ！"); 
+                    this.$message("获取单位失败 ！"); 
                 }
             }
         );
@@ -209,6 +209,10 @@
       },
       resetForm(formName) {
         this.$refs[formName].resetFields();
+      },
+      frequencyUnitChange(e){
+        // console.log(this.ruleForm.frequencyUnit);
+        this.data.frequencyUnit = this.ruleForm.frequencyUnit.key;
       }
     },
     created(){

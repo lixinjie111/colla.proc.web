@@ -1,8 +1,8 @@
 <template>
     <div class="yk-container">
         <el-row class="yk-search">
-            <label>信息类型：</label>
-            <el-input size="mini" v-model="search.code" class="yk-w180"></el-input>
+            <label>信息类型名称：</label>
+            <el-input size="mini" v-model="search.name" class="yk-w180"></el-input>
             <!-- <el-select size="mini" v-model="search.type">
                 <template v-for="(item,index) in typeList">
                     <el-option :key="index" :label="item.name" :value="item.key">{{item.name}}</el-option>
@@ -27,13 +27,20 @@
                 </template>
             </el-table-column>
             <el-table-column
-                prop="code"
-                label="信息类型"
+                prop="name"
+                label="信息类型名称"
                 >
             </el-table-column>
             <el-table-column
                 prop="eventCategory"
                 label="信息分类">
+                <template slot-scope="scope">
+                    <span v-if="scope.row.eventCategory == 'TI01'">车辆异常信息</span>
+                    <span v-if="scope.row.eventCategory == 'TI02'">道路异常信息</span>
+                    <span v-if="scope.row.eventCategory == 'TI03'">交通管制信息</span>
+                    <span v-if="scope.row.eventCategory == 'TI04'">天气服务信息</span>
+                    <!-- <span v-else>{{scope.row.eventCategory}}</span> -->
+                </template>
             </el-table-column>
             <el-table-column
                 prop="icon"
@@ -114,7 +121,7 @@ export default {
             dataList: [],
             typeList: [],
             search: {
-                code: '',
+                name: '',
             }
         }
     },
@@ -138,7 +145,7 @@ export default {
         initData(){
             let url = 'event/info/queryPage';
             let params = {
-                code: this.search.code,
+                name: this.search.name,
                 "page": {    
                     "pageIndex": this.paging.index,
                     "pageSize": this.paging.size,
@@ -152,7 +159,7 @@ export default {
                         this.paging.total = response.data.totalCount;
                         
                     } else {                     
-                        this.$store.dispatch("showPrompt", "获取设备列表失败  ！"); 
+                        this.$message("获取信息类型列表失败  ！"); 
                     }
                 }
             );
@@ -169,7 +176,7 @@ export default {
                         this.typeList = response.data ? response.data : [];
                         
                     } else {                     
-                        this.$store.dispatch("showPrompt", "获取类型失败  ！"); 
+                        this.$message("获取类型失败  ！"); 
                     }
                 }
             );
@@ -186,7 +193,7 @@ export default {
             this.initData();
         },
         handleFlush(){
-            this.search.code = '';
+            this.search.name = '';
             this.initData();
         },
         handleOk(){
@@ -238,9 +245,9 @@ export default {
                         if (response.status >= 200 && response.status < 300) {
 
                             this.initData();
-                            this.$message("showPrompt", "删除信息类型成功  ！"); 
+                            this.$message("删除信息类型成功  ！"); 
                         } else {                     
-                            this.$message("showPrompt", "删除信息类型失败  ！"); 
+                            this.$message("删除信息类型失败  ！"); 
                         }
                     }
                 ); 
@@ -275,9 +282,9 @@ export default {
                     if (response.status >= 200 && response.status < 300) {
 
                         this.initData();
-                        this.$message("showPrompt", "新增信息类型成功  ！"); 
+                        this.$message("新增信息类型成功 ！"); 
                     } else {                     
-                        this.$message("showPrompt", "新增信息类型失败  ！"); 
+                        this.$message("新增信息类型失败 ！"); 
                     }
                 }
             );
@@ -299,9 +306,9 @@ export default {
                     if (response.status >= 200 && response.status < 300) {
 
                         this.initData();
-                        this.$message("showPrompt", "修改信息类型成功  ！"); 
+                        this.$message("修改信息类型成功 ！"); 
                     } else {                     
-                        this.$message("showPrompt", "修改信息类型失败  ！"); 
+                        this.$message("修改信息类型失败 ！"); 
                     }
                 }
             );
@@ -316,9 +323,9 @@ export default {
                     if (response.status >= 200 && response.status < 300) {
 
                         this.initData();
-                        this.$message("showPrompt", "删除信息类型成功  ！"); 
+                        this.$message("删除信息类型成功 ！"); 
                     } else {                     
-                        this.$message("showPrompt", "删除信息类型失败  ！"); 
+                        this.$message("删除信息类型失败 ！"); 
                     }
                 }
             ); 

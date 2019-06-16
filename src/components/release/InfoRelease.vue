@@ -12,7 +12,7 @@
 
         <!-- 左侧信息 -->
         <div class="yk-left">
-            <el-card :body-style="{ padding: '0px' }"> 
+            <!-- <el-card :body-style="{ padding: '0px' }"> 
                 <img src="static/images/ico1.png" class="image">
                 <div class="yk-card-title">
                     <span >27</span>
@@ -31,7 +31,14 @@
                 <div class="yk-card-title">
                     <span>22</span>
                 </div>
-            </el-card>
+            </el-card> -->
+
+            <el-card v-for="(item,index) in statisicsData" :key="index" :body-style="{ padding: '0px' }">
+                <img :src="iconPath + item.icon" class="image">
+                <div class="yk-card-title">
+                    <span>{{item.num}}</span>
+                </div>
+            </el-card>           
 
         </div>
 
@@ -41,10 +48,10 @@
 
                 <el-form-item class="yk-f-right">
                     <el-select placeholder="发布信息" v-model="search.pubMsg" @change="publishMsgHandler">                        
-                        <el-option-group v-for="(item,index) in pubMsgGroup" label="发布信息" :key="index">
+                        <el-option-group v-for="(group,groupIndex) in pubMsgGroup" label="发布信息" :key="groupIndex">
                             <template v-for="(item,index) in pubMsgList">
-                                <el-option :key="index" :value="item.value" :disabled="item.disabled">                                        
-                                    {{item.value}}
+                                <el-option :key="index" :value="item" :disabled="item.disabled">                                        
+                                    {{item.name}}
                                 </el-option>
                             </template>
                         </el-option-group>
@@ -53,7 +60,7 @@
 
                 <el-form-item class="yk-f-right">
                     <el-select placeholder="POI" v-model="search.poi" @change="poiHandler">                                    
-                        <el-option-group v-for="(item,index) in poiGruop" label="POI" :key="index">            
+                        <el-option-group v-for="(group,groupIndex) in poiGruop" label="POI" :key="groupIndex">            
                             <template v-for="(item,index) in poiList">
                                 <el-option :key="index" :value="item" :disabled="item.disabled">
 
@@ -75,10 +82,12 @@
 <script>
 
 import Vue from 'vue';
+import TDate from '@/common/date.js'
 
 export default {
     data(){
         return {
+            iconPath: window.cfg.iconPath,
             map: null,
             mapStyle: 'amap://styles/macaron',
             mapMarker: {
@@ -95,6 +104,13 @@ export default {
                 obstacleList: [],   // 障碍物
                 goodsDropList: [],  // 货物散落
                 roadWorksList: [],  // 道路施工
+                msgList: [],        // 障碍物 + 货物散落 + 道路施工
+            },
+            tempMarker: {
+                lon: '',
+                lat: '',
+                icon: '',
+                name: '',
             },
             search: {
                 poi: '',
@@ -115,9 +131,9 @@ export default {
             ],
             pubMsgList: [
                 
-                { id: 1, name: '障碍物', value: '障碍物', isCheck: false},
-                { id: 2, name: '道路施工', value: '道路施工', isCheck: false},
-                { id: 3, name: '货物散落', value: '货物散落', isCheck: false},
+                // { id: 1, name: '障碍物', value: '障碍物', isCheck: false},
+                // { id: 2, name: '道路施工', value: '道路施工', isCheck: false},
+                // { id: 3, name: '货物散落', value: '货物散落', isCheck: false},
             ],
             markers: [],
             inforWindowInstance: null,
@@ -131,6 +147,7 @@ export default {
                 size: 10,
                 total: 0,
             }, 
+            statisicsData: [],
         }
     },
     methods: {
@@ -146,8 +163,100 @@ export default {
                 center: [116.397428, 39.90923],
                 mapStyle: "amap://styles/macaron",
             });
+        },
 
-            // this.initInfoWindow(116.397,39.918);
+        initStatisics(){
+            
+            let url = 'event/task/statisticsTask';
+            let params = {                
+                
+            };
+            this.$api.post( url,params,
+                response => {
+                    if (response.status >= 200 && response.status < 300) {
+
+                        this.statisicsData = response.data ? response.data : [];
+
+                    } else {                     
+                        this.$message("获取信息列表失败 ！"); 
+                    }
+                }
+            );
+        },
+        initMsgList(){
+            
+            this.initStatisics();
+            this.clearMsgList();
+
+            let url = 'event/task/findEffectiveList';
+            let params = {                
+                
+            };
+            this.$api.post( url,params,
+                response => {
+                    if (response.status >= 200 && response.status < 300) {
+
+                        let t = response.data ? response.data : [];
+
+                        for(let i=0;i<t.length;i++){
+                            let item = t[i];
+                            let icon = 'https://webapi.amap.com/theme/v1.3/markers/n/mark_b.png';
+                            if(item.icon){
+                                icon = this.iconPath + item.icon;
+                            }
+                            console.log('icon --- ' + icon);
+
+                            var marker = new AMap.Marker({
+                                extData: item.id,
+                                title: item.eventType,
+                                // icon: "https://webapi.amap.com/theme/v1.3/markers/n/mark_b.png",
+                                icon: icon,
+                                // icon: "static/images/poi_2.png",
+                                position: [item.longitude, item.latitude],
+                                // position: [116.405467, 39.907761]
+                            });
+                            // 给marker添加点击事件
+                            marker.on('click',this.markerClick);
+                            this.map.add(marker);                                    
+                            this.mapMarker.msgList.push(marker);
+                            
+                        }
+                        
+                    } else {                     
+                        this.$message("获取信息列表失败 ！"); 
+                    }
+                }
+            );
+        },
+        clearMsgList(){
+            for(let i=0;i<this.mapMarker.msgList.length;i++){
+                let t = this.mapMarker.msgList[i];
+                this.map.remove(t);
+            }
+        },
+
+        initPubMsgList(){
+            let url = 'event/info/queryPage';
+            let params = {
+                code: this.search.code,
+                "page": {    
+                    "pageIndex": 0,
+                    "pageSize": 100,
+                },
+            };
+            this.$api.post( url,params,
+                response => {
+                    if (response.status >= 200 && response.status < 300) {
+
+                        this.pubMsgList = response.data.list;
+                      
+                        // this.paging.total = response.data.totalCount;
+                        
+                    } else {                     
+                        this.$message("获取信息类型列表失败  ！"); 
+                    }
+                }
+            );
         },
         
         // 显示poi
@@ -173,55 +282,70 @@ export default {
         },
         //发布信息
         publishMsgHandler(){
-            console.log(this.search.pubMsg);
+           
             this.map.off('click', this.addMsgClick);    // 移除事件
             // this.map.off('dblclick', showInfoDbClick);
                 // this.map.off('mousemove', showInfoMove);
 
-            let type = this.search.pubMsg;
+            // let type = this.search.pubMsg;
             
-            if(type != '发布信息'){   // 添加事件 ，修改类型 ， 
+            // if(type != '发布信息'){   // 添加事件 ，修改类型 ， 
               
                 console.log("绑定事件!");  
                 this.map.on('click', this.addMsgClick);        // 单击事件
                 // this.map.on('dblclick', showInfoDbClick);   // 双击事件
                 // this.map.on('mousemove', showInfoMove);     // 鼠标移动事件
-            }
+            // }
         },
         addMsgClick(e){
             var text = '您在 [ '+e.lnglat.getLng()+','+e.lnglat.getLat()+' ] 的位置单击了地图！';
-            console.log('add msg click --- ' + text);
-            console.log('msg type --- ' + this.search.pubMsg);
+            
+            // 动态读取图标
+            let icon = window.cfg.iconPath + this.search.pubMsg.icon;
 
-            // 判断一下图标类型
-            let icon = 'https://webapi.amap.com/theme/v1.3/markers/n/mark_b.png';
-            let tlist = [];
-            let type = this.search.pubMsg;
-            if(type == '障碍物'){
-                icon = 'static/images/ico1_min.png';
-            }else if(type == '道路施工'){
-                icon = 'static/images/ico2_min.png';
-            }else if(type == '货物散落'){
-                icon = 'static/images/ico3_min.png';
-            }
+            this.tempMarker.lon = e.lnglat.getLng();
+            this.tempMarker.lat = e.lnglat.getLat();
+            this.tempMarker.icon = icon;
+
+
+            // // 判断一下图标类型
+            // let icon = 'https://webapi.amap.com/theme/v1.3/markers/n/mark_b.png';
+            // let tlist = [];
+            // let type = this.search.pubMsg;
+            // if(type == '障碍物'){
+            //     icon = 'static/images/ico1_min.png';
+            // }else if(type == '道路施工'){
+            //     icon = 'static/images/ico2_min.png';
+            // }else if(type == '货物散落'){
+            //     icon = 'static/images/ico3_min.png';
+            // }
 
             let lon = e.lnglat.getLng();
             let lat = e.lnglat.getLat();
-            
-            let marker =  new AMap.Marker({
-                // icon: "https://webapi.amap.com/theme/v1.3/markers/n/mark_b.png",
-                icon: icon,
-                position: [lon, lat],
-                offset: new AMap.Pixel(0,-20)
-            });
-           
-            this.map.add(marker);
 
-            // 给marker添加点击事件
-            marker.on('click',this.markerClick);
+            let tMarker = {
+                id: '',
+                lon: lon,
+                lat: lat,
+                eventType: this.search.pubMsg.name,
+                isEdit: false,
+            };
+            this.initInfoWindow(tMarker);
+            
+            // let marker =  new AMap.Marker({
+            //     // icon: "https://webapi.amap.com/theme/v1.3/markers/n/mark_b.png",
+            //     icon: icon,
+            //     position: [lon, lat],
+            //     offset: new AMap.Pixel(0,-20)
+            // });
+           
+            // this.map.add(marker);
+
+            // // 给marker添加点击事件
+            // marker.on('click',this.markerClick);
         },
         markerClick(e){
-            console.log(e);
+
             let lon = e.lnglat.lng;
             let lat = e.lnglat.lat;
             // this.drawCircle(lon,lat);
@@ -245,49 +369,82 @@ export default {
 
             // circle.setMap(this.map)
             this.map.add(this.circleInstance);
-            
-            this.initInfoWindow(lon,lat);
+
+            let id = e.target.getExtData();
+            let eventType = e.target.getTitle();
+
+            let tMarker = {
+                id: id,
+                lon: lon,
+                lat: lat,
+                eventType: eventType,
+                isEdit: true,
+            };
+            this.initInfoWindow(tMarker);
         },
        
         // rsu
         showRsu(isCheck){
             // this.mapMarker.rsu = !this.mapMarker.rsu;
+            this.clearRsu();
             if(isCheck){
-                var marker = new AMap.Marker({
-                    // icon: "https://webapi.amap.com/theme/v1.3/markers/n/mark_b.png",
-                    icon: "static/images/poi_2.png",
-                    position: [116.405467, 39.907761]
-                });
-                this.map.add(marker);
-                this.map.setFitView();                
-                this.mapMarker.rsuList.push(marker);
-            }else{
-                for(let i=0;i<this.mapMarker.rsuList.length;i++){
-                    let marker = this.mapMarker.rsuList[i];
-                    this.map.remove(marker);                    
-                }                
-            }
-
-            
+                // var marker = new AMap.Marker({
+                //     // icon: "https://webapi.amap.com/theme/v1.3/markers/n/mark_b.png",
+                //     icon: "static/images/poi_2.png",
+                //     position: [116.405467, 39.907761]
+                // });
+                // this.map.add(marker);
+                // this.map.setFitView();                
+                // this.mapMarker.rsuList.push(marker);
+                
+                this.initRsu();
+            }            
         },
-        initRsuList(){
-            let url = 'event/task/queryPage';
-            let params = {
-                // eventType: 0,
-                "page": {    
-                    "pageIndex": this.paging.index,
-                    "pageSize": this.paging.size,
-                },
+
+        clearRsu(){
+            for(let i=0;i<this.mapMarker.rsuList.length;i++){
+                let marker = this.mapMarker.rsuList[i];
+                this.map.remove(marker);                    
+            }
+            this.mapMarker.rsuList = [];
+        },
+
+        initRsu(){
+            let url = 'common/queryRsu';
+            let params = {                
+                "distcode": "110108"
             };
             this.$api.post( url,params,
                 response => {
                     if (response.status >= 200 && response.status < 300) {
 
-                        this.dataList = response.data.list;
-                        this.paging.total = response.data.totalCount;
+                        let rsuList = response.data ? response.data : [];      
+                        for(let i=0;i<rsuList.length;i++){
+                            let item = rsuList[i];
+                            let marker = new AMap.Marker({
+                                // icon: "https://webapi.amap.com/theme/v1.3/markers/n/mark_b.png",
+                                icon: "static/images/poi_2.png",
+                                position: [item.longitude, item.latitude]
+                            });
+                            this.map.add(marker);             
+                            this.mapMarker.rsuList.push(marker);
+                        }
+
+                        let lon = rsuList.length ? rsuList[0].longitude : '116.397';
+                        let lat = rsuList.length ? rsuList[0].latitude : '39.918';
+                        this.map.setCenter([lon,lat]);
+
+                        // var marker = new AMap.Marker({
+                        //     // icon: "https://webapi.amap.com/theme/v1.3/markers/n/mark_b.png",
+                        //     icon: "static/images/poi_2.png",
+                        //     position: [116.405467, 39.907761]
+                        // });
+                        // this.map.add(marker);
+                        // this.map.setFitView();                
+                        // this.mapMarker.rsuList.push(marker);
                         
                     } else {                     
-                        this.$store.dispatch("showPrompt", "获取设备列表失败  ！"); 
+                        this.$message("获取设备列表失败 ！"); 
                     }
                 }
             );
@@ -295,44 +452,143 @@ export default {
         // 路侧单元
         showRoadsideUnit(){
             this.mapMarker.roadsideUnit = !this.mapMarker.roadsideUnit;
+            this.clearRoadsideUnit();
             if(this.mapMarker.roadsideUnit){
-                var marker = new AMap.Marker({
-                    // icon: "https://webapi.amap.com/theme/v1.3/markers/n/mark_b.png",
-                    icon: "static/images/poi_1.png",
-                    position: [116.405467, 39.907761]
-                });
-                this.map.add(marker);
-                this.map.setFitView();                
-                this.mapMarker.roadsideUnitList.push(marker);
-            }else{
-                for(let i=0;i<this.mapMarker.roadsideUnitList.length;i++){
-                    let marker = this.mapMarker.roadsideUnitList[i];
-                    this.map.remove(marker);
-                }
+                // var marker = new AMap.Marker({
+                //     // icon: "https://webapi.amap.com/theme/v1.3/markers/n/mark_b.png",
+                //     icon: "static/images/poi_1.png",
+                //     position: [116.405467, 39.907761]
+                // });
+                // this.map.add(marker);
+                // this.map.setFitView();                
+                // this.mapMarker.roadsideUnitList.push(marker);
+
+                this.initRoadsideUnit();
             }
+        },
+        clearRoadsideUnit(){
+            for(let i=0;i<this.mapMarker.roadsideUnitList.length;i++){
+                let marker = this.mapMarker.roadsideUnitList[i];
+                this.map.remove(marker);
+            }
+            this.mapMarker.roadsideUnitList = [];
+        },
+        initRoadsideUnit(){
+            let url = 'common/queryRoadSide';
+            let params = {
+                "distcode": "110108"
+            };
+            this.$api.post( url,params,
+                response => {
+                    if (response.status >= 200 && response.status < 300) {
+
+                        let roadsideUnitList = response.data ? response.data : [];    
+                        for(let i=0;i<roadsideUnitList.length;i++){
+                            let item = roadsideUnitList[i];
+                            let marker = new AMap.Marker({
+                                // icon: "https://webapi.amap.com/theme/v1.3/markers/n/mark_b.png",
+                                icon: "static/images/poi_1.png",
+                                position: [item.longitude, item.latitude]
+                            });
+                            this.map.add(marker);           
+                            this.mapMarker.roadsideUnitList.push(marker);
+                        }
+
+                        let lon = roadsideUnitList.length ? roadsideUnitList[0].longitude : '116.397';
+                        let lat = roadsideUnitList.length ? roadsideUnitList[0].latitude : '39.918';
+                        this.map.setCenter([lon,lat]);
+
+                        // var marker = new AMap.Marker({
+                        //     // icon: "https://webapi.amap.com/theme/v1.3/markers/n/mark_b.png",
+                        //     icon: "static/images/poi_1.png",
+                        //     position: [116.405467, 39.907761]
+                        // });
+                        // this.map.add(marker);
+                        // // this.map.setFitView();                
+                        // this.mapMarker.roadsideUnitList.push(marker);
+                        
+                    } else {                     
+                        this.$message("获取路侧单元失败 ！"); 
+                    }
+                }
+            );
         },
         // 红绿灯
         showTrafficSignal(){
             this.mapMarker.trafficSignal = !this.mapMarker.trafficSignal;
+            this.clearTrafficSignal();
+
             if(this.mapMarker.trafficSignal){
-                var marker = new AMap.Marker({
-                    // icon: "https://webapi.amap.com/theme/v1.3/markers/n/mark_b.png",
-                    icon: "static/images/poi_3.png",
-                    position: [116.405467, 39.907761]
-                });
-                this.map.add(marker);
-                this.map.setFitView();                
-                this.mapMarker.trafficSignalList.push(marker);
-            }else{
-                for(let i=0;i<this.mapMarker.trafficSignalList.length;i++){
-                    let marker = this.mapMarker.trafficSignalList[i];
-                    this.map.remove(marker);                    
-                }                
+                // var marker = new AMap.Marker({
+                //     // icon: "https://webapi.amap.com/theme/v1.3/markers/n/mark_b.png",
+                //     icon: "static/images/poi_3.png",
+                //     position: [116.405467, 39.907761]
+                // });
+                // this.map.add(marker);
+                // this.map.setFitView();                
+                // this.mapMarker.trafficSignalList.push(marker);
+
+                this.initTrafficSignal();
             }
+        },
+        clearTrafficSignal(){
+            for(let i=0;i<this.mapMarker.trafficSignalList.length;i++){
+                let marker = this.mapMarker.trafficSignalList[i];
+                this.map.remove(marker);                    
+            } 
+            this.mapMarker.trafficSignalList = [];
+        },
+        initTrafficSignal(){
+            let url = 'common/queryLight';
+            let params = {
+                "distcode": "310104"
+            };
+            this.$api.post( url,params,
+                response => {
+                    if (response.status >= 200 && response.status < 300) {
+
+                        let trafficSignalList = response.data ? response.data : [];    
+                        for(let i=0;i<trafficSignalList.length;i++){
+                            let item = trafficSignalList[i];
+                            let marker = new AMap.Marker({
+                                // icon: "https://webapi.amap.com/theme/v1.3/markers/n/mark_b.png",
+                                icon: "static/images/poi_3.png",
+                                position: [item.longitude, item.latitude]
+                            });
+                            this.map.add(marker);           
+                            this.mapMarker.trafficSignalList.push(marker);
+                        }
+
+                        let lon = trafficSignalList.length ? trafficSignalList[0].longitude : '116.397';
+                        let lat = trafficSignalList.length ? trafficSignalList[0].latitude : '39.918';
+                        this.map.setCenter([lon,lat]);
+
+                        // var marker = new AMap.Marker({
+                        //     // icon: "https://webapi.amap.com/theme/v1.3/markers/n/mark_b.png",
+                        //     icon: "static/images/poi_3.png",
+                        //     position: [116.405467, 39.907761]
+                        // });
+                        // this.map.add(marker);
+                        // // this.map.setFitView();                
+                        // this.mapMarker.trafficSignalList.push(marker);
+                        
+                    } else {                     
+                        this.$message("获取路侧单元失败 ！"); 
+                    }
+                }
+            );
         },
 
         // 创建infowindow模板
         inforWindowHtml(){
+
+            // <el-form-item label="信息类型" class="yk-bottom-6">
+            //                     <el-select size="mini" v-model="select.eventType" placeholder="请选择">
+            //                         <template v-for="(item,index) in typeList">
+            //                             <el-option :key="index" :label="item.name" :value="item.key">{{item.name}}</el-option>
+            //                         </template>
+            //                     </el-select>
+            //                 </el-form-item>
             return `
                 <div>
                     <el-row class="yk-pad-10 yk-bottom-border">
@@ -340,36 +596,32 @@ export default {
                     </el-row>
                     <el-row class="yk-pad-1040">
                         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" size="mini" label-width="120px" class="demo-ruleForm yk-left">
-            
-                            <el-form-item label="信息类型" class="yk-bottom-6">
-                                <el-select size="mini" v-model="select.type" placeholder="请选择">
-                                    <template v-for="(item,index) in typeList">
-                                        <el-option :key="index" :label="item.name" :value="item.key">{{item.name}}</el-option>
-                                    </template>
-                                </el-select>
+
+                            <el-form-item label="信息类型" class="yk-bottom-6">                               
+                                <label>{{eventType}}</label>
                             </el-form-item>
 
-                            <el-form-item label="中心位置" prop="name" class="yk-bottom-6">
-                                <el-input size="mini" v-model="select.name"></el-input>
+                            <el-form-item label="中心位置" prop="name" class="yk-bottom-6">                                
+                                <label>{{longitude + ',' + latitude}}</label>
                             </el-form-item>
 
                             <el-form-item label="广播范围" prop="name" class="yk-bottom-6" style="height: 55px;">
-                                <el-slider v-model="select.broadcastRange" :marks="broadcastRangeMarks" :max="select.broadcastMax" :step="select.broadcastStep" @change="sliderChange"></el-slider>
+                                <el-slider v-model="affectRange" :marks="broadcastRangeMarks" :max="select.broadcastMax" :step="select.broadcastStep" @change="sliderChange"></el-slider>
                             </el-form-item>
 
                             <el-form-item label="信息内容" prop="name" class="yk-bottom-6">
-                                <el-input type="textarea" size="mini" v-model="select.name"></el-input>
+                                <el-input type="textarea" size="mini" v-model="content"></el-input>
                             </el-form-item>
 
                             <el-form-item label="默认广播频率" prop="frequency" class="yk-bottom-6">
-                                <el-input size="mini" v-model="select.frequency">
+                                <el-input size="mini" v-model="frequency">
                                 <template slot="append">
-                                    <el-select class="yk-w-80" v-model="select.frequencyUnit" placeholder="请选择">
+                                    <el-select class="yk-w-80" v-model="frequencyUnit" placeholder="请选择">
                                     <el-option
-                                    v-for="item in selectUnitList"
+                                    v-for="item in frequencyUnitList"
                                     :key="item.value"
                                     :label="item.name"
-                                    :value="item.key">
+                                    :value="item">
                                     </el-option>
                                 </el-select>
                                 </template>
@@ -378,7 +630,7 @@ export default {
                             
                             <el-form-item label="发送生效时间" prop="" class="yk-bottom-6">
                                 <el-date-picker
-                                    v-model="select.effectiveTime"
+                                    v-model="beginTime"
                                     type="datetime"
                                     placeholder="选择日期时间">
                                 </el-date-picker>
@@ -386,26 +638,26 @@ export default {
 
                             <el-form-item label="发送失效时间" prop="" class="yk-bottom-6">
                                 <el-date-picker
-                                    v-model="select.failureTime"
+                                    v-model="expirationTime"
                                     type="datetime"
                                     placeholder="选择日期时间">
                                 </el-date-picker>
                             </el-form-item>
 
-                            <el-form-item label="信息来源" class="yk-bottom-6">
-                                <el-select size="mini" v-model="select.msgSource" placeholder="请选择">
-                                    <template v-for="(item,index) in msgSourceList">
+                            <el-form-item v-show="isEdit" label="信息来源" class="yk-bottom-6">
+                                <el-select size="mini" v-model="trafficSource" placeholder="请选择">
+                                    <template v-for="(item,index) in trafficSourceList">
                                         <el-option :key="index" :label="item.name" :value="item.key">{{item.name}}</el-option>
                                     </template>
                                 </el-select>
                             </el-form-item>
 
                             <el-form-item>
-                                <el-button v-show="!select.isEdit" @click="publichInfo();">发布</el-button>
-                                <el-button @click="closeInforWindow();">取消</el-button>
+                                <el-button v-show="!isEdit" @click="publichInfo();">发布</el-button>
+                                <el-button v-show="!isEdit" @click="closeInforWindow();">取消</el-button>
 
-                                <el-button v-show="select.isEdit" @click="updateInfo();">更新</el-button>
-                                <el-button v-show="select.isEdit" @click="destroyInfo();">手动失效</el-button>
+                                <el-button v-show="isEdit" @click="updateInfo();">更新</el-button>
+                                <el-button v-show="isEdit" @click="destroyInfo();">手动失效</el-button>
                                 
                             </el-form-item>
 
@@ -417,136 +669,356 @@ export default {
 
 
         // 自定义高德地图信息窗体
-        initInfoWindow(lon=116.397,lat=39.918){
+        initInfoWindow(marker){
+
+            console.log('initInfoWindow --- ' + JSON.stringify(marker))
 
             let inforWindowHtml = this.inforWindowHtml();
 
-            var lnglat = new AMap.LngLat(lon,lat);
+            var lnglat = new AMap.LngLat(marker.lon,marker.lat);
 
             var _this = this    
             var MyComponent = Vue.extend({
-                    template: inforWindowHtml,//'<a style="color:#07bb49;" v-on:click="world()">add Shop</a>',
-                    data(){
-                        return {
-                            typeList: [],       // 消息类型
-                            selectUnitList: [],     // 单位list
-                            select: {
-                                name: '',
-                                type: '',
-                                frequency: '',
-                                frequencyUnit: '',
-                                effectiveTime: '',
-                                failureTime: '',
-                                broadcastRange: [],
-                                broadcastStep: 100,
-                                broadcastMax: 3000,
-                                msgSource: '',
-                                isEdit: false,
-                            },
-                            broadcastRangeMarks: {
-                                200: '200米',                                
-                                3000: '3000米'
-                                // {
-                                //     style: {
-                                //         color: '#1989FA',
-                                //     },
-                                //     label: this.$createElement('strong', '3000米')
-                                // },
-                            },
-                            msgSourceList: [
-                                { id: 1, name: '平台运营人员', key: 1, value:1 },
-                                { id: 2, name: '管理员', key: 2, value: 2 },
-                            ],
-                            ruleForm: {
-                                name: '',
-                                eventCategory: '',
-                                frequency: '',
-                                frequencyUnit: '',
-                                delivery: false,
-                                content: '',
-                            },
-                            rules: {
-                            // name: [
-                            //   { required: true, message: '请输入信息类型名称', trigger: 'blur' },
-                            //   // { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
-                            // ],
-                            // region: [
-                            //   { required: true, message: '请选择活动区域', trigger: 'change' }
-                            // ],
-                            // date1: [
-                            //   { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
-                            // ],
-                            // date2: [
-                            //   { type: 'date', required: true, message: '请选择时间', trigger: 'change' }
-                            // ],
-                            // type: [
-                            //   { type: 'array', required: true, message: '请至少选择一个活动性质', trigger: 'change' }
-                            // ],
-                            // resource: [
-                            //   { required: true, message: '请选择活动资源', trigger: 'change' }
-                            // ],
-                            // desc: [
-                            //   { required: true, message: '请填写活动形式', trigger: 'blur' }
-                            // ]
-                            }
+                template: inforWindowHtml,//'<a style="color:#07bb49;" v-on:click="world()">add Shop</a>',
+                data(){
+                    return {
+                        typeList: [],       // 消息类型
+                        frequencyUnitList: [],     // 单位list
+
+                        broadcastStep: 100,
+                        broadcastMax: 3000,
+                        msgSource: '',
+                        isEdit: marker.isEdit,
+
+                        eventType: marker.eventType,                            
+
+                        longitude: marker.lon,
+                        latitude: marker.lat,
+                        affectRange: 1000,
+                        content: '',
+                        frequency: 500,
+                        frequencyUnit: '',
+                        beginTime: '',
+                        expirationTime: '',
+                        datasource: '',
+                        trafficSource: '',
+
+                        select: {                                                                
+                            broadcastStep: 100,
+                            broadcastMax: 3000,
+                            msgSource: '',
+                            isEdit: marker.isEdit,
+
+                            eventType: marker.eventType,                            
+
+                            longitude: marker.lon,
+                            latitude: marker.lat,
+                            affectRange: 1000,
+                            content: '',
+                            frequency: 500,
+                            frequencyUnit: '',
+                            beginTime: '',
+                            expirationTime: '',
+                            datasource: '',
+                            trafficSource: '',
+                        },
+                        broadcastRangeMarks: {
+                            200: '200米',                                
+                            3000: '3000米'
+                            // {
+                            //     style: {
+                            //         color: '#1989FA',
+                            //     },
+                            //     label: this.$createElement('strong', '3000米')
+                            // },
+                        },
+                        trafficSourceList: [],
+                        ruleForm: {
+                            name: '',
+                            eventCategory: '',
+                            frequency: '',
+                            frequencyUnit: '',
+                            delivery: false,
+                            content: '',
+                        },
+                        rules: {
+                        // name: [
+                        //   { required: true, message: '请输入信息类型名称', trigger: 'blur' },
+                        //   // { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+                        // ],
+                        // region: [
+                        //   { required: true, message: '请选择活动区域', trigger: 'change' }
+                        // ],
+                        // date1: [
+                        //   { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
+                        // ],
+                        // date2: [
+                        //   { type: 'date', required: true, message: '请选择时间', trigger: 'change' }
+                        // ],
+                        // type: [
+                        //   { type: 'array', required: true, message: '请至少选择一个活动性质', trigger: 'change' }
+                        // ],
+                        // resource: [
+                        //   { required: true, message: '请选择活动资源', trigger: 'change' }
+                        // ],
+                        // desc: [
+                        //   { required: true, message: '请填写活动形式', trigger: 'blur' }
+                        // ]
                         }
-                    },
-                    methods:{
-                        world:function() {
-                                console.log(_this)
-                                //点击事件 使用 组件对象
-                        },
-                        selectChangeFn(){
-                            console.log('selectChangeFn---')
-                        },
-                        updateInfo(){
-                            _this.inforWindowInstance.close();
-                            _this.map.remove(_this.circleInstance);
-                        },
-                        publichInfo(){
-                            _this.inforWindowInstance.close();
-                            _this.map.remove(_this.circleInstance);
-                        },
-                        destroyInfo(){
-                            _this.inforWindowInstance.close();
-                            _this.map.remove(_this.circleInstance);
-                        },
-                        closeInforWindow(){
-                            _this.inforWindowInstance.close();
-                            _this.map.remove(_this.circleInstance);
-                        },
-                        sliderChange(value){
-                            console.log('sliderChange --- ' + value)
-                            _this.circleInstance.setRadius(value);
-                        },
-                        initTypeList(){
-                            let url = 'event/info/queryPage';
-                            let params = {
-                                "page": {    
-                                    "pageIndex": this.paging.index,
-                                    "pageSize": this.paging.size,
-                                },
-                            };
-                            this.$api.post( url,params,
-                                response => {
-                                    if (response.status >= 200 && response.status < 300) {
-
-                                        this.typeList = response.data.list;
-                                        // this.paging.total = response.data.totalCount;
-                                        
-                                    } else {                     
-                                        this.$store.dispatch("showPrompt", "获取设备列表失败  ！"); 
-                                    }
-                                }
-                            );
-                        },
-                    },
-                    created(){
-                        this.initTypeList();
                     }
-                });
-            var component= new MyComponent().$mount();
+                },
+                
+                methods:{
+                    initSelect(data){
+                        this.eventType =  marker.eventType;
+                        this.longitude = marker.lon;
+                        this.latitude = marker.lat;
+                        this.affectRange = 1000;
+                        this.content = '';
+                        this.frequency = 500;
+                        this.frequencyUnit = '';
+                        this.beginTime = '';
+                        this.expirationTime = '';
+                        this.datasource = '';
+                        this.trafficSource = '';
+                    },
+                    initDetail() {
+                        let url = 'event/task/findDetail';
+                        let params = {
+                            id: marker.id,
+                        };
+                        this.$api.post( url,params,
+                            response => {
+                                if (response.status >= 200 && response.status < 300) {
 
+                                    this.isEdit = marker.isEdit;
+                                    this.eventType = response.data.eventType;
+                                    this.longitude = response.data.longitude;
+                                    this.latitude = response.data.latitude;
+                                    this.affectRange = response.data.affectRange;
+                                    this.content = response.data.content;
+                                    this.frequency = response.data.frequency;
+                                    this.frequencyUnit = response.data.frequencyUnit;
+                                    this.beginTime = response.data.beginTime;
+                                    this.expirationTime = response.data.expirationTime;
+                                    this.datasource = response.data.datasource;
+                                    this.trafficSource = response.data.trafficSource;
+
+                                    // this.select.eventType = response.data.eventType;
+                                    // this.select.longitude = response.data.longitude;
+                                    // this.select.latitude = response.data.latitude;
+                                    // this.select.affectRange = response.data.affectRange; 
+                                    // this.select.content = response.data.content; 
+                                    // this.select.frequency = response.data.frequency; 
+                                    // this.select.frequencyUnit = response.data.frequencyUnit; 
+                                    // this.select.beginTime = response.data.beginTime; 
+                                    // this.select.expirationTime = response.data.expirationTime; 
+                                    // this.select.datasource = response.data.datasource; 
+                                    // this.select.trafficSource = response.data.trafficSource;                                   
+
+                                    if(response.data.status == 200){
+                                        
+                                        this.$message('获取详情成功！');
+                                    }
+                                    
+                                } else {                     
+                                    this.$message("获取详情失败 ！"); 
+                                }
+                            }
+                        );
+                    },
+                                         
+                    publichInfo(){
+                        this.doPublish();
+                        this.closeInforWindow();
+                    },
+                    updateInfo(){
+                        this.doUpdate();
+                        this.closeInforWindow();
+                    },
+                    destroyInfo(){
+                        this.doDestroy();
+                        this.closeInforWindow();                        
+                    },
+                    closeInforWindow(){
+                        _this.inforWindowInstance.close();
+                        if(_this.circleInstance){
+                            _this.map.remove(_this.circleInstance);
+                        }
+                        _this.circleInstance = null;
+                        _this.inforWindowInstance = null;
+                    },
+                    sliderChange(value){
+                        console.log('sliderChange --- ' + value)
+                        _this.circleInstance.setRadius(value);
+                    },
+                    
+                    doPublish(){
+
+                        let url = 'event/task/save';
+                        let params = {
+                            eventType: this.select.eventType,      //信息类型
+                            longitude: this.select.longitude,      // 经度
+                            latitude: this.select.latitude,       // 纬度
+                            affectRange: this.select.affectRange,    // 广播范围
+                            content: this.select.content,        // 信息内容
+                            frequency: this.select.frequency,      // 广播频率
+                            frequencyUnit: this.select.frequencyUnit.key,      // 频率单位
+                            beginTime: TDate.formatTime(this.select.beginTime),      // 生效时间
+                            expirationTime: TDate.formatTime(this.select.updateTime),     // 失效时间
+                            datasource: this.select.datasource,     // 信息来源
+                        };
+
+                        this.$api.post( url,params,
+                            response => {
+                                if (response.status >= 200 && response.status < 300) {
+
+                                    console.log('response.data ---- ' + JSON.stringify(response.data))
+                                    
+                                    if(response.data.status == 200){
+                                        _this.initMsgList();
+                                        this.$message('发布成功！');
+                                    }
+                                    
+                                } else {                     
+                                    this.$message("发布失败 ！"); 
+                                }
+                            }
+                        );
+                    },
+                    doUpdate(){
+                        
+                        let url = 'event/task/update';
+                        let params = {
+                            id: marker.id,
+                            eventType: this.select.eventType,      //信息类型
+                            longitude: this.select.longitude,      // 经度
+                            latitude: this.select.latitude,       // 纬度
+                            affectRange: this.select.affectRange,    // 广播范围
+                            content: this.select.content,        // 信息内容
+                            frequency: this.select.frequency,      // 广播频率
+                            frequencyUnit: this.select.frequencyUnit.key,      // 频率单位
+                            beginTime: TDate.formatTime(this.select.beginTime),      // 生效时间
+                            expirationTime: TDate.formatTime(this.select.updateTime),     // 失效时间
+                            datasource: this.select.datasource,     // 信息来源
+                        };
+
+                        this.$api.post( url,params,
+                            response => {
+                                if (response.status >= 200 && response.status < 300) {
+
+                                    console.log('response.data ---- ' + JSON.stringify(response.data))
+                                    
+                                    if(response.data.status == 200){
+                                        _this.initMsgList();
+                                        this.$message('更新成功！');
+                                    }
+                                    
+                                } else {                     
+                                    this.$message("更新失败 ！"); 
+                                }
+                            }
+                        );
+                    },
+                    doDestroy(){
+                        let url = 'event/task/cancel';
+                        let params = {
+                            id: marker.id,
+                            // eventType: this.select.eventType,      //信息类型
+                            // longitude: this.select.longitude,      // 经度
+                            // latitude: this.select.latitude,       // 纬度
+                            // affectRange: this.select.affectRange,    // 广播范围
+                            // content: this.select.content,        // 信息内容
+                            // frequency: this.select.frequency,      // 广播频率
+                            // frequencyUnit: this.select.frequencyUnit.key,      // 频率单位
+                            // beginTime: TDate.formatTime(this.select.beginTime),      // 生效时间
+                            // expirationTime: TDate.formatTime(this.select.updateTime),     // 失效时间
+                            // datasource: this.select.datasource,     // 信息来源
+                        };
+
+                        this.$api.post( url,params,
+                            response => {
+                                if (response.status >= 200 && response.status < 300) {
+
+                                    console.log('response.data ---- ' + JSON.stringify(response.data))
+                                    
+                                    if(response.data.status == 200){
+                                        _this.initMsgList();
+                                        this.$message('手动失效成功！');
+                                    }
+                                    
+                                } else {                     
+                                    this.$message("手动失效失败 ！"); 
+                                }
+                            }
+                        );
+                    },
+                    initTrafficSource(){
+                        let url = 'common/queryDictionary';
+                        let params = {
+                            parentCode: 'trafficSource',
+                        };
+                        this.$api.post( url,params,
+                            response => {
+                                if (response.status >= 200 && response.status < 300) {
+
+                                    this.trafficSourceList = response.data ? response.data : [];
+                                    if(this.trafficSourceList.length){
+                                                        
+                                        // this.ruleForm.frequencyUnit = this.frequencyUnitList[0];
+                                        this.select.trafficSource = this.trafficSourceList[0];
+                                    }
+                                
+                                } else {                     
+                                    this.$message("获取单位失败 ！"); 
+                                }
+                            }
+                        );
+                    },
+                    initUnintList(){
+                        let url = 'common/queryDictionary';
+                        let params = {
+                            parentCode: 'timeUnit',
+                        };
+                        this.$api.post( url,params,
+                            response => {
+                                if (response.status >= 200 && response.status < 300) {
+
+                                    this.frequencyUnitList = response.data ? response.data : [];
+                                    if(this.frequencyUnitList.length){
+                                                        
+                                        // this.ruleForm.frequencyUnit = this.frequencyUnitList[0];
+                                        this.select.frequencyUnit = this.frequencyUnitList[0];
+                                    }
+                                
+                                } else {                     
+                                    this.$message("获取单位失败 ！"); 
+                                }
+                            }
+                        );
+                    },
+                    formatTime(value){
+                        let t = new Date(value);
+                        let year = t.getFullYear;
+                        let month = t.getMonth;
+                    }
+                },
+                
+                created(){                    
+                    this.initUnintList();
+                    this.initTrafficSource();
+                    this.initSelect();
+                    if(marker.id){
+                        this.initDetail();
+                    }
+                },
+                destroyed(){
+                    console.log('mycomponet destory ');
+                }
+            });
+            var component= new MyComponent().$mount();
+            
+            this.inforWindowInstance = null;
             // 创建一个自定义内容的 infowindow 实例
             if(!this.inforWindowInstance){
                 this.inforWindowInstance = new AMap.InfoWindow({
@@ -554,10 +1026,10 @@ export default {
                     offset: new AMap.Pixel(0, -35),
                     content: component.$el
                 });  
+                
             }else{
                 this.inforWindowInstance.setPosition(lnglat);
-            }
-                      
+            }                      
 
             this.inforWindowInstance.open(this.map);
 
@@ -602,19 +1074,13 @@ export default {
 
     },
     created(){
-        
-
-        // this.markers = [
-        //     {
-        //         position: [121.5273285, 31.21515044]
-        //     }, 
-        //     {
-        //         position: [121.5273286, 31.21515045]
-        //     }
-        // ];
+        // this.initStatisics();
     },
     mounted(){
         this.initMap();
+        this.initMsgList();
+        this.initPubMsgList();
+        
     },
 
 }
