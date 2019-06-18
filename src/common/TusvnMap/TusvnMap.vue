@@ -27,7 +27,8 @@
                             <label class="yk-info-window-title">交通信息发布</label>                        
                         </el-row>
                         <el-row class="yk-pad-1040">
-                            <el-form :model="ruleForm" :rules="rules" ref="ruleForm" size="mini" label-width="120px" class="demo-ruleForm yk-left">
+                            <!-- :model="ruleForm" :rules="rules"-->
+                            <el-form   ref="ruleForm" size="mini" label-width="120px" class="demo-ruleForm yk-left">
 
                                 <el-form-item label="信息类型" class="yk-bottom-6">                               
                                     <label>{{trafficInfo.eventType}}</label>
@@ -47,18 +48,22 @@
 
                                 <el-form-item label="默认广播频率" prop="frequency" class="yk-bottom-6">
                                     <el-input size="mini" v-model="trafficInfo.frequency">
-                                    <template slot="append">
-                                        <el-select class="yk-w-80" v-model="select.frequencyUnit" placeholder="请选择">
-                                        <el-option
-                                        v-for="item in frequencyUnitList"
-                                        :key="item.value"
-                                        :label="item.name"
-                                        :value="item">
-                                        </el-option>
-                                    </el-select>
-                                    </template>
-                                    </el-input>            
-                                </el-form-item>
+                                        <!-- <template slot="append">                                       
+                                            <el-select class="yk-w-80" size="mini" v-model="select.frequencyUnit"  placeholder="请选择">
+                                                <template v-for="(item,index) in frequencyUnitList">
+                                                    <el-option :key="index" :label="item.name" :value="item">{{item.name + '--' + index}}</el-option>
+                                                </template>                                            
+                                            </el-select>
+                                        </template> -->
+
+                                        <template slot="append">
+                                             <select class="yk-w-80" v-model="select.frequencyUnit">
+                                                <option v-for="(item,index) in frequencyUnitList" :key="index" :value="item">{{item.name}}</option>
+                                            </select> 
+                                        </template>
+                                    </el-input> 
+                                                
+                                </el-form-item>                               
                                 
                                 <el-form-item label="发送生效时间" prop="" class="yk-bottom-6">
                                     <el-date-picker
@@ -70,18 +75,22 @@
 
                                 <el-form-item label="发送失效时间" prop="" class="yk-bottom-6">
                                     <el-date-picker
-                                        v-model="trafficInfo.expirationTime"
+                                        v-model="trafficInfo.endTime"
                                         type="datetime"
                                         placeholder="选择日期时间">
                                     </el-date-picker>
                                 </el-form-item>
 
                                 <el-form-item v-show="trafficInfo.isEdit" label="信息来源" class="yk-bottom-6">
-                                    <el-select size="mini" v-model="select.datasource" placeholder="请选择">
+                                    <!-- <el-select size="mini" v-model="select.datasource" placeholder="请选择">
                                         <template v-for="(item,index) in datasourceList">
                                             <el-option :key="index" :label="item.name" :value="item">{{item.name}}</el-option>
+                                            <el-option :key="index" label="test" value="test">test</el-option>
                                         </template>
-                                    </el-select>
+                                    </el-select> -->
+                                    <select v-model="select.datasource">
+                                        <option v-for="(item,index) in datasourceList" :key="index" :value="item">{{item.name}}</option>                                        
+                                    </select>
                                 </el-form-item>
 
                                 <el-form-item>
@@ -170,6 +179,7 @@ export default {
                 title: '信息发布',
                 isEdit: false,
                 eventName: '',
+                taskCode: '',
                 eventType: '',                            
                 longitude: '',
                 latitude: '',
@@ -178,7 +188,7 @@ export default {
                 frequency: 500,
                 frequencyUnit: '',
                 beginTime: '',
-                expirationTime: '',
+                endTime: '',
                 datasource: '',
             },
             frequencyUnitList: [],
@@ -198,14 +208,25 @@ export default {
             clickEventKey: null,
             select: {
                 datasource: '',
-                frequencyUnit: '',
+                frequencyUnit: {
+                    name: '',
+                    value: '',
+                },
                 sliderVal: 1000,
-            }
+            },
+            
         }
     },
     watch:{
     },
     methods: {
+
+        unitChange(){
+            
+            this.$forceUpdate()
+           
+
+        },
         
         // 表单事件
         sliderChange(value){
@@ -216,6 +237,9 @@ export default {
             this.trafficInfo.frequencyUnit = this.select.frequencyUnit ? (this.select.frequencyUnit.key ? this.select.frequencyUnit.key : '') : '';
             this.trafficInfo.affectRange = this.select.sliderVal;
 
+            console.log('this.trafficInfo --- ' + JSON.stringify(this.trafficInfo))
+            debugger
+
             this.$emit('PublishInfo',this.trafficInfo);
             this.closeMyInfoWindow();
         },        
@@ -225,14 +249,17 @@ export default {
             this.trafficInfo.frequencyUnit = this.select.frequencyUnit ? (this.select.frequencyUnit.key ? this.select.frequencyUnit.key : '') : '';
             this.trafficInfo.affectRange = this.select.sliderVal;
 
+            console.log('this.trafficInfo --- ' + JSON.stringify(this.trafficInfo))
+            debugger
+
             this.$emit('UpdateInfo',this.trafficInfo);
             this.closeMyInfoWindow();
         },
         destroyInfo(e){
-            this.trafficInfo.datasource = this.select.datasource ? (this.select.datasource.key ? this.select.datasource.key : '') : '';
-            this.trafficInfo.frequencyUnit = this.select.frequencyUnit ? (this.select.frequencyUnit.key ? this.select.frequencyUnit.key : '') : '';
-            this.trafficInfo.affectRange = this.select.sliderVal;
-            
+           
+            console.log('this.trafficInfo --- ' + JSON.stringify(this.trafficInfo))
+            debugger
+
             this.$emit('DestroyInfo',this.trafficInfo);
             this.closeMyInfoWindow(e);
         },
@@ -280,11 +307,7 @@ export default {
                     if (response.status >= 200 && response.status < 300) {
 
                         this.frequencyUnitList = response.data ? response.data : [];
-                        // if(this.frequencyUnitList.length){
-                                            
-                        //     // this.ruleForm.frequencyUnit = this.frequencyUnitList[0];
-                        //     this.select.frequencyUnit = this.frequencyUnitList[0];
-                        // }
+                     
                         if(this.frequencyUnitList.length){
                             if(!isEdit){
                                 this.select.frequencyUnit = this.frequencyUnitList[0];
@@ -296,8 +319,7 @@ export default {
                                     }
                                 }
                             }
-                        }
-                        
+                        }                        
                     
                     } else {                     
                         this.$message("获取单位失败 ！"); 
@@ -314,6 +336,8 @@ export default {
                 response => {
                     if (response.status >= 200 && response.status < 300) {
                         
+                        this.trafficInfo.id = response.data.id;
+                        this.trafficInfo.taskCode = response.data.taskCode;
                         this.trafficInfo.eventType = response.data.eventType;
                         this.trafficInfo.longitude = response.data.longitude;
                         this.trafficInfo.latitude = response.data.latitude;
@@ -322,13 +346,13 @@ export default {
                         this.trafficInfo.frequency = response.data.frequency; 
                         this.trafficInfo.frequencyUnit = response.data.frequencyUnit; 
                         this.trafficInfo.beginTime = response.data.beginTime; 
-                        this.trafficInfo.expirationTime = response.data.expirationTime; 
+                        this.trafficInfo.endTime = response.data.endTime; 
                         this.trafficInfo.datasource = response.data.datasource;                                 
 
                         if(response.data.status == 200){                            
                             this.$message('获取详情成功！');
                         }
-
+                        this.initUnintList(true,this.trafficInfo.frequencyUnit);
                         this.initDatasourceList(true,this.trafficInfo.datasource);
                         
                     } else {                     
@@ -426,7 +450,8 @@ export default {
         },
 
         addMyInfoWindow: function(obj){
-
+            
+            this.trafficInfo.id = obj.id;
             this.trafficInfo.eventName = obj.trafficInfo.eventName;
             
             if(obj.isEdit){
@@ -435,10 +460,9 @@ export default {
             }else{
                 this.trafficInfo = obj.trafficInfo;
                 this.trafficInfo.isEdit = false;
-                this.initDatasourceList();
-            }
 
-            
+                this.initDatasourceList();
+            }            
 
             this.showTrafficInfoPop = true;
             this.$nextTick(function(){

@@ -64,6 +64,7 @@ export default {
                 title: '信息发布',
                 isEdit: false,
                 eventName: '',
+                taskCode: '',
                 eventType: '',                            
                 longitude: '',
                 latitude: '',
@@ -72,27 +73,31 @@ export default {
                 frequency: 500,
                 frequencyUnit: '',
                 beginTime: '',
-                expirationTime: '',
+                endTime: '',
                 datasource: '',
                 trafficSource: '',
             },
             isPointerIco: false,    // 是否修改鼠标的图标
+            pubMsgList: [],
         }
     },
     methods: {
 
         // ----------------------------信息发布-------------------------------
         initPubMsgList(){
+
+            this.clearPubMsg();
             
             let url = 'event/task/findEffectiveList';
             let params = {                
-                
+                status: 1,
             };
             this.$api.post( url,params,
                 response => {
                     if (response.status >= 200 && response.status < 300) {
 
                         let t = response.data ? response.data : [];
+                        
 
                         for(let i=0;i<t.length;i++){
                             let item = t[i];
@@ -110,6 +115,7 @@ export default {
                             let lat = item.latitude;                            
                             let id = item.taskCode;
                             let size = [30,30];
+                            // let offset = [];
                             
                             this.$refs.refTusvnMap.addImgOverlay( id, icon, null, lon, lat, id, null, (e) => {
                                 
@@ -126,7 +132,8 @@ export default {
 
                                 this.$refs.refTusvnMap.addMyInfoWindow(marker);
                                 
-                            });                             
+                            }); 
+                            this.pubMsgList.push(item);                            
                             // this.$refs.refTusvnMap.centerAt(116.448583,39.930821);
                         }
                         
@@ -141,19 +148,28 @@ export default {
             );
         },
 
+        clearPubMsg(){
+
+            for(let item of this.pubMsgList){
+                this.$refs.refTusvnMap.removeOverlayById(item.taskCode);
+            }
+            this.pubMsgList = [];
+        },
+
         publishInfo(e){
-           
+                    
             let url = 'event/task/save';
             let params = {
+                status: 1,
                 eventType: e.eventType,      //信息类型
                 longitude: e.longitude,      // 经度
                 latitude: e.latitude,       // 纬度
                 affectRange: e.affectRange,    // 广播范围
                 content: e.content,        // 信息内容
                 frequency: e.frequency,      // 广播频率
-                frequencyUnit: e.frequencyUnit.key,      // 频率单位
+                frequencyUnit: e.frequencyUnit,      // 频率单位
                 beginTime: TDate.formatTime(e.beginTime),      // 生效时间
-                expirationTime: TDate.formatTime(e.updateTime),     // 失效时间
+                endTime: TDate.formatTime(e.endTime),     // 失效时间
                 datasource: e.datasource,     // 信息来源
             };
 
@@ -164,6 +180,9 @@ export default {
                         if(response.data.status == 200){
                             this.initPubMsgList();
                             this.$message('发布成功！');
+                        }else if(response.data.status == 500){
+                            let msg = response.data.message ? response.data.message : '发布失败 !';
+                            this.$message(msg)
                         }
                         
                     } else {                     
@@ -174,20 +193,22 @@ export default {
         },
         updateInfo(e){
             console.log('updateInfo --- ' + JSON.stringify(e))
+            console.log(e.frequencyUnit)
             debugger
 
             let url = 'event/task/update';
             let params = {
                 id: e.id,
+                "taskCode": e.taskCode,
                 eventType: e.eventType,      //信息类型
                 longitude: e.longitude,      // 经度
                 latitude: e.latitude,       // 纬度
                 affectRange: e.affectRange,    // 广播范围
                 content: e.content,        // 信息内容
                 frequency: e.frequency,      // 广播频率
-                frequencyUnit: e.frequencyUnit.key,      // 频率单位
+                frequencyUnit: e.frequencyUnit,      // 频率单位
                 beginTime: TDate.formatTime(e.beginTime),      // 生效时间
-                expirationTime: TDate.formatTime(e.updateTime),     // 失效时间
+                endTime: TDate.formatTime(e.endTime),     // 失效时间
                 datasource: e.datasource,     // 信息来源
             };
 
@@ -198,6 +219,9 @@ export default {
                         if(response.data.status == 200){
                             this.initPubMsgList();
                             this.$message('更新成功！');
+                        }else if(response.data.status == 500){
+                            let msg = response.data.message ? response.data.message : '更新失败 !';
+                            this.$message(msg)
                         }
                         
                     } else {                     
@@ -207,21 +231,13 @@ export default {
             );
         },
         destroyInfo(e){
-            console.log('DestroyInfo --- ' + JSON.stringify(e))
-            debugger
+           
             let url = 'event/task/cancel';
             let params = {
                 id: e.id,
-                // eventType: this.select.eventType,      //信息类型
-                // longitude: this.select.longitude,      // 经度
-                // latitude: this.select.latitude,       // 纬度
-                // affectRange: this.select.affectRange,    // 广播范围
-                // content: this.select.content,        // 信息内容
-                // frequency: this.select.frequency,      // 广播频率
-                // frequencyUnit: this.select.frequencyUnit.key,      // 频率单位
-                // beginTime: TDate.formatTime(this.select.beginTime),      // 生效时间
-                // expirationTime: TDate.formatTime(this.select.updateTime),     // 失效时间
-                // datasource: this.select.datasource,     // 信息来源
+                "taskCode":e.taskCode,
+                "expirationTime": TDate.formatTime(), 
+                "status": 2                
             };
 
             this.$api.post( url,params,
@@ -229,9 +245,12 @@ export default {
                     if (response.status >= 200 && response.status < 300) {
                         
                         if(response.data.status == 200){
-                            _this.initMsgList();
+                            this.initPubMsgList();
                             this.$message('手动失效成功！');
-                        }
+                        }else if(response.data.status == 500){
+                            let msg = response.data.message ? response.data.message : '手动失效失败 !';
+                            this.$message(msg)
+                        }                         
                         
                     } else {                     
                         this.$message("手动失效失败 ！"); 
@@ -397,13 +416,14 @@ export default {
             let beginTime = TDate.formatTime();
             // 失效时间 当前时间 +24 小时
             let tomorrow = (new Date()).getTime() + 24 * 60 * 60 * 1000;
-            let expirationTime = TDate.formatTime(tomorrow);
+            let endTime = TDate.formatTime(tomorrow);
 
             this.trafficInfo = {
                 title: '信息发布',
                 isEdit: false,
                 eventName: this.msgTypeInfo.name,
-                eventType: this.msgTypeInfo.code,                            
+                eventType: this.msgTypeInfo.code,    
+                taskCode: this.msgTypeInfo.taskCode,                      
                 longitude: lon,
                 latitude: lat,
                 affectRange: 1000,
@@ -411,7 +431,7 @@ export default {
                 frequency: this.msgTypeInfo.frequency,
                 frequencyUnit: this.msgTypeInfo.frequencyUnit,
                 beginTime: beginTime,
-                expirationTime: expirationTime,
+                endTime: endTime,
                 datasource: '',
             };
             let marker = {

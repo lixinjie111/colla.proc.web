@@ -168,8 +168,7 @@
         };
         axios.post(url, formData, config)
           .then(response=>{
-              console.log('文件上传结果 ： -------------- ' + JSON.stringify(response.data) );
-              
+              console.log('文件上传结果 ： -------------- ' + JSON.stringify(response.data) );              
 
               if(response.data.status == '200'){
                   this.data.icon = response.data.data;

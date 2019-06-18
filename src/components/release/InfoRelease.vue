@@ -677,7 +677,7 @@ export default {
 
                             <el-form-item label="发送失效时间" prop="" class="yk-bottom-6">
                                 <el-date-picker
-                                    v-model="expirationTime"
+                                    v-model="endTime"
                                     type="datetime"
                                     placeholder="选择日期时间">
                                 </el-date-picker>
@@ -737,7 +737,7 @@ export default {
                         frequency: 500,
                         frequencyUnit: '',
                         beginTime: '',
-                        expirationTime: '',
+                        endTime: '',
                         datasource: '',
                         trafficSource: '',
 
@@ -756,7 +756,7 @@ export default {
                             frequency: 500,
                             frequencyUnit: '',
                             beginTime: '',
-                            expirationTime: '',
+                            endTime: '',
                             datasource: '',
                             trafficSource: '',
                         },
@@ -816,7 +816,7 @@ export default {
                         this.frequency = 500;
                         this.frequencyUnit = '';
                         this.beginTime = '';
-                        this.expirationTime = '';
+                        this.endTime = '';
                         this.datasource = '';
                         this.trafficSource = '';
                     },
@@ -838,7 +838,7 @@ export default {
                                     this.frequency = response.data.frequency;
                                     this.frequencyUnit = response.data.frequencyUnit;
                                     this.beginTime = response.data.beginTime;
-                                    this.expirationTime = response.data.expirationTime;
+                                    this.endTime = response.data.endTime;
                                     this.datasource = response.data.datasource;
                                     this.trafficSource = response.data.trafficSource;
 
@@ -850,7 +850,7 @@ export default {
                                     // this.select.frequency = response.data.frequency; 
                                     // this.select.frequencyUnit = response.data.frequencyUnit; 
                                     // this.select.beginTime = response.data.beginTime; 
-                                    // this.select.expirationTime = response.data.expirationTime; 
+                                    // this.select.endTime = response.data.endTime; 
                                     // this.select.datasource = response.data.datasource; 
                                     // this.select.trafficSource = response.data.trafficSource;                                   
 
@@ -903,7 +903,7 @@ export default {
                             frequency: this.select.frequency,      // 广播频率
                             frequencyUnit: this.select.frequencyUnit.key,      // 频率单位
                             beginTime: TDate.formatTime(this.select.beginTime),      // 生效时间
-                            expirationTime: TDate.formatTime(this.select.updateTime),     // 失效时间
+                            endTime: TDate.formatTime(this.select.endTime),     // 失效时间
                             datasource: this.select.datasource,     // 信息来源
                         };
 
@@ -937,7 +937,7 @@ export default {
                             frequency: this.select.frequency,      // 广播频率
                             frequencyUnit: this.select.frequencyUnit.key,      // 频率单位
                             beginTime: TDate.formatTime(this.select.beginTime),      // 生效时间
-                            expirationTime: TDate.formatTime(this.select.updateTime),     // 失效时间
+                            endTime: TDate.formatTime(this.select.endTime),     // 失效时间
                             datasource: this.select.datasource,     // 信息来源
                         };
 
@@ -970,7 +970,7 @@ export default {
                             // frequency: this.select.frequency,      // 广播频率
                             // frequencyUnit: this.select.frequencyUnit.key,      // 频率单位
                             // beginTime: TDate.formatTime(this.select.beginTime),      // 生效时间
-                            // expirationTime: TDate.formatTime(this.select.updateTime),     // 失效时间
+                            // endTime: TDate.formatTime(this.select.endTime),     // 失效时间
                             // datasource: this.select.datasource,     // 信息来源
                         };
 

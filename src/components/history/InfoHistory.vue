@@ -168,7 +168,7 @@ export default {
                 eventType: this.search.eventType,
                 status: this.search.status,
                 beginTime: this.search.startTime,
-                expirationTime: this.search.endTime,
+                endTime: this.search.endTime,
                 datasource: this.search.datasource,
                 "page": {    
                     "pageIndex": this.paging.index,
