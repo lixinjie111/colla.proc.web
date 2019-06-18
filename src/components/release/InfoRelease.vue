@@ -5,10 +5,20 @@
         <!-- 高德地图组件 -->
         <!-- <el-amap vid="amapDemo" :mapStyle="mapStyle">
             <el-amap-marker v-for="(marker,index) in markers" :key="index" :position="marker.position"></el-amap-marker>
-        </el-amap> -->
-        <div id="container">
+        </el-amap>
+         -->
 
+         <!-- <div id="container">
+
+         </div> -->
+        
+
+        <!-- openlayer地图 -->
+        <div>
+            <InfoMapOL ref="refInfoMap" :msgTypeInfo="search.pubMsg"></InfoMapOL>
         </div>
+
+        
 
         <!-- 左侧信息 -->
         <div class="yk-left">
@@ -50,7 +60,7 @@
                     <el-select placeholder="发布信息" v-model="search.pubMsg" @change="publishMsgHandler">                        
                         <el-option-group v-for="(group,groupIndex) in pubMsgGroup" label="发布信息" :key="groupIndex">
                             <template v-for="(item,index) in pubMsgList">
-                                <el-option :key="index" :value="item" :disabled="item.disabled">                                        
+                                <el-option :key="index" :value="item" :disabled="item.disabled" @click.native="pubMsgClick(item);">                                        
                                     {{item.name}}
                                 </el-option>
                             </template>
@@ -59,12 +69,13 @@
                 </el-form-item>
 
                 <el-form-item class="yk-f-right">
-                    <el-select placeholder="POI" v-model="search.poi" @change="poiHandler">                                    
+                    <!--  -->
+                    <el-select placeholder="POI" v-model="search.poi" @change="poiHandler" :clearable='clearPoiSelect'>                                    
                         <el-option-group v-for="(group,groupIndex) in poiGruop" label="POI" :key="groupIndex">            
                             <template v-for="(item,index) in poiList">
-                                <el-option :key="index" :value="item" :disabled="item.disabled">
+                                <el-option :key="index" :value="item" :disabled="item.disabled" @click.native="poiClick(item);">
 
-                                    <el-checkbox v-model="item.isCheck" @click.prevent="poiCheckHandler"></el-checkbox>
+                                    <!-- <el-checkbox v-model="olMarker[item.value]"></el-checkbox> -->
                                     
                                     {{item.value}}
                                 
@@ -84,7 +95,12 @@
 import Vue from 'vue';
 import TDate from '@/common/date.js'
 
+import InfoMapOL from '@/components/release/InfoMap_ol.vue'
+
 export default {
+    components: {
+        InfoMapOL,
+    },
     data(){
         return {
             iconPath: window.cfg.iconPath,
@@ -98,8 +114,8 @@ export default {
                 roadsideUnit: false,    // 路侧单元
                 roadsideUnitList: [],
                 
-                trafficSignal: false,
-                trafficSignalList: [],      // 交通信号灯
+                trafficSignal: false,   // 交通信号灯
+                trafficSignalList: [],      
 
                 obstacleList: [],   // 障碍物
                 goodsDropList: [],  // 货物散落
@@ -111,6 +127,7 @@ export default {
                 lat: '',
                 icon: '',
                 name: '',
+                type: '',
             },
             search: {
                 poi: '',
@@ -123,11 +140,10 @@ export default {
                 data: {},
                 visible: true,
             },
-            poiList: [
-                
-                { id: 1, name: 'RSU', value: 'RSU', isCheck: false},
-                { id: 2, name: '路侧单元', value: '路侧单元', isCheck: false},
-                { id: 3, name: '红绿灯', value: '红绿灯', isCheck: false},
+            poiList: [                
+                { id: 1, name: 'RSU', value: 'rsu', isCheck: false},
+                { id: 2, name: '路侧单元', value: 'roadsideUnit', isCheck: false},
+                { id: 3, name: '红绿灯', value: 'trafficSignal', isCheck: false},
             ],
             pubMsgList: [
                 
@@ -148,6 +164,13 @@ export default {
                 total: 0,
             }, 
             statisicsData: [],
+            olMarker: {
+                show: false,
+                rsu: false,     // rsu
+                roadsideUnit: false,    // 路侧单元
+                trafficSignal: false,   // 交通信号灯
+            },
+            clearPoiSelect: true,
         }
     },
     methods: {
@@ -204,8 +227,7 @@ export default {
                             if(item.icon){
                                 icon = this.iconPath + item.icon;
                             }
-                            console.log('icon --- ' + icon);
-
+                            
                             var marker = new AMap.Marker({
                                 extData: item.id,
                                 title: item.eventType,
@@ -259,11 +281,22 @@ export default {
             );
         },
         
+        poiClick(item){
+            
+            if(!item) return;
+            // item.isCheck = !item.isCheck;
+            let type = item.value;
+            this.olMarker[type] = !this.olMarker[type];
+
+            this.$refs.refInfoMap.showMarker(type,this.olMarker[type]);
+        },
         // 显示poi
         poiHandler(){
-            let type = this.search.poi.value;
-            let isCheck = this.search.poi.isCheck = !this.search.poi.isCheck;
-            console.log('isCheck --- ' + isCheck + ' --- type ' + type);
+
+            let type = this.search.poi ? (this.search.poi.value ? this.search.poi.value : '') : '';
+            if(!type) return;
+
+            let isCheck = this.search.poi.isCheck = !this.search.poi.isCheck;            
 
             switch(type){
                 case 'RSU':
@@ -277,8 +310,9 @@ export default {
                     break;
             }
         },
-        poiCheckHandler(){
-            console.log('poiCheckHandler---');
+       
+        pubMsgClick(item){
+            this.$refs.refInfoMap.addMapClickEvent();
         },
         //发布信息
         publishMsgHandler(){
@@ -298,6 +332,11 @@ export default {
             // }
         },
         addMsgClick(e){
+
+            // ol
+            
+
+            // 高德地图
             var text = '您在 [ '+e.lnglat.getLng()+','+e.lnglat.getLat()+' ] 的位置单击了地图！';
             
             // 动态读取图标
@@ -671,8 +710,7 @@ export default {
         // 自定义高德地图信息窗体
         initInfoWindow(marker){
 
-            console.log('initInfoWindow --- ' + JSON.stringify(marker))
-
+    
             let inforWindowHtml = this.inforWindowHtml();
 
             var lnglat = new AMap.LngLat(marker.lon,marker.lat);
@@ -1079,15 +1117,15 @@ export default {
     mounted(){
         this.initMap();
         this.initMsgList();
-        this.initPubMsgList();
-        
+        this.initStatisics();
+        this.initPubMsgList();        
     },
 
 }
 </script>
 <style scoped>
 
-    
+   
 
     #container {
         width: 100%;

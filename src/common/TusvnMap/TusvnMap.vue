@@ -15,6 +15,92 @@
                 </div>
             </div>
         </template>
+        
+        <template>
+            <div v-show="showTrafficInfoPop" id="traffic-info-release-popup" class="ol-popup yk-pointer-normal" >
+                <a href="#" overlayid="traffic-info-release" id="traffic-info-release-popup-closer" class="ol-popup-closer" @click="closeMyInfoWindow($event)"></a>
+                <div id="traffic-info-release-popup-content">
+                    <!-- <span v-html="popupData.content"></span> -->
+
+                    <div>
+                        <el-row class="yk-pad-10 yk-bottom-border">
+                            <label class="yk-info-window-title">交通信息发布</label>                        
+                        </el-row>
+                        <el-row class="yk-pad-1040">
+                            <el-form :model="ruleForm" :rules="rules" ref="ruleForm" size="mini" label-width="120px" class="demo-ruleForm yk-left">
+
+                                <el-form-item label="信息类型" class="yk-bottom-6">                               
+                                    <label>{{trafficInfo.eventType}}</label>
+                                </el-form-item>
+
+                                <el-form-item label="中心位置" prop="name" class="yk-bottom-6">                                
+                                    <label>{{trafficInfo.longitude + ',' + trafficInfo.latitude}}</label>
+                                </el-form-item>
+
+                                <el-form-item label="广播范围" prop="name" class="yk-bottom-6" style="height: 55px;">
+                                    <el-slider v-model="trafficInfo.affectRange" :marks="broadcastRangeMarks" :max="broadcastMax" :step="broadcastStep" @change="sliderChange"></el-slider>
+                                </el-form-item>
+
+                                <el-form-item label="信息内容" prop="name" class="yk-bottom-6">
+                                    <el-input type="textarea" size="mini" v-model="trafficInfo.content"></el-input>
+                                </el-form-item>
+
+                                <el-form-item label="默认广播频率" prop="frequency" class="yk-bottom-6">
+                                    <el-input size="mini" v-model="trafficInfo.frequency">
+                                    <template slot="append">
+                                        <el-select class="yk-w-80" v-model="select.frequencyUnit" placeholder="请选择">
+                                        <el-option
+                                        v-for="item in frequencyUnitList"
+                                        :key="item.value"
+                                        :label="item.name"
+                                        :value="item">
+                                        </el-option>
+                                    </el-select>
+                                    </template>
+                                    </el-input>            
+                                </el-form-item>
+                                
+                                <el-form-item label="发送生效时间" prop="" class="yk-bottom-6">
+                                    <el-date-picker
+                                        v-model="trafficInfo.beginTime"
+                                        type="datetime"
+                                        placeholder="选择日期时间">
+                                    </el-date-picker>
+                                </el-form-item>
+
+                                <el-form-item label="发送失效时间" prop="" class="yk-bottom-6">
+                                    <el-date-picker
+                                        v-model="trafficInfo.expirationTime"
+                                        type="datetime"
+                                        placeholder="选择日期时间">
+                                    </el-date-picker>
+                                </el-form-item>
+
+                                <el-form-item v-show="trafficInfo.isEdit" label="信息来源" class="yk-bottom-6">
+                                    <el-select size="mini" v-model="select.datasource" placeholder="请选择">
+                                        <template v-for="(item,index) in datasourceList">
+                                            <el-option :key="index" :label="item.name" :value="item">{{item.name}}</el-option>
+                                        </template>
+                                    </el-select>
+                                </el-form-item>
+
+                                <el-form-item>
+                                    <el-button v-show="!trafficInfo.isEdit" @click="publichInfo($event);">发布</el-button>
+                                    <el-button v-show="!trafficInfo.isEdit" @click="closeInforWindow($event);">取消</el-button>
+
+                                    <el-button v-show="trafficInfo.isEdit" @click="updateInfo($event);">更新</el-button>
+                                    <el-button v-show="trafficInfo.isEdit" @click="destroyInfo($event);">手动失效</el-button>
+                                    
+                                </el-form-item>
+
+                            </el-form>
+                        </el-row>
+                    </div>
+                    
+                </div>
+
+            </div>
+        </template>
     </div>
 </template>
 <script>
@@ -26,6 +112,8 @@
 
 import _ from 'lodash';
 import "ol/ol.css";
+import { unByKey } from 'ol/Observable.js'
+// import OLObservable from 'ol/Observable.js'
 import Map from 'ol/Map.js';
 import View from 'ol/View.js';
 import Overlay from 'ol/Overlay.js';
@@ -45,7 +133,7 @@ import * as mapInit from './MapUtils.js';
 
 export default {
     name:"TusvnMap",
-    props:["targetId","overlayContainerId"],
+    props:["targetId","overlayContainerId",], //'trafficInfo'
     data(){
         return {
              orderStatus: -1
@@ -62,13 +150,195 @@ export default {
             // ,startIcon: '@/assets/images/start.png'
             // ,endIcon: '@/assets/images/end.png'
             ,popupDatas:{}
-            ,overlays:{}
+            ,overlays:{},
 
+            // 交通信息发布系统
+            showTrafficInfoPop: false,
+            ruleForm: {
+                eventType: '',
+                name: '',
+                eventCategory: '',
+                frequency: '',
+                frequencyUnit: '',
+                delivery: false,
+                content: '',
+            },
+            rules: {},
+
+            trafficInfo : {
+                id: '',
+                title: '信息发布',
+                isEdit: false,
+                eventName: '',
+                eventType: '',                            
+                longitude: '',
+                latitude: '',
+                affectRange: 1000,
+                content: '',
+                frequency: 500,
+                frequencyUnit: '',
+                beginTime: '',
+                expirationTime: '',
+                datasource: '',
+            },
+            frequencyUnitList: [],
+            datasourceList: [],
+            broadcastMax: 3000,
+            broadcastStep: 100,
+            broadcastRangeMarks: {
+                200: '200米',                                
+                3000: '3000米'
+                // {
+                //     style: {
+                //         color: '#1989FA',
+                //     },
+                //     label: this.$createElement('strong', '3000米')
+                // },
+            },
+            clickEventKey: null,
+            select: {
+                datasource: '',
+                frequencyUnit: '',
+                sliderVal: 1000,
+            }
         }
     },
     watch:{
     },
     methods: {
+        
+        // 表单事件
+        sliderChange(value){
+            this.select.sliderVal = value;
+        },
+        publichInfo(e){
+            this.trafficInfo.datasource = this.select.datasource ? (this.select.datasource.key ? this.select.datasource.key : '') : '';
+            this.trafficInfo.frequencyUnit = this.select.frequencyUnit ? (this.select.frequencyUnit.key ? this.select.frequencyUnit.key : '') : '';
+            this.trafficInfo.affectRange = this.select.sliderVal;
+
+            this.$emit('PublishInfo',this.trafficInfo);
+            this.closeMyInfoWindow();
+        },        
+        updateInfo(e){
+           
+            this.trafficInfo.datasource = this.select.datasource ? (this.select.datasource.key ? this.select.datasource.key : '') : '';
+            this.trafficInfo.frequencyUnit = this.select.frequencyUnit ? (this.select.frequencyUnit.key ? this.select.frequencyUnit.key : '') : '';
+            this.trafficInfo.affectRange = this.select.sliderVal;
+
+            this.$emit('UpdateInfo',this.trafficInfo);
+            this.closeMyInfoWindow();
+        },
+        destroyInfo(e){
+            this.trafficInfo.datasource = this.select.datasource ? (this.select.datasource.key ? this.select.datasource.key : '') : '';
+            this.trafficInfo.frequencyUnit = this.select.frequencyUnit ? (this.select.frequencyUnit.key ? this.select.frequencyUnit.key : '') : '';
+            this.trafficInfo.affectRange = this.select.sliderVal;
+            
+            this.$emit('DestroyInfo',this.trafficInfo);
+            this.closeMyInfoWindow(e);
+        },
+        closeInforWindow(e){
+            this.closeMyInfoWindow();
+        },
+        initDatasourceList(isEdit=false,datasource){
+            let url = 'common/queryDictionary';
+            let params = {
+                parentCode: 'trafficSource',
+            };
+            this.$api.post( url,params,
+                response => {
+                    if (response.status >= 200 && response.status < 300) {
+
+                        this.datasourceList = response.data ? response.data : [];
+                        if(this.datasourceList.length){
+                            
+                            if (!isEdit) {
+                                 this.select.datasource = this.datasourceList[0];
+                            }else{
+                             
+                                for(let item of this.datasourceList){
+                                    if(item.key == datasource){
+                                        this.select.datasource = item;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    
+                    } else {                     
+                        this.$message("获取单位失败 ！"); 
+                    }
+                }
+            );
+        },
+        initUnintList(isEdit=false,frequencyUnit){
+            let url = 'common/queryDictionary';
+            let params = {
+                parentCode: 'timeUnit',
+            };
+            this.$api.post( url,params,
+                response => {
+                    if (response.status >= 200 && response.status < 300) {
+
+                        this.frequencyUnitList = response.data ? response.data : [];
+                        // if(this.frequencyUnitList.length){
+                                            
+                        //     // this.ruleForm.frequencyUnit = this.frequencyUnitList[0];
+                        //     this.select.frequencyUnit = this.frequencyUnitList[0];
+                        // }
+                        if(this.frequencyUnitList.length){
+                            if(!isEdit){
+                                this.select.frequencyUnit = this.frequencyUnitList[0];
+                            }else{
+                                for(let item of this.frequencyUnitList){
+                                    if(item.key == frequencyUnit){
+                                        this.select.frequencyUnit = item;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        
+                    
+                    } else {                     
+                        this.$message("获取单位失败 ！"); 
+                    }
+                }
+            );
+        },
+        initDetail(marker) {
+            let url = 'event/task/findDetail';
+            let params = {
+                id: marker.id,
+            };
+            this.$api.post( url,params,
+                response => {
+                    if (response.status >= 200 && response.status < 300) {
+                        
+                        this.trafficInfo.eventType = response.data.eventType;
+                        this.trafficInfo.longitude = response.data.longitude;
+                        this.trafficInfo.latitude = response.data.latitude;
+                        this.trafficInfo.affectRange = response.data.affectRange; 
+                        this.trafficInfo.content = response.data.content; 
+                        this.trafficInfo.frequency = response.data.frequency; 
+                        this.trafficInfo.frequencyUnit = response.data.frequencyUnit; 
+                        this.trafficInfo.beginTime = response.data.beginTime; 
+                        this.trafficInfo.expirationTime = response.data.expirationTime; 
+                        this.trafficInfo.datasource = response.data.datasource;                                 
+
+                        if(response.data.status == 200){                            
+                            this.$message('获取详情成功！');
+                        }
+
+                        this.initDatasourceList(true,this.trafficInfo.datasource);
+                        
+                    } else {                     
+                        this.$message("获取详情失败 ！"); 
+                    }
+                }
+            );
+        },
+        // ------------------------------------------------------------------------------
+
         //初始化地图
         initMap:function(){
 
@@ -109,12 +379,24 @@ export default {
                     zoom: this.$data.zoom
                 })
             });
-            this.$data.map.on("click",this.mapClick);
+           
+            // this.clickEventKey = this.$data.map.on("click",this.mapClick);
             this.$data.map.getView().on("change:resolution",this.viewLevelChange);
             this.$data.map.on("moveend",this.moveEnd);
             
-
+            this.removeClickEvent();
+            // unByKey(this.clickEventKey);
         },
+
+        addClickEvent(){
+            this.clickEventKey = this.$data.map.on("click",this.mapClick);
+        },
+        removeClickEvent(){
+            
+            unByKey(this.clickEventKey);
+            
+        },
+
         /**
          * 添加信息窗口到地图中
          * obj格式如下：
@@ -125,7 +407,8 @@ export default {
          *     lat:39  //纬度
          * }
          */
-        addInfoWindow:function(obj){
+        addInfoWindow:function(obj){           
+
             this.$set(this.$data.popupDatas, obj.id, obj);
             this.$nextTick(function(){
                 let container = document.getElementById(obj.id+'-popup');
@@ -141,6 +424,55 @@ export default {
                 overlay.setPosition([obj.lon,obj.lat]);
             });            
         },
+
+        addMyInfoWindow: function(obj){
+
+            this.trafficInfo.eventName = obj.trafficInfo.eventName;
+            
+            if(obj.isEdit){
+                this.initDetail(obj);
+                this.trafficInfo.isEdit = true;
+            }else{
+                this.trafficInfo = obj.trafficInfo;
+                this.trafficInfo.isEdit = false;
+                this.initDatasourceList();
+            }
+
+            
+
+            this.showTrafficInfoPop = true;
+            this.$nextTick(function(){
+                let container = document.getElementById('traffic-info-release-popup');
+                let overlay = new Overlay({
+                    element: container,
+                    autoPan: true,
+                    autoPanAnimation: {
+                        duration: 250
+                    }
+                });
+                this.$data.overlays[obj.id]=overlay;
+                this.$data.map.addOverlay(overlay);
+                overlay.setPosition([obj.lon,obj.lat]);
+            });   
+        },
+
+        /**
+         *关闭信息框
+         */
+        closeMyInfoWindow:function(e){
+
+           
+            let overlayid = 'traffic-info-release';
+            let overlay = this.$data.overlays[overlayid];
+            this.$data.map.removeOverlay(overlay);
+            // e.target.blur();
+
+            this.showTrafficInfoPop = false;
+
+            return false;
+        },
+
+
         /**
          *关闭信息框
          */
@@ -156,6 +488,8 @@ export default {
         // },
         mapClick:function(mevent){
             this.$emit("MapClick",this,mevent);
+
+            this.removeClickEvent();        // 移除点击事件
         },
         viewLevelChange:function(mevent){
             let z = parseInt(this.$data.map.getView().getZoom());
@@ -257,7 +591,11 @@ export default {
          * @param {Array.<Number>} offset  位置偏移
          * @param {Function} callback 点击的回调
          */
-        addImgOverlay:function(id, imgUrl,courseAngle, lon, lat,bdata,offset,callback){
+        addImgOverlay:function(id, imgUrl, courseAngle, lon, lat, bdata, offset, callback){
+
+            console.log('lon --- ' + lon + ' ---lat : ' + lat )
+            console.log('addImgOverlay --- imgUrl ------ ' + imgUrl)
+
             let overLay_container = document.getElementById(this.overlayContainerId);
             let overLay_img = document.createElement("img");
             overLay_img.setAttribute("src",imgUrl);
@@ -266,9 +604,10 @@ export default {
             if(courseAngle!=null){
                 overLay_img.style.transform = 'rotate(' + courseAngle + 'deg)';
             }
+
             if(callback!=null)
             {
-                overLay_img.onclick=callback;
+                overLay_img.onclick=callback;                
             }
             
             overLay_container.appendChild(overLay_img);
@@ -341,7 +680,7 @@ export default {
          */
         addImg:function(lon,lat,id,layerId,carImgUrl,size,rotation,rotateWithView,opacity,offset,scale){
              let carStyle = new Style({
-                image:mapInit.generateIcon(carImgUrl||"../../static/assets/images/geolocation_marker_heading.png",size||[22,37],rotation||0,rotateWithView||true,opacity||1,offset||[0,0],scale)
+                image:mapInit.generateIcon(carImgUrl||"static/images/warning.png",size||[22,37],rotation||0,rotateWithView||true,opacity||1,offset||[0,0],scale)
             });
             mapInit.addPoint(lon,lat,id,carStyle,this.getLayerById(layerId));
         },
@@ -611,7 +950,8 @@ export default {
         }
     },
     created(){
-
+        this.initUnintList();
+        // this.initDatasourceList();
     },
     mounted(){
         this.pageResize();
@@ -632,6 +972,7 @@ export default {
 }
 </script>
 <style>
+
     #map {
         width: 100%;
         height: 100%;
@@ -701,5 +1042,9 @@ export default {
     }
     .ol-popup-closer:after {
         content: "✖";
+    }
+
+    .yk-pointer-normal{
+        cursor: default;
     }
 </style>

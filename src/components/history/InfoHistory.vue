@@ -189,8 +189,7 @@ export default {
             );
         },
         handleSearch(){
-            // console.log('this.search.publishTime --- ' + this.search.publishTime);
-            // debugger
+            
             if(Array.isArray(this.search.publishTime)){                
                 let start = this.search.publishTime[0];
                 let end = this.search.publishTime[1];

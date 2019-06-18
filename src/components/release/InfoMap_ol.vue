@@ -1,0 +1,475 @@
+<template>
+    <div :class="isPointerIco ? 'yk-pointer-ico' : 'yk-pointer-normal'">
+        <tusvn-map 
+            ref="refTusvnMap"   
+            style="height: 998px;"  
+            class="ref-map" 
+            targetId="ddd" 
+            overlayContainerId="ccc" 
+            :isMasker='false' 
+            :isCircle='false'
+            
+            @MapClick="mapClick"
+            @ExtentChange="extentChange"  
+            @ViewLevelChange="viewLevelChange"
+            @MapInitComplete='mapInitComplete'                
+
+            @PublishInfo = 'publishInfo' 
+            @UpdateInfo = 'updateInfo'
+            @DestroyInfo = 'destroyInfo'>
+
+        </tusvn-map>
+        <!--   -->
+    </div>
+</template>
+<script>
+import TusvnMap from '@/common/TusvnMap/TusvnMap.vue';
+import TDate from '@/common/date.js'
+
+export default {
+    name: 'InfoMapOL',
+    components: { TusvnMap  },
+    props: ['msgTypeInfo'],
+    data(){
+        return {
+            mapInitOk: false,
+            mapLayer: {
+                rsu: 'RsuLayer',                        // rsu 图层
+                roadsideUnit: 'roadsideUnitLayer',      // 路侧单元 图层
+                trafficSignal: 'trafficSignalLayer',    // 红绿灯 图层
+                message: 'MessageLayer',                // 发布信息 图层
+            },
+            mapMarker: {
+
+                rsu: false,     // rsu
+                rsuList: [],
+                
+                roadsideUnit: false,    // 路侧单元
+                roadsideUnitList: [],
+                
+                trafficSignal: false,
+                trafficSignalList: [],      // 交通信号灯
+
+                obstacleList: [],   // 障碍物
+                goodsDropList: [],  // 货物散落
+                roadWorksList: [],  // 道路施工
+                msgList: [],        // 障碍物 + 货物散落 + 道路施工
+            },
+            mapLevel: {
+                value: 10,
+            },
+            iconPath: window.cfg.iconPath,
+            trafficInfo: {
+                id: '',
+                title: '信息发布',
+                isEdit: false,
+                eventName: '',
+                eventType: '',                            
+                longitude: '',
+                latitude: '',
+                affectRange: 1000,
+                content: '',
+                frequency: 500,
+                frequencyUnit: '',
+                beginTime: '',
+                expirationTime: '',
+                datasource: '',
+                trafficSource: '',
+            },
+            isPointerIco: false,    // 是否修改鼠标的图标
+        }
+    },
+    methods: {
+
+        // ----------------------------信息发布-------------------------------
+        initPubMsgList(){
+            
+            let url = 'event/task/findEffectiveList';
+            let params = {                
+                
+            };
+            this.$api.post( url,params,
+                response => {
+                    if (response.status >= 200 && response.status < 300) {
+
+                        let t = response.data ? response.data : [];
+
+                        for(let i=0;i<t.length;i++){
+                            let item = t[i];
+                            let icon = 'static/images/position.png';
+                            // let icon = 'https://webapi.amap.com/theme/v1.3/markers/n/mark_b.png';
+                            if(item.icon){
+                                icon = this.iconPath + item.icon;
+                            }
+              
+                            // 给marker添加点击事件
+                            // marker.on('click',this.markerClick);
+                            // let tid = item.eventType + item.longitude + '_' + item.latitude;
+                            // let id = this.generataIcoName(tid);
+                            let lon = item.longitude;
+                            let lat = item.latitude;                            
+                            let id = item.taskCode;
+                            let size = [30,30];
+                            
+                            this.$refs.refTusvnMap.addImgOverlay( id, icon, null, lon, lat, id, null, (e) => {
+                                
+                                e.preventDefault();
+                                e.stopPropagation();
+
+                                let marker = {
+                                    id: item.id,
+                                    lon: lon,
+                                    lat: lat,
+                                    isEdit: true,
+                                    trafficInfo: this.trafficInfo,
+                                };
+
+                                this.$refs.refTusvnMap.addMyInfoWindow(marker);
+                                
+                            });                             
+                            // this.$refs.refTusvnMap.centerAt(116.448583,39.930821);
+                        }
+                        
+                        // if(t.length){
+                        //     this.$refs.refTusvnMap.centerAt( t.length, t[0], t[1])
+                        // }
+
+                    } else {                     
+                        this.$message("获取信息列表失败 ！"); 
+                    }
+                }
+            );
+        },
+
+        publishInfo(e){
+           
+            let url = 'event/task/save';
+            let params = {
+                eventType: e.eventType,      //信息类型
+                longitude: e.longitude,      // 经度
+                latitude: e.latitude,       // 纬度
+                affectRange: e.affectRange,    // 广播范围
+                content: e.content,        // 信息内容
+                frequency: e.frequency,      // 广播频率
+                frequencyUnit: e.frequencyUnit.key,      // 频率单位
+                beginTime: TDate.formatTime(e.beginTime),      // 生效时间
+                expirationTime: TDate.formatTime(e.updateTime),     // 失效时间
+                datasource: e.datasource,     // 信息来源
+            };
+
+            this.$api.post( url,params,
+                response => {
+                    if (response.status >= 200 && response.status < 300) {
+                        
+                        if(response.data.status == 200){
+                            this.initPubMsgList();
+                            this.$message('发布成功！');
+                        }
+                        
+                    } else {                     
+                        this.$message("发布失败 ！"); 
+                    }
+                }
+            );
+        },
+        updateInfo(e){
+            console.log('updateInfo --- ' + JSON.stringify(e))
+            debugger
+
+            let url = 'event/task/update';
+            let params = {
+                id: e.id,
+                eventType: e.eventType,      //信息类型
+                longitude: e.longitude,      // 经度
+                latitude: e.latitude,       // 纬度
+                affectRange: e.affectRange,    // 广播范围
+                content: e.content,        // 信息内容
+                frequency: e.frequency,      // 广播频率
+                frequencyUnit: e.frequencyUnit.key,      // 频率单位
+                beginTime: TDate.formatTime(e.beginTime),      // 生效时间
+                expirationTime: TDate.formatTime(e.updateTime),     // 失效时间
+                datasource: e.datasource,     // 信息来源
+            };
+
+            this.$api.post( url,params,
+                response => {
+                    if (response.status >= 200 && response.status < 300) {                    
+                        
+                        if(response.data.status == 200){
+                            this.initPubMsgList();
+                            this.$message('更新成功！');
+                        }
+                        
+                    } else {                     
+                        this.$message("更新失败 ！"); 
+                    }
+                }
+            );
+        },
+        destroyInfo(e){
+            console.log('DestroyInfo --- ' + JSON.stringify(e))
+            debugger
+            let url = 'event/task/cancel';
+            let params = {
+                id: e.id,
+                // eventType: this.select.eventType,      //信息类型
+                // longitude: this.select.longitude,      // 经度
+                // latitude: this.select.latitude,       // 纬度
+                // affectRange: this.select.affectRange,    // 广播范围
+                // content: this.select.content,        // 信息内容
+                // frequency: this.select.frequency,      // 广播频率
+                // frequencyUnit: this.select.frequencyUnit.key,      // 频率单位
+                // beginTime: TDate.formatTime(this.select.beginTime),      // 生效时间
+                // expirationTime: TDate.formatTime(this.select.updateTime),     // 失效时间
+                // datasource: this.select.datasource,     // 信息来源
+            };
+
+            this.$api.post( url,params,
+                response => {
+                    if (response.status >= 200 && response.status < 300) {
+                        
+                        if(response.data.status == 200){
+                            _this.initMsgList();
+                            this.$message('手动失效成功！');
+                        }
+                        
+                    } else {                     
+                        this.$message("手动失效失败 ！"); 
+                    }
+                }
+            );
+        },
+
+        // -----------------------------poi----------------------------
+        showMarker(type,bool){
+            switch(type){
+                case 'rsu':
+                    bool ? this.showRsu() : this.clearRsu();
+                    break;
+                case 'roadsideUnit':
+                    bool ? this.showRoadsideUnit() : this.clearRoadsideUnit();
+                    break;
+                case 'trafficSignal':
+                    bool ? this.showTrafficSignal() : this.clearTrafficSignal();
+                    break;
+            }
+        },
+        // 显示rsu
+        showRsu(){
+            let url = 'common/queryRsu';
+            let params = {                
+                "distcode": "110108"
+            };
+            this.$api.post( url,params,
+                response => {
+                    if (response.status >= 200 && response.status < 300) {
+
+                        let rsuList = response.data ? response.data : [];      
+                        for(let i=0;i<rsuList.length;i++){
+                            
+                            let item = rsuList[i];
+                            let lon = item.longitude;
+                            let lat = item.latitude;
+                            let id = this.generataIcoName('rsu');
+                            let icon = "static/images/poi_2.png";
+                            let size = [30,30];
+                            this.$refs.refTusvnMap.addImg(lon,lat,id,this.mapLayer.rsu,icon,size);
+
+                        }
+
+                        if(rsuList.length){
+                            let lon = rsuList.length ? rsuList[0].longitude : '116.397';
+                            let lat = rsuList.length ? rsuList[0].latitude : '39.918';
+                            this.$refs.refTusvnMap.centerAt(lon,lat);   
+                        }
+                                             
+                        
+                    } else {                     
+                        this.$message("获取设备列表失败 ！"); 
+                    }
+                }
+            );
+        },
+        // 清除rsu
+        clearRsu(){
+            this.$refs.refTusvnMap.removeAllFeature(this.mapLayer.rsu);
+        },
+        // 显示路侧单元
+        showRoadsideUnit(){            
+            let url = 'common/queryRoadSide';
+            let params = {
+                "distcode": "110108"
+            };
+            this.$api.post( url,params,
+                response => {
+                    if (response.status >= 200 && response.status < 300) {
+
+                        let roadsideUnitList = response.data ? response.data : [];    
+                        for(let i=0;i<roadsideUnitList.length;i++){
+                            let item = roadsideUnitList[i];
+                            let lon = item.longitude;
+                            let lat = item.latitude;
+                            let id = this.generataIcoName('roadsideUnit');
+                            let icon = "static/images/poi_1.png";
+                            let size = [30,30];
+                            this.$refs.refTusvnMap.addImg(lon,lat,id,this.mapLayer.roadsideUnit,icon,size);
+                        }
+
+                        let lon = roadsideUnitList.length ? roadsideUnitList[0].longitude : '116.397';
+                        let lat = roadsideUnitList.length ? roadsideUnitList[0].latitude : '39.918';
+                        this.$refs.refTusvnMap.centerAt(lon,lat);  
+                        
+                        
+                    } else {                     
+                        this.$message("获取路侧单元失败 ！"); 
+                    }
+                }
+            );
+        },
+        // 清除路侧单元
+        clearRoadsideUnit(){
+            this.$refs.refTusvnMap.removeAllFeature(this.mapLayer.roadsideUnit);
+        },
+        // 显示红绿灯
+        showTrafficSignal(){
+            let url = 'common/queryLight';
+            let params = {
+                "distcode": "310104"
+            };
+            this.$api.post( url,params,
+                response => {
+                    if (response.status >= 200 && response.status < 300) {
+
+                        let trafficSignalList = response.data ? response.data : [];    
+                        for(let i=0;i<trafficSignalList.length;i++){
+                            let item = trafficSignalList[i];
+                            let lon = item.longitude;
+                            let lat = item.latitude;
+                            let id = this.generataIcoName('trafficSignal');
+                            let icon = "static/images/poi_3.png";
+                            let size = [30,30];
+                            this.$refs.refTusvnMap.addImg(lon,lat,id,this.mapLayer.trafficSignal,icon,size);
+                        }
+
+                        let lon = trafficSignalList.length ? trafficSignalList[0].longitude : '116.397';
+                        let lat = trafficSignalList.length ? trafficSignalList[0].latitude : '39.918';
+                        this.$refs.refTusvnMap.centerAt(lon,lat);                          
+                        
+                    } else {                     
+                        this.$message("获取红绿灯失败 ！"); 
+                    }
+                }
+            );
+        },
+        // 清除红绿灯
+        clearTrafficSignal(){
+            this.$refs.refTusvnMap.removeAllFeature(this.mapLayer.trafficSignal);
+        },
+
+        // 生成 类型+随机数 格式的图标名称
+        generataIcoName(value){
+            return value + (new Date()).getTime();
+        },
+
+        //------------------------------- 地图回调函数------------------------------
+        // 添加 地图点击事件
+        addMapClickEvent(){
+            this.$refs.refTusvnMap.addClickEvent();
+            this.isPointerIco = true;
+        },
+        // // 移除 地图点击事件
+        // removeMapClickEvent(){
+        //     this.$refs.refTusvnMap.removeClickEvent();
+        // },
+        mapClick: function(map,evt){
+            
+            this.isPointerIco = false;
+
+            if(!this.msgTypeInfo){
+                this.$message('请选择信息类型 ！');
+                return;
+            }        
+           
+            let lon = evt.coordinate[0];
+            let lat = evt.coordinate[1];
+
+            // 生效时间 当前时间
+            let beginTime = TDate.formatTime();
+            // 失效时间 当前时间 +24 小时
+            let tomorrow = (new Date()).getTime() + 24 * 60 * 60 * 1000;
+            let expirationTime = TDate.formatTime(tomorrow);
+
+            this.trafficInfo = {
+                title: '信息发布',
+                isEdit: false,
+                eventName: this.msgTypeInfo.name,
+                eventType: this.msgTypeInfo.code,                            
+                longitude: lon,
+                latitude: lat,
+                affectRange: 1000,
+                content: this.msgTypeInfo.content,
+                frequency: this.msgTypeInfo.frequency,
+                frequencyUnit: this.msgTypeInfo.frequencyUnit,
+                beginTime: beginTime,
+                expirationTime: expirationTime,
+                datasource: '',
+            };
+            let marker = {
+                id: 'marker' + (new Date()).getTime(),
+                lon: lon,
+                lat: lat,
+                trafficInfo: this.trafficInfo,
+                isEdit: false,
+            };
+            
+            this.$refs.refTusvnMap.addMyInfoWindow(marker);
+            // this.$refs.refTusvnMap.addInfoWindow(marker);
+
+        },
+       
+        mapInitComplete:function(tusvnmap){
+            // console.log("============================mapInitComplete=============================");
+
+            //创建图层
+            this.$refs.refTusvnMap.addVectorLayer(this.mapLayer.rsu);
+            this.$refs.refTusvnMap.addVectorLayer(this.mapLayer.roadsideUnit);
+            this.$refs.refTusvnMap.addVectorLayer(this.mapLayer.trafficSignal);
+            this.$refs.refTusvnMap.addVectorLayer(this.mapLayer.message);
+
+            this.mapInitOk = true;   
+            
+            // this.showRsu();
+            // this.showRoadsideUnit();
+            // this.showTrafficSignal();
+
+            this.initPubMsgList();
+
+        },
+        viewLevelChange:function(tusvnmap,mevent)
+        {
+            // console.log("============================viewLevelChange=============================");
+            // console.log(tusvnmap);
+            // console.log(mevent);
+
+            this.mapLevel.value = mevent;
+            
+
+        },
+        extentChange:function(tusvnmap,newextent){
+            // console.log("============================extentChange=============================");
+            // console.log(tusvnmap);
+            // console.log(newextent);
+        },
+    }
+}
+</script>
+
+<style scoped>
+.yk-pointer-ico{
+    cursor: url('position.png'), default;
+}
+.yk-pointer-normal{
+    cursor: default;
+}
+</style>
+
