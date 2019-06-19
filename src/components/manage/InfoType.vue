@@ -217,7 +217,7 @@ export default {
         handleAdd(index,item){
             this.popData.title = '新增';
             this.popData.type = 'info-type-add';
-            this.popData.data = {};
+            this.popData.data = this.initVo();
             this.popData.visible = true;
         },
         handleUpdate(index,item){

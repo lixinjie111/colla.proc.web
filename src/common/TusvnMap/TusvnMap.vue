@@ -57,9 +57,9 @@
                                         </template> -->
 
                                         <template slot="append">
-                                             <select class="yk-w-80" v-model="select.frequencyUnit">
+                                            <select class="yk-w-80" v-model="select.frequencyUnit">
                                                 <option v-for="(item,index) in frequencyUnitList" :key="index" :value="item">{{item.name}}</option>
-                                            </select> 
+                                            </select>
                                         </template>
                                     </el-input> 
                                                 
@@ -223,13 +223,6 @@ export default {
     watch:{
     },
     methods: {
-
-        unitChange(){
-            
-            this.$forceUpdate()
-           
-
-        },
         
         // 表单事件
         sliderChange(value){
@@ -243,9 +236,6 @@ export default {
             this.trafficInfo.frequencyUnit = this.select.frequencyUnit ? (this.select.frequencyUnit.key ? this.select.frequencyUnit.key : '') : '';
             this.trafficInfo.affectRange = this.select.sliderVal;
 
-            console.log('this.trafficInfo --- ' + JSON.stringify(this.trafficInfo))
-            debugger
-
             this.$emit('PublishInfo',this.trafficInfo);
             this.closeMyInfoWindow();
         },        
@@ -255,16 +245,10 @@ export default {
             this.trafficInfo.frequencyUnit = this.select.frequencyUnit ? (this.select.frequencyUnit.key ? this.select.frequencyUnit.key : '') : '';
             this.trafficInfo.affectRange = this.select.sliderVal;
 
-            console.log('this.trafficInfo --- ' + JSON.stringify(this.trafficInfo))
-            debugger
-
             this.$emit('UpdateInfo',this.trafficInfo);
             this.closeMyInfoWindow();
         },
-        destroyInfo(e){
-           
-            console.log('this.trafficInfo --- ' + JSON.stringify(this.trafficInfo))
-            debugger
+        destroyInfo(e){           
 
             this.$emit('DestroyInfo',this.trafficInfo);
             this.closeMyInfoWindow(e);
@@ -285,7 +269,7 @@ export default {
                         if(this.datasourceList.length){
                             
                             if (!isEdit) {
-                                 this.select.datasource = this.datasourceList[0];
+                                this.select.datasource = this.datasourceList[0];
                             }else{
                              
                                 for(let item of this.datasourceList){
@@ -452,7 +436,7 @@ export default {
                 this.$data.overlays[obj.id]=overlay;
                 this.$data.map.addOverlay(overlay);
                 overlay.setPosition([obj.lon,obj.lat]);
-            });            
+            });
         },
 
         addMyInfoWindow: function(obj){
@@ -483,7 +467,7 @@ export default {
                 this.$data.overlays[obj.id]=overlay;
                 this.$data.map.addOverlay(overlay);
                 overlay.setPosition([obj.lon,obj.lat]);
-            });   
+            });
 
             this.circleID= 'circle_' + obj.id;
             this.circleLon = obj.lon;
@@ -493,11 +477,8 @@ export default {
 
         drawBgCircle(lon,lat){
             
-            console.log('circleID' + this.circleID)
-            debugger
-
             this.addCircle(lon,lat,this.circleRadius,this.circleID,[233,233,217,0.8],'#F59307',null,null,null,null,null,null,'MessageLayer');
-            // this.$refs.refTusvnMap.addCircle(lon,lat,0.0020,item.id,'#E9E9D9','#F59307',null,null,null,null,null,null,this.mapLayer.message);
+            
         },
         // 移除圆形背景图片
         clearCircle(){
@@ -739,7 +720,7 @@ export default {
 
         
 
-        /**
+        /**                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
          * 向地图中添加规则图形形点
          * 
          * @param {number} lon 浮点型的值

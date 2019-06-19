@@ -3,11 +3,11 @@
         
         <el-form-item label="信息所属分类" prop="eventCategory">
             <el-select size="mini" v-model="data.eventCategory" placeholder="请选择">
+
               <template v-for="(item,index) in typeList">
                 <el-option :key="index" :label="item.name" :value="item.key">{{item.name}}</el-option>
               </template>
-                <!-- <el-option label="道路异常一" value="shanghai"></el-option>
-                <el-option label="道路异常二" value="beijing"></el-option> -->
+              
             </el-select>
         </el-form-item>
 
@@ -19,7 +19,7 @@
                        
           <el-input size="mini" placeholder="请输入内容" v-model="data.icon">
             <template slot="append">
-              <label for="xFile">上传</label>
+              <label class="yk_input_append" for="xFile">上传</label>
             </template>
           </el-input>
 
@@ -30,17 +30,14 @@
         </el-form-item>
 
         <el-form-item label="默认广播频率" prop="frequency">
-            <el-input size="mini" v-model="data.frequency">
+            <el-input size="mini" v-model="data.frequency">             
+            
               <template slot="append">
-                <el-select class="yk-unit" v-model="ruleForm.frequencyUnit" placeholder="请选择" @change="frequencyUnitChange">
-                <el-option
-                  v-for="item in frequencyUnitList"
-                  :key="item.value"
-                  :label="item.name"
-                  :value="item">
-                </el-option>
-              </el-select>
+                <select class="yk-w-80" v-model="data.frequencyUnit" placeholder="请选择">
+                    <option v-for="(item,index) in frequencyUnitList" :key="index" :value="item.key">{{item.name}}</option>
+                </select>
               </template>
+            
             </el-input>            
         </el-form-item>
 
@@ -52,9 +49,7 @@
           <el-select size="mini" v-model="data.sendChannel" placeholder="请选择">
               <template v-for="(item,index) in sendChannelList">
                 <el-option :key="index" :label="item.name" :value="item.key">{{item.name}}</el-option>
-              </template>
-                <!-- <el-option label="道路异常一" value="shanghai"></el-option>
-                <el-option label="道路异常二" value="beijing"></el-option> -->
+              </template>               
             </el-select>
         </el-form-item>
 
@@ -62,11 +57,7 @@
             <el-input size="mini" v-model="data.infoType"></el-input>
         </el-form-item>
         
-        
-        <!-- <el-form-item>
-            <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
-            <el-button @click="resetForm('ruleForm')">重置</el-button>
-        </el-form-item> -->
+   
     </el-form>
 </template>
 
@@ -121,7 +112,7 @@
         },
         select: {
           sendChannel: '',
-
+          frequencyUnit: '',
         },
         sendChannelList: [
           { id: 1, name: '道路施工/路面打滑' , key: 'DM0202'},
@@ -162,9 +153,10 @@
                 if (response.status >= 200 && response.status < 300) {
 
                     this.frequencyUnitList = response.data ? response.data : [];
+
                     if(this.frequencyUnitList.length){
                                            
-                      // this.ruleForm.frequencyUnit = this.frequencyUnitList[0];
+                      this.select.frequencyUnit = this.frequencyUnitList[0];
                     }
                    
                 } else {                     
@@ -217,19 +209,7 @@
 
         }) ; 
       },
-      submitUpload() {
-        this.$refs.upload.submit();
-      },
-      submitForm(formName) {
-        this.$refs[formName].validate((valid) => {
-          if (valid) {
-            alert('submit!');
-          } else {
-            console.log('error submit!!');
-            return false;
-          }
-        });
-      },
+  
       resetForm(formName) {
         this.$refs[formName].resetFields();
       },
@@ -251,5 +231,13 @@
   width: 90px;
   /* width: 100px;
   float: right; */
+}
+
+.yk_input_append{
+  /* border: 1px solid #DCDFE6!important; */
+  /* padding: 0 20px!important; */
+  padding-top: 5px;
+  padding-left: 20px;
+  padding-right: 20px;
 }
 </style>

@@ -10,7 +10,12 @@
         </el-form-item>
         <el-form-item label="信息类型图标：" prop="name">
             
-            <el-image :src="iconPath"></el-image>
+            <!-- <el-image :src="iconPath"></el-image> -->
+
+            <div class="image-box">
+                <img :src="iconPath" class="image">
+            </div>
+
         </el-form-item>
         <el-form-item label="默认广播频率：" prop="name">
             <!-- <el-input size="mini" v-model="data.name" disabled></el-input> -->
@@ -43,5 +48,19 @@ export default {
 }
 </script>
 <style scoped>
-
+.image-box{
+    width: 44px;
+    height: 44px;
+    /* margin: 0 auto; */
+    background-image: url('./ico-bg.png');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    text-align: center;
+}
+.image{
+    margin: 0 auto;
+    position: relative;
+    top: 50%; /*偏移*/
+    transform: translateY(-50%);
+}
 </style>

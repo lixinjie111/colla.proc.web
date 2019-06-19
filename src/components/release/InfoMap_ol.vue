@@ -38,6 +38,7 @@ export default {
                 roadsideUnit: 'roadsideUnitLayer',      // 路侧单元 图层
                 trafficSignal: 'trafficSignalLayer',    // 红绿灯 图层
                 message: 'MessageLayer',                // 发布信息 图层
+                messageBg: 'MessageBgLayer',            // 信息的背景图片 图层
             },
             mapMarker: {
 
@@ -117,8 +118,19 @@ export default {
                             let id = item.taskCode;
                             let size = [30,30];
                             // let offset = [];
-                            
-                            this.$refs.refTusvnMap.addImgOverlay( id, icon, null, lon, lat, id, null, (e) => {
+
+                            let bgImgId = 'bg_' + id;
+                            let bgImgSrc = 'static/images/ico-bg2.png';
+                            let bgImgOffset = [15,15];
+                            let bgImgSize = [44,58]
+                            // this.$refs.refTusvnMap.addImgOverlay( bgImgId, bgImgSrc, null, lon, lat, bgImgId, bgImgOffset, null );
+
+                            // lon,lat,id,layerId,carImgUrl,size,rotation,rotateWithView,opacity,offset,scale
+                            this.$refs.refTusvnMap.addImg(lon, lat, bgImgId,this.mapLayer.messageBg,bgImgSrc,bgImgSize);
+
+                            // id, imgUrl, courseAngle, lon, lat, bdata, offset, callback
+                            let imgOffset = [0,-5];
+                            this.$refs.refTusvnMap.addImgOverlay( id, icon, null, lon, lat, id, imgOffset, (e) => {
                                 
                                 e.preventDefault();
                                 e.stopPropagation();
@@ -155,6 +167,8 @@ export default {
         },
 
         clearPubMsg(){
+
+            this.$refs.refTusvnMap.removeAllFeature(this.mapLayer.messageBg);
 
             for(let item of this.pubMsgList){
                 this.$refs.refTusvnMap.removeOverlayById(item.taskCode);
@@ -465,6 +479,7 @@ export default {
             this.$refs.refTusvnMap.addVectorLayer(this.mapLayer.roadsideUnit);
             this.$refs.refTusvnMap.addVectorLayer(this.mapLayer.trafficSignal);
             this.$refs.refTusvnMap.addVectorLayer(this.mapLayer.message);
+            this.$refs.refTusvnMap.addVectorLayer(this.mapLayer.messageBg);
 
             this.mapInitOk = true;   
             
@@ -481,8 +496,7 @@ export default {
             // console.log(tusvnmap);
             // console.log(mevent);
 
-            this.mapLevel.value = mevent;
-            
+            this.mapLevel.value = mevent;            
 
         },
         extentChange:function(tusvnmap,newextent){
