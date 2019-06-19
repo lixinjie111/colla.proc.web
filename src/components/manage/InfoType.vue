@@ -122,7 +122,8 @@ export default {
             typeList: [],
             search: {
                 name: '',
-            }
+            },
+            
         }
     },
     methods: {
@@ -135,11 +136,13 @@ export default {
             return {
                 code:'',
                 content: '',    // 默认信息内容
-                frequency: '',  // 广播频率
-                frequencyUnit: '',  // 广播频率 单位
+                frequency: '500',  // 广播频率
+                frequencyUnit: '1',  // 广播频率 单位
                 icon: '',     // 信息类型icon
                 name: '',   // 信息
                 eventCategory: '',  // 信息所属分类
+                sendChannel: '',      // 下发通道
+                infoType: '',       // 子类型代码
             }
         },
         initData(){
@@ -277,6 +280,10 @@ export default {
 
             // };
             let params = data;
+
+            console.log(params);
+            debugger
+
             this.$api.post( url,params,
                 response => {
                     if (response.status >= 200 && response.status < 300) {
@@ -290,6 +297,10 @@ export default {
             );
         },
         updateFn(data){
+
+            console.log(data);
+            debugger
+
             let url = 'event/info/update';
             let params = {
                 id: data.id,
@@ -300,6 +311,8 @@ export default {
                 frequencyUnit: data.frequencyUnit,
                 icon: data.icon,
                 content: data.content,
+                sendChannel: data.sendChannel,
+                infoType: data.infoType,
             };
             this.$api.post( url,params,
                 response => {

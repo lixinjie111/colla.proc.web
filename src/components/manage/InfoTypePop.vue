@@ -43,10 +43,26 @@
               </template>
             </el-input>            
         </el-form-item>
-        
+
         <el-form-item label="默认信息内容" prop="content">
             <el-input type="textarea" v-model="data.content"></el-input>
         </el-form-item>
+
+        <el-form-item label="下发通道" prop="">
+          <el-select size="mini" v-model="data.sendChannel" placeholder="请选择">
+              <template v-for="(item,index) in sendChannelList">
+                <el-option :key="index" :label="item.name" :value="item.key">{{item.name}}</el-option>
+              </template>
+                <!-- <el-option label="道路异常一" value="shanghai"></el-option>
+                <el-option label="道路异常二" value="beijing"></el-option> -->
+            </el-select>
+        </el-form-item>
+
+        <el-form-item label="子类型代码" prop="name">
+            <el-input size="mini" v-model="data.infoType"></el-input>
+        </el-form-item>
+        
+        
         <!-- <el-form-item>
             <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
             <el-button @click="resetForm('ruleForm')">重置</el-button>
@@ -102,7 +118,16 @@
           // desc: [
           //   { required: true, message: '请填写活动形式', trigger: 'blur' }
           // ]
-        }
+        },
+        select: {
+          sendChannel: '',
+
+        },
+        sendChannelList: [
+          { id: 1, name: '道路施工/路面打滑' , key: 'DM0202'},
+          { id: 2, name: '前方有障碍物' , key: 'DM0203'},
+          { id: 3, name: '公交专用车道' , key: 'DM0208'},
+        ]
       };
     },
     methods: {

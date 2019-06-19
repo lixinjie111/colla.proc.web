@@ -28,7 +28,7 @@
                         </el-row>
                         <el-row class="yk-pad-1040">
                             <!-- :model="ruleForm" :rules="rules"-->
-                            <el-form   ref="ruleForm" size="mini" label-width="120px" class="demo-ruleForm yk-left">
+                            <el-form ref="ruleForm" size="mini" label-width="120px" class="demo-ruleForm yk-left">
 
                                 <el-form-item label="信息类型" class="yk-bottom-6">                               
                                     <label>{{trafficInfo.eventType}}</label>
@@ -214,7 +214,10 @@ export default {
                 },
                 sliderVal: 1000,
             },
-            
+            circleRadius: 1000,    // 圆形半径
+            circleID: '',
+            circleLon: '',
+            circleLat: '',
         }
     },
     watch:{
@@ -231,6 +234,9 @@ export default {
         // 表单事件
         sliderChange(value){
             this.select.sliderVal = value;
+            this.circleRadius = value;
+            // this.circleRadius = this.circleRadius + 0.001;
+            this.drawBgCircle(this.circleLon,this.circleLat);
         },
         publichInfo(e){
             this.trafficInfo.datasource = this.select.datasource ? (this.select.datasource.key ? this.select.datasource.key : '') : '';
@@ -478,6 +484,25 @@ export default {
                 this.$data.map.addOverlay(overlay);
                 overlay.setPosition([obj.lon,obj.lat]);
             });   
+
+            this.circleID= 'circle_' + obj.id;
+            this.circleLon = obj.lon;
+            this.circleLat = obj.lat;
+            this.drawBgCircle(obj.lon,obj.lat);
+        },
+
+        drawBgCircle(lon,lat){
+            
+            console.log('circleID' + this.circleID)
+            debugger
+
+            this.addCircle(lon,lat,this.circleRadius,this.circleID,[233,233,217,0.8],'#F59307',null,null,null,null,null,null,'MessageLayer');
+            // this.$refs.refTusvnMap.addCircle(lon,lat,0.0020,item.id,'#E9E9D9','#F59307',null,null,null,null,null,null,this.mapLayer.message);
+        },
+        // 移除圆形背景图片
+        clearCircle(){
+            // MessageLayer
+            this.removeFeature(this.circleID,'MessageLayer');
         },
 
         /**
@@ -485,7 +510,9 @@ export default {
          */
         closeMyInfoWindow:function(e){
 
-           
+           this.clearCircle();
+
+           // 关闭信息框
             let overlayid = 'traffic-info-release';
             let overlay = this.$data.overlays[overlayid];
             this.$data.map.removeOverlay(overlay);
@@ -495,6 +522,7 @@ export default {
 
             return false;
         },
+        
 
 
         /**

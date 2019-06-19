@@ -44,7 +44,12 @@
             </el-card> -->
 
             <el-card v-for="(item,index) in statisicsData" :key="index" :body-style="{ padding: '0px' }">
-                <img :src="iconPath + item.icon" class="image">
+                <!-- 背景图片 -->
+                <!-- <img src="static/images/ico-bg.png" class="image-bg">
+                <img :src="iconPath + item.icon" class="image"> -->
+                <div class="image-box">
+                    <img :src="iconPath + item.icon" class="image">
+                </div>
                 <div class="yk-card-title">
                     <span>{{item.num}}</span>
                 </div>
@@ -1138,10 +1143,33 @@ export default {
         padding: 6px;
         margin-bottom: 20px;
     }
-   
+    .image-bg{
+        /* top: 3px;
+        left: 0;
+        right: 0; */
+        width: 44px;
+        /* position: absolute; */
+        margin: 0 auto;
+    }
+    .image-box{
+        width: 44px;
+        height: 44px;
+        margin: 0 auto;
+        background-image: url('./ico-bg.png');
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+    }
     .image{
-        margin-top: 3px;
-        width: 32px;
+        /* margin-top: 3px;
+        width: 32px; */
+        /* left: 0;
+        right: 0;
+        top: 8px; */
+        /* position: absolute; */
+        margin: 0 auto;
+        position: relative;
+        top: 50%; /*偏移*/
+        transform: translateY(-50%);
     }
     #ykMap {
         width: 100%;
@@ -1172,7 +1200,7 @@ export default {
 
     .yk-card-title{
         color: #F59307;
-        padding-top: 5px;
+        padding-top: 3px;
         font-weight: bold;
         font-size: 16px;
         user-select: none;

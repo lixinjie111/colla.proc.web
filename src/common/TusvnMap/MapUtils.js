@@ -12,6 +12,8 @@ import { Circle as CircleStyle, RegularShape, Fill, Icon, Stroke, Style, Text } 
 import { Image as ImageLayer } from 'ol/layer.js';
 import ImageWMS from 'ol/source/ImageWMS.js';
 
+import { transform } from 'ol/proj.js';
+
 /**
  * 生成矢量图层
  * @param {string} id 图层id
@@ -274,7 +276,17 @@ export function addPoint(lon, lat, id, style, layer) {
  *  @param {module:ol/Layer} layer Openlayers的Layer对象
  */
 export function addCircle(lon, lat, radius, id, style, layer) {
-    let circleFeature = new Feature(new Circle([lon, lat], radius));
+    
+    //cjj-2019.6.18  添加坐标转换
+    // var circleIn3857 = new Circle(proj.transform([lon, lat], 'EPSG:4326', 'EPSG:3857'), radius,'XY');
+    // var circleIn4326 = circleIn3857.transform('EPSG:3857','EPSG:4326');
+    // let circleFeature = new Feature(circleIn4326);
+    // radius = 1000;
+    var circleIn3857 = new Circle(transform([lon, lat], 'EPSG:4326', 'EPSG:3857'), radius,'XY');
+    var circleIn4326 = circleIn3857.transform('EPSG:3857','EPSG:4326');
+    let circleFeature = new Feature(circleIn4326);
+
+    // let circleFeature = new Feature(new Circle([lon, lat], radius));
     circleFeature.setId(id);
     circleFeature.setStyle(style);
 

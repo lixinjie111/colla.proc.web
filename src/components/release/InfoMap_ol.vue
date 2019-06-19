@@ -79,6 +79,7 @@ export default {
             },
             isPointerIco: false,    // 是否修改鼠标的图标
             pubMsgList: [],
+            
         }
     },
     methods: {
@@ -130,7 +131,12 @@ export default {
                                     trafficInfo: this.trafficInfo,
                                 };
 
+                                this.cricleID = 'icon_' + item.id;  
+
                                 this.$refs.refTusvnMap.addMyInfoWindow(marker);
+
+                                //lon, lat, radius, id,fillColor,strokeColor, lineCap, lineJoin, lineDash, lineDashOffset, miterLimit, width, layerId
+                                
                                 
                             }); 
                             this.pubMsgList.push(item);                            
@@ -171,6 +177,8 @@ export default {
                 beginTime: TDate.formatTime(e.beginTime),      // 生效时间
                 endTime: TDate.formatTime(e.endTime),     // 失效时间
                 datasource: e.datasource,     // 信息来源
+                sendChannel: e.sendChannel,         //  4G下发通道
+                infoType: e.infoType,       // 子类型代码
             };
 
             this.$api.post( url,params,
@@ -210,6 +218,8 @@ export default {
                 beginTime: TDate.formatTime(e.beginTime),      // 生效时间
                 endTime: TDate.formatTime(e.endTime),     // 失效时间
                 datasource: e.datasource,     // 信息来源
+                sendChannel: e.sendChannel,         //  4G下发通道
+                infoType: e.infoType,       // 子类型代码
             };
 
             this.$api.post( url,params,
