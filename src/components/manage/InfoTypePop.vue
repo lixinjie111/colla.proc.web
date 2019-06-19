@@ -87,10 +87,25 @@
           content: '',
         },
         rules: {
-          // name: [
-          //   { required: true, message: '请输入信息类型名称', trigger: 'blur' },
-          //   // { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
-          // ],
+          eventCategory: [
+            { required: true, message: '请选择信息所属分类', trigger: 'change' }
+          ],
+          name: [
+            { required: true, message: '请输入信息类型名称', trigger: 'blur' },
+            // { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+          ],
+          icon: [
+            { required: true, message: '请上传信息类型图标', trigger: 'blur' },
+          ],
+          frequency: [
+            { required: true, message: '请填写默认广播频率', trigger: 'blur' },
+          ],
+          sendChannel: [
+             { required: true, message: '请选择下发通道', trigger: 'change' }
+          ],
+          infoType: [
+            { required: true, message: '请填写子类型代码', trigger: 'blur' },
+          ]
           // region: [
           //   { required: true, message: '请选择活动区域', trigger: 'change' }
           // ],

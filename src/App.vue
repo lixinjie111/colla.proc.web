@@ -43,13 +43,17 @@
         </el-aside>
         <el-main>
           <el-header>
-            <div class="yk-block">              
+            <div class="yk-header-block">
+
               <img class="yk-ico-msg" src="static/images/ico-msg.png">
-              消息
+              <label class="yk-label">消息</label>
+
             </div>
-            <div class="yk-block">              
-              <img class="yk-ico-user" src="static/images/ico-user.png">
-              用户
+            <div class="yk-header-block">
+              
+              <img class="yk-ico-user" src="static/images/ico-user.png">              
+              <label class="yk-label">用户</label>
+
             </div>
           </el-header>
           <router-view/>
@@ -169,10 +173,12 @@ export default {
 .yk-menu-item{
   cursor: pointer;
 }
-.yk-block{
+.yk-header-block{
   display: inline-block;
   margin-right: 20px;
   cursor: pointer;
+  width: 50px;
+  position: relative;
 }
 .yk-title{
   display: inline-block;
@@ -195,8 +201,20 @@ export default {
 
 .yk-ico-msg{
   height: 18px;
+  width: 22px;
+  top: 21px;
+  left: 0px;
+  position: absolute;
 }
 .yk-ico-user{
   width: 22px;
+  top: 18px;
+  left: 0px;
+  position: absolute;
+}
+
+.yk-label{
+  display: inline-block;
+  margin: 0px!important;
 }
 </style>

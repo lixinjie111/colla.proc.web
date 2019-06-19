@@ -18,8 +18,6 @@
             <InfoMapOL ref="refInfoMap" :msgTypeInfo="search.pubMsg"></InfoMapOL>
         </div>
 
-        
-
         <!-- 左侧信息 -->
         <div class="yk-left">
             <!-- <el-card :body-style="{ padding: '0px' }"> 
@@ -62,7 +60,8 @@
             <el-form size="mini">
 
                 <el-form-item class="yk-f-right">
-                    <el-select placeholder="发布信息" v-model="search.pubMsg" @change="publishMsgHandler">                        
+                     <!-- @change="publishMsgHandler" -->
+                    <el-select placeholder="发布信息" v-model="search.pubMsg" :clearable='clearPoiSelect' value-key="name">                        
                         <el-option-group v-for="(group,groupIndex) in pubMsgGroup" label="发布信息" :key="groupIndex">
                             <template v-for="(item,index) in pubMsgList">
                                 <el-option :key="index" :value="item" :disabled="item.disabled" @click.native="pubMsgClick(item);">                                        
@@ -70,20 +69,17 @@
                                 </el-option>
                             </template>
                         </el-option-group>
-                    </el-select>
+                    </el-select>                    
                 </el-form-item>
 
                 <el-form-item class="yk-f-right">
-                    <!--  -->
-                    <el-select placeholder="POI" v-model="search.poi" @change="poiHandler" :clearable='clearPoiSelect'>                                    
+                     <!-- @change="poiHandler" -->
+                    <el-select placeholder="POI" v-model="search.poi" :clearable='clearPoiSelect'>                                    
                         <el-option-group v-for="(group,groupIndex) in poiGruop" label="POI" :key="groupIndex">            
                             <template v-for="(item,index) in poiList">
                                 <el-option :key="index" :value="item" :disabled="item.disabled" @click.native="poiClick(item);">
-
-                                    <!-- <el-checkbox v-model="olMarker[item.value]"></el-checkbox> -->
-                                    
-                                    {{item.value}}
-                                
+                                    <!-- <el-checkbox v-model="olMarker[item.value]"></el-checkbox> -->                                    
+                                    {{item.value}}                                
                                 </el-option>
                             </template>
                         </el-option-group>

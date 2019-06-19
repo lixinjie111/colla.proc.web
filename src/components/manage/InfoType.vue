@@ -201,6 +201,11 @@ export default {
         },
         handleOk(){
             this.popData.visible = false;
+            
+            console.log('this.popData.data --- ' + JSON.stringify(this.popData.data))
+            debugger
+           
+
             this.successBack(this.popData.data);
         },
         handleCancel(){
