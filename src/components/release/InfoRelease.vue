@@ -146,8 +146,7 @@ export default {
                     }
                 }
             );
-        },
-        
+        },        
 
         pubMsgChange(){
             this.initStatisics();
@@ -209,9 +208,7 @@ export default {
         pubMsgClick(item){
             this.$refs.refInfoMap.addMapClickEvent();
         },
-        clearPubMsgClick(e){
-            console.log('clearPubMsgClick --- ' + e);
-            // debugger
+        clearPubMsgClick(e){            
             this.$refs.refInfoMap.setPointer(false);
         },
      

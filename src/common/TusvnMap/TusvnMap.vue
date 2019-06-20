@@ -944,10 +944,6 @@ export default {
         removeFeature:function(id, layerId) {
             let source = this.getLayerById(layerId).getSource();
             let f = source.getFeatureById(id);
-            
-            console.log('removeFeature --- id : ' + id + '  layerId : ' + layerId)
-            // debugger
-
             if (f != null) {
                 source.removeFeature(f);
             }
@@ -986,8 +982,7 @@ export default {
         },
         pageResize(){
             const borwserHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
-            this.pageHeight = borwserHeight - 64;
-            console.log('pageHeight : ' + this.pageHeight)
+            this.pageHeight = borwserHeight - 64;         
         },
         resize:function(size)
         {

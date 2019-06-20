@@ -70,8 +70,7 @@ export default {
             // let type = this.search.pubMsg;
             
             // if(type != '发布信息'){   // 添加事件 ，修改类型 ， 
-              
-                console.log("绑定事件!");  
+
                 this.map.on('click', this.addMsgClick);        // 单击事件
                 // this.map.on('dblclick', showInfoDbClick);   // 双击事件
                 // this.map.on('mousemove', showInfoMove);     // 鼠标移动事件
@@ -711,7 +710,7 @@ export default {
                         _this.inforWindowInstance = null;
                     },
                     sliderChange(value){
-                        console.log('sliderChange --- ' + value)
+                    
                         _this.circleInstance.setRadius(value);
                     },
                     
@@ -734,8 +733,6 @@ export default {
                         this.$api.post( url,params,
                             response => {
                                 if (response.status >= 200 && response.status < 300) {
-
-                                    console.log('response.data ---- ' + JSON.stringify(response.data))
                                     
                                     if(response.data.status == 200){
                                         _this.initMsgList();
@@ -768,9 +765,7 @@ export default {
                         this.$api.post( url,params,
                             response => {
                                 if (response.status >= 200 && response.status < 300) {
-
-                                    console.log('response.data ---- ' + JSON.stringify(response.data))
-                                    
+                                   
                                     if(response.data.status == 200){
                                         _this.initMsgList();
                                         this.$message('更新成功！');
@@ -801,8 +796,6 @@ export default {
                         this.$api.post( url,params,
                             response => {
                                 if (response.status >= 200 && response.status < 300) {
-
-                                    console.log('response.data ---- ' + JSON.stringify(response.data))
                                     
                                     if(response.data.status == 200){
                                         _this.initMsgList();

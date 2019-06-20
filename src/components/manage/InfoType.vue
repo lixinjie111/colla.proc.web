@@ -200,12 +200,8 @@ export default {
             this.initData();
         },
         handleOk(){
-            this.popData.visible = false;
-            
-            console.log('this.popData.data --- ' + JSON.stringify(this.popData.data))
-            debugger
-           
-
+            this.popData.visible = false;            
+    
             this.successBack(this.popData.data);
         },
         handleCancel(){
@@ -286,9 +282,6 @@ export default {
             // };
             let params = data;
 
-            console.log(params);
-            debugger
-
             this.$api.post( url,params,
                 response => {
                     if (response.status >= 200 && response.status < 300) {
@@ -302,9 +295,6 @@ export default {
             );
         },
         updateFn(data){
-
-            console.log(data);
-            debugger
 
             let url = 'event/info/update';
             let params = {

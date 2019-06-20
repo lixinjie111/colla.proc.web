@@ -219,10 +219,7 @@ export default {
             );
         },
         updateInfo(e){
-            console.log('updateInfo --- ' + JSON.stringify(e))
-            console.log(e.frequencyUnit)
-            debugger
-
+            
             let url = 'event/task/update';
             let params = {
                 id: e.id,
