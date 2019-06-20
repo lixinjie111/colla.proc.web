@@ -33,7 +33,7 @@
             <el-input size="mini" v-model="data.frequency">             
             
               <template slot="append">
-                <select class="yk-w-80 yk-border-left-none" v-model="data.frequencyUnit" placeholder="请选择">
+                <select class="yk-w-60 yk-border-left-none" v-model="data.frequencyUnit" placeholder="请选择">
                     <option v-for="(item,index) in frequencyUnitList" :key="index" :value="item.key">{{item.name}}</option>
                 </select>
               </template>

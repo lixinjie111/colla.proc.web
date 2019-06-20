@@ -205,6 +205,7 @@ export default {
                         
                         if(response.data.status == 200){
                             this.initPubMsgList();
+                            this.$emit('PubMsgChange');
                             this.$message('发布成功！');
                         }else if(response.data.status == 500){
                             let msg = response.data.message ? response.data.message : '发布失败 !';
@@ -274,6 +275,7 @@ export default {
                         
                         if(response.data.status == 200){
                             this.initPubMsgList();
+                            this.$emit('PubMsgChange');
                             this.$message('手动失效成功！');
                         }else if(response.data.status == 500){
                             let msg = response.data.message ? response.data.message : '手动失效失败 !';

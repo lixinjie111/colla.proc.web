@@ -49,7 +49,7 @@
                                 <el-form-item label="默认广播频率" prop="frequency" class="yk-bottom-6">
                                     <el-input size="mini" v-model="trafficInfo.frequency">
                                         <template slot="append">
-                                            <select class="yk-w-80 yk-border-left-none" v-model="select.frequencyUnit">
+                                            <select class="yk-w-60 yk-border-left-none" v-model="select.frequencyUnit">
                                                 <option v-for="(item,index) in frequencyUnitList" :key="index" :value="item">{{item.name}}</option>
                                             </select>
                                         </template>
@@ -433,7 +433,7 @@ export default {
         addMyInfoWindow: function(obj){
 
             console.log('addMyInfoWindow --- ' + obj);
-            debugger
+            // debugger
             
             this.trafficInfo.id = obj.id;
             this.trafficInfo.eventName = obj.trafficInfo.eventName;
@@ -468,9 +468,12 @@ export default {
             this.circleLat = obj.lat;
             this.drawBgCircle(obj.lon,obj.lat);
 
+            this.pubMsgIconID = 'pub_msg_ico_' + obj.id;
+            // let icoSrc = obj.
+            // this.drawPubMsgIcon(lon,lat,);
 
         },
-
+        // 画圆形背景图片
         drawBgCircle(lon,lat){
             // 245,147,7
             this.addCircle(lon,lat,this.circleRadius,this.circleID,[245,147,7,0.1],'#F59307',null,null,null,null,null,null,'MessageLayer');
@@ -479,7 +482,19 @@ export default {
         // 移除圆形背景图片
         clearCircle(){
             // MessageLayer
+            if(!this.circleID) return;
             this.removeFeature(this.circleID,'MessageLayer');
+        },
+        // 画 发布信息图标
+        drawPubMsgIcon(lon,lat,icon){
+
+            // lon,lat,id,layerId,carImgUrl,size,rotation,rotateWithView,opacity,offset,scale
+            this.addImg(lon,lat,this.pubMsgIconID,'MessageLayer',icon)            
+        },
+        // 移除 发布信息图标
+        clearPubMsgIcon(){
+            if(!this.pubMsgIconID) return;
+            this.removeFeature(this.pubMsgIconID,'MessageLayer');
         },
 
         /**
@@ -621,9 +636,6 @@ export default {
          * @param {Function} callback 点击的回调
          */
         addImgOverlay:function(id, imgUrl, courseAngle, lon, lat, bdata, offset, callback){
-
-            console.log('lon --- ' + lon + ' ---lat : ' + lat )
-            console.log('addImgOverlay --- imgUrl ------ ' + imgUrl)
 
             let overLay_container = document.getElementById(this.overlayContainerId);
             let overLay_img = document.createElement("img");
@@ -932,6 +944,10 @@ export default {
         removeFeature:function(id, layerId) {
             let source = this.getLayerById(layerId).getSource();
             let f = source.getFeatureById(id);
+            
+            console.log('removeFeature --- id : ' + id + '  layerId : ' + layerId)
+            // debugger
+
             if (f != null) {
                 source.removeFeature(f);
             }
