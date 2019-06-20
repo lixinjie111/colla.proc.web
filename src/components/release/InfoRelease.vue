@@ -61,10 +61,10 @@
 
                 <el-form-item class="yk-f-right">
                      <!-- @change="publishMsgHandler" -->
-                    <el-select placeholder="发布信息" v-model="search.pubMsg" :clearable='clearPoiSelect' value-key="name">                        
+                    <el-select placeholder="发布信息" v-model="search.pubMsg" :clearable='clearPoiSelect' value-key="name" @clear="clearPubMsgClick($event);">                        
                         <el-option-group v-for="(group,groupIndex) in pubMsgGroup" label="发布信息" :key="groupIndex">
                             <template v-for="(item,index) in pubMsgList">
-                                <el-option :key="index" :value="item" :disabled="item.disabled" @click.native="pubMsgClick(item);">                                        
+                                <el-option :key="index" :value="item" @click.native="pubMsgClick(item);">                                        
                                     {{item.name}}
                                 </el-option>
                             </template>
@@ -73,13 +73,13 @@
                 </el-form-item>
 
                 <el-form-item class="yk-f-right">
-                     <!-- @change="poiHandler" -->
-                    <el-select placeholder="POI" v-model="search.poi" :clearable='clearPoiSelect'>                                    
+                     <!-- :collapse-tags='collapseTags' -->
+                    <el-select placeholder="POI" multiple v-model="search.poi" value-key="value" @remove-tag="removeTagClick($event);">                                    
                         <el-option-group v-for="(group,groupIndex) in poiGruop" label="POI" :key="groupIndex">            
                             <template v-for="(item,index) in poiList">
-                                <el-option :key="index" :value="item" :disabled="item.disabled" @click.native="poiClick(item);">
+                                <el-option :key="index" :value="item.name" @click.native="poiClick(item);">
                                     <!-- <el-checkbox v-model="olMarker[item.value]"></el-checkbox> -->                                    
-                                    {{item.value}}                                
+                                    {{item.name}}                                
                                 </el-option>
                             </template>
                         </el-option-group>
@@ -172,6 +172,7 @@ export default {
                 trafficSignal: false,   // 交通信号灯
             },
             clearPoiSelect: true,
+            collapseTags: true,
         }
     },
     methods: {
@@ -291,29 +292,33 @@ export default {
 
             this.$refs.refInfoMap.showMarker(type,this.olMarker[type]);
         },
-        // 显示poi
-        poiHandler(){
 
-            let type = this.search.poi ? (this.search.poi.value ? this.search.poi.value : '') : '';
-            if(!type) return;
+        removeTagClick(e){
+            
+            // { id: 1, name: 'RSU', value: 'rsu', isCheck: false},
+            //     { id: 2, name: '路侧单元', value: 'roadsideUnit', isCheck: false},
+            //     { id: 3, name: '红绿灯', value: 'trafficSignal', isCheck: false},
+            let temp = this.getItemByName(this.poiList,e);
+            this.poiClick(temp);
+        },
 
-            let isCheck = this.search.poi.isCheck = !this.search.poi.isCheck;            
-
-            switch(type){
-                case 'RSU':
-                    this.showRsu(isCheck);
-                    break;
-                case '路侧单元':
-                    this.showRoadsideUnit(isCheck);
-                    break;
-                case '红绿灯':
-                    this.showTrafficSignal(isCheck);
-                    break;
+        getItemByName(list,name){
+            for(let i=0;i<list.length;i++){
+                let temp = list[i];
+                if(temp.name == name){
+                    return temp;
+                }
             }
+            return null;
         },
        
         pubMsgClick(item){
             this.$refs.refInfoMap.addMapClickEvent();
+        },
+        clearPubMsgClick(e){
+            console.log('clearPubMsgClick --- ' + e);
+            // debugger
+            this.$refs.refInfoMap.setPointer(false);
         },
         //发布信息
         publishMsgHandler(){
@@ -656,7 +661,7 @@ export default {
                             <el-form-item label="默认广播频率" prop="frequency" class="yk-bottom-6">
                                 <el-input size="mini" v-model="frequency">
                                 <template slot="append">
-                                    <el-select class="yk-w-80" v-model="frequencyUnit" placeholder="请选择">
+                                    <el-select class="yk-w-80 yk-border-left-none" v-model="frequencyUnit" placeholder="请选择">
                                     <el-option
                                     v-for="item in frequencyUnitList"
                                     :key="item.value"

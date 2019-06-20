@@ -18,7 +18,9 @@
                 <span>信息发布</span>
               </template>
               <el-menu-item-group>
-                <el-menu-item index="1-1" @click="navChange('/infoRelease');">信息发布</el-menu-item>
+                <el-menu-item index="1-1" @click="navChange('/infoRelease');">
+                  <div class="yk-sub-title">信息发布</div>
+                </el-menu-item>
               </el-menu-item-group>
             </el-submenu>
             <el-submenu index="2">
@@ -27,7 +29,9 @@
                 <span>信息历史</span>
               </template>
               <el-menu-item-group>
-                <el-menu-item index="2-1" @click="navChange('/infoHistory');">信息历史</el-menu-item>
+                <el-menu-item index="2-1" @click="navChange('/infoHistory');">
+                  <div class="yk-sub-title">信息历史</div>
+                </el-menu-item>
               </el-menu-item-group>
             </el-submenu>
             <el-submenu index="3">
@@ -36,7 +40,9 @@
                 <span>系统配置</span>
               </template>
               <el-menu-item-group>
-                <el-menu-item index="3-1" @click="navChange('/infoType');">系统配置</el-menu-item>
+                <el-menu-item index="3-1" @click="navChange('/infoType');">
+                  <div class="yk-sub-title">系统配置</div>
+                </el-menu-item>
               </el-menu-item-group>
             </el-submenu>
           </el-menu>
@@ -216,5 +222,10 @@ export default {
 .yk-label{
   display: inline-block;
   margin: 0px!important;
+}
+
+.yk-sub-title{
+  margin-left: 38px;
+  font-size: 15px;
 }
 </style>

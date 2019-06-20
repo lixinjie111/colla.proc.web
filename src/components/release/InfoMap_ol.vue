@@ -86,6 +86,10 @@ export default {
     methods: {
 
         // ----------------------------信息发布-------------------------------
+        setPointer(bool){
+            this.isPointerIco = bool;
+            this.removeMapClickEvent();
+        },
         initPubMsgList(){
 
             this.clearPubMsg();
@@ -421,9 +425,9 @@ export default {
             this.isPointerIco = true;
         },
         // // 移除 地图点击事件
-        // removeMapClickEvent(){
-        //     this.$refs.refTusvnMap.removeClickEvent();
-        // },
+        removeMapClickEvent(){
+            this.$refs.refTusvnMap.removeClickEvent();
+        },
         mapClick: function(map,evt){
             
             this.isPointerIco = false;

@@ -28,7 +28,7 @@
                         </el-row>
                         <el-row class="yk-pad-1040">
                             <!-- :model="ruleForm" :rules="rules"-->
-                            <el-form ref="ruleForm" size="mini" label-width="120px" class="demo-ruleForm yk-left">
+                            <el-form ref="ruleForm" size="mini" label-width="100px" class="demo-ruleForm yk-left">
 
                                 <el-form-item label="信息类型" class="yk-bottom-6">                               
                                     <label>{{trafficInfo.eventType}}</label>
@@ -38,7 +38,7 @@
                                     <label>{{trafficInfo.longitude + ',' + trafficInfo.latitude}}</label>
                                 </el-form-item>
 
-                                <el-form-item label="广播范围" prop="name" class="yk-bottom-6" style="height: 55px;">
+                                <el-form-item label="广播范围" prop="name" class="yk-bottom-6" style="height: 50px;">
                                     <el-slider v-model="trafficInfo.affectRange" :marks="broadcastRangeMarks" :max="broadcastMax" :step="broadcastStep" @change="sliderChange"></el-slider>
                                 </el-form-item>
 
@@ -48,21 +48,12 @@
 
                                 <el-form-item label="默认广播频率" prop="frequency" class="yk-bottom-6">
                                     <el-input size="mini" v-model="trafficInfo.frequency">
-                                        <!-- <template slot="append">                                       
-                                            <el-select class="yk-w-80" size="mini" v-model="select.frequencyUnit"  placeholder="请选择">
-                                                <template v-for="(item,index) in frequencyUnitList">
-                                                    <el-option :key="index" :label="item.name" :value="item">{{item.name + '--' + index}}</el-option>
-                                                </template>                                            
-                                            </el-select>
-                                        </template> -->
-
                                         <template slot="append">
-                                            <select class="yk-w-80" v-model="select.frequencyUnit">
+                                            <select class="yk-w-80 yk-border-left-none" v-model="select.frequencyUnit">
                                                 <option v-for="(item,index) in frequencyUnitList" :key="index" :value="item">{{item.name}}</option>
                                             </select>
                                         </template>
-                                    </el-input> 
-                                                
+                                    </el-input>                                                
                                 </el-form-item>                               
                                 
                                 <el-form-item label="发送生效时间" prop="" class="yk-bottom-6">
@@ -93,12 +84,12 @@
                                     </select>
                                 </el-form-item>
 
-                                <el-form-item>
-                                    <el-button v-show="!trafficInfo.isEdit" @click="publichInfo($event);">发布</el-button>
-                                    <el-button v-show="!trafficInfo.isEdit" @click="closeInforWindow($event);">取消</el-button>
+                                <el-form-item style="text-align:right;">
+                                    <el-button class="yk-w-80" type="warning" v-show="!trafficInfo.isEdit" @click="publichInfo($event);">发布</el-button>
+                                    <el-button class="yk-w-80" type="info" v-show="!trafficInfo.isEdit" @click="closeInforWindow($event);">取消</el-button>
 
-                                    <el-button v-show="trafficInfo.isEdit" @click="updateInfo($event);">更新</el-button>
-                                    <el-button v-show="trafficInfo.isEdit" @click="destroyInfo($event);">手动失效</el-button>
+                                    <el-button class="yk-w-80" type="warning" v-show="trafficInfo.isEdit" @click="updateInfo($event);">更新</el-button>
+                                    <el-button type="info" v-show="trafficInfo.isEdit" @click="destroyInfo($event);">手动失效</el-button>
                                     
                                 </el-form-item>
 
@@ -440,6 +431,9 @@ export default {
         },
 
         addMyInfoWindow: function(obj){
+
+            console.log('addMyInfoWindow --- ' + obj);
+            debugger
             
             this.trafficInfo.id = obj.id;
             this.trafficInfo.eventName = obj.trafficInfo.eventName;
@@ -473,11 +467,13 @@ export default {
             this.circleLon = obj.lon;
             this.circleLat = obj.lat;
             this.drawBgCircle(obj.lon,obj.lat);
+
+
         },
 
         drawBgCircle(lon,lat){
-            
-            this.addCircle(lon,lat,this.circleRadius,this.circleID,[233,233,217,0.8],'#F59307',null,null,null,null,null,null,'MessageLayer');
+            // 245,147,7
+            this.addCircle(lon,lat,this.circleRadius,this.circleID,[245,147,7,0.1],'#F59307',null,null,null,null,null,null,'MessageLayer');
             
         },
         // 移除圆形背景图片
@@ -1070,12 +1066,20 @@ export default {
     .ol-popup-closer {
         text-decoration: none;
         position: absolute;
-        top: 2px;
-        right: 8px;
+        top: 18px;
+        right: 18px;
+        font-size: 16px;
+        color: #F59307;
+        cursor: pointer;
+        z-index: 9999;
+    }
+    .ol-popup-closer:hover{
+        color: rgb(238, 195, 131);
     }
     .ol-popup-closer:after {
-        content: "✖";
+        content: "✖";        
     }
+   
 
     .yk-pointer-normal{
         cursor: default;
