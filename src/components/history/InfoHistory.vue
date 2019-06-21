@@ -12,7 +12,15 @@
             <!-- <el-col :span="6"> -->
                 <div class="yk-block">
                     <label>信息状态：</label>
-                    <el-input size="mini" v-model="search.status" class="yk-w180"></el-input>
+                    <!-- <el-input size="mini" v-model="search.status" class="yk-w180"></el-input> -->
+                    <el-select v-model="search.status" size="mini" placeholder="请选择">
+                        <el-option
+                            v-for="item in statusList"
+                            :key="item.value"
+                            :label="item.name"
+                            :value="item.key">
+                        </el-option>
+                    </el-select>
                 </div>
                 
             <!-- </el-col> -->
@@ -35,7 +43,16 @@
             <!-- <el-col :span="6"> -->
                 <div class="yk-block">
                    <label>信息来源：</label>
-                    <el-input size="mini" v-model="search.datasource" class="yk-w180"></el-input> 
+                    <!-- <el-input size="mini" v-model="search.datasource" class="yk-w180"></el-input>  -->
+
+                    <el-select v-model="search.datasource" size="mini" placeholder="请选择">
+                        <el-option
+                            v-for="item in datasourceList"
+                            :key="item.value"
+                            :label="item.name"
+                            :value="item.key">
+                        </el-option>
+                    </el-select>
                 </div>                
             <!-- </el-col> -->
             <!-- <el-select size="mini" v-model="search.type">
@@ -70,8 +87,9 @@
                 >
             </el-table-column>
             <el-table-column
-                prop="eventType"
-                label="信息类型">
+                prop="eventName"
+                label="信息类型"
+                width="120">
             </el-table-column>
             <el-table-column
                 prop="status"
@@ -104,11 +122,16 @@
             </el-table-column>
             <el-table-column
                 prop="sendNumber"
-                label="下发次数" width="80">
+                label="下发次数" 
+                width="80">
             </el-table-column>
             <el-table-column
                 prop="datasource"
                 label="信息来源">
+                <template slot-scope="scope">
+                    <span v-if="scope.row.datasource == 1">平台运营人员</span>
+                    <span v-else>{{scope.row.datasource}}</span>
+                </template>
             </el-table-column>
         </el-table>
 
@@ -148,6 +171,9 @@ export default {
                 { id: 1, name: '有效', key: 1},
                 { id: 2, name: '失效', key: 2},
                 { id: 3, name: '完成', key: 3},
+            ],
+            datasourceList: [
+
             ]
         }
     },
@@ -199,6 +225,24 @@ export default {
                 }
             );
         },
+        initDatasourceList(isEdit=false,datasource){
+            let url = 'common/queryDictionary';
+            let params = {
+                parentCode: 'trafficSource',
+            };
+            this.$api.post( url,params,
+                response => {
+                    if (response.status >= 200 && response.status < 300) {
+
+                        this.datasourceList = response.data ? response.data : [];
+                        
+                    
+                    } else {                     
+                        this.$message("获取单位失败 ！"); 
+                    }
+                }
+            );
+        },
         handleSearch(){
             
             if(Array.isArray(this.search.publishTime)){                
@@ -220,6 +264,7 @@ export default {
         }
     },
     created(){
+        this.initDatasourceList();
         this.init();
     },
 

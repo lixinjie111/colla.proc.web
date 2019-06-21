@@ -31,7 +31,7 @@
                             <el-form ref="ruleForm" size="mini" label-width="100px" class="demo-ruleForm yk-left">
 
                                 <el-form-item label="信息类型" class="yk-bottom-6">                               
-                                    <label>{{trafficInfo.eventType}}</label>
+                                    <label>{{trafficInfo.eventName}}</label>
                                 </el-form-item>
 
                                 <el-form-item label="中心位置" prop="name" class="yk-bottom-6">                                
@@ -170,8 +170,8 @@ export default {
                 title: '信息发布',
                 isEdit: false,
                 eventName: '',
-                taskCode: '',
-                eventType: '',                            
+                eventType: '',
+                taskCode: '',                          
                 longitude: '',
                 latitude: '',
                 affectRange: 1000,
@@ -319,6 +319,7 @@ export default {
                         
                         this.trafficInfo.id = response.data.id;
                         this.trafficInfo.taskCode = response.data.taskCode;
+                        this.trafficInfo.eventName = response.data.eventName;
                         this.trafficInfo.eventType = response.data.eventType;
                         this.trafficInfo.longitude = response.data.longitude;
                         this.trafficInfo.latitude = response.data.latitude;
