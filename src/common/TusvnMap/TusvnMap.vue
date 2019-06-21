@@ -31,11 +31,11 @@
                             <el-form ref="ruleFormMap" :rules="rules" :model="trafficInfo" size="mini" label-width="108px" class="demo-ruleForm yk-left">
 
                                 <el-form-item label="信息类型" class="yk-bottom-6">                               
-                                    <label>{{trafficInfo.eventName}}</label>
+                                    <span>{{trafficInfo.eventName}}</span>
                                 </el-form-item>
 
                                 <el-form-item label="中心位置" prop="name" class="yk-bottom-6">                                
-                                    <label>{{trafficInfo.longitude + ',' + trafficInfo.latitude}}</label>
+                                    <span>{{trafficInfo.longitude + ',' + trafficInfo.latitude}}</span>
                                 </el-form-item>
 
                                 <el-form-item label="广播范围" prop="name" class="yk-bottom-6" style="height: 50px;">
@@ -273,7 +273,7 @@ export default {
             this.closeMyInfoWindow(e);
         },
         closeInforWindow(e){
-            this.resetForm();
+            
             this.closeMyInfoWindow();
         },
         initDatasourceList(isEdit=false,datasource){
@@ -533,6 +533,7 @@ export default {
         closeMyInfoWindow:function(e){
 
            this.clearCircle();
+           this.resetForm();
 
            // 关闭信息框
             let overlayid = 'traffic-info-release';
