@@ -1,5 +1,7 @@
 <template>
-    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" size="mini" label-width="120px" class="demo-ruleForm yk-left">
+
+<!-- :model="ruleForm" -->
+    <el-form :model="data" :rules="rules" ref="ruleForm" size="mini" label-width="120px" class="demo-ruleForm yk-left">
         
         <el-form-item label="信息所属分类" prop="eventCategory">
             <el-select size="mini" v-model="data.eventCategory" placeholder="请选择">
@@ -15,9 +17,9 @@
             <el-input size="mini" v-model="data.name"></el-input>
         </el-form-item>
 
-        <el-form-item label="信息类型图标" required>
+        <el-form-item label="信息类型图标" prop="icon">
                        
-          <el-input size="mini" placeholder="请输入内容" v-model="data.icon">
+          <el-input size="mini" placeholder="请上传信息类型图标" v-model="data.icon">
             <template slot="append">
               <label class="yk_input_append" for="xFile">上传</label>
             </template>
@@ -45,7 +47,7 @@
             <el-input type="textarea" v-model="data.content"></el-input>
         </el-form-item>
 
-        <el-form-item label="下发通道" prop="">
+        <el-form-item label="下发通道" prop="sendChannel">
           <el-select size="mini" v-model="data.sendChannel" placeholder="请选择">
               <template v-for="(item,index) in sendChannelList">
                 <el-option :key="index" :label="item.key" :value="item.key">{{item.key}}</el-option>
@@ -53,7 +55,7 @@
             </el-select>
         </el-form-item>
 
-        <el-form-item label="子类型代码" prop="name">
+        <el-form-item label="子类型代码" prop="infoType">
             <el-input size="mini" v-model="data.infoType"></el-input>
         </el-form-item>
         
@@ -85,6 +87,7 @@
           frequencyUnit: '',
           delivery: false,
           content: '',
+          infoType: '',
         },
         rules: {
           eventCategory: [
@@ -94,14 +97,20 @@
             { required: true, message: '请输入信息类型名称', trigger: 'blur' },
             // { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
           ],
+          content: [
+            { required: true, message: '请输入默认信息内容', trigger: 'blur' },
+            // { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+          ],
           icon: [
             { required: true, message: '请上传信息类型图标', trigger: 'blur' },
+            { message: '请上传信息类型图标', trigger: 'input' },
+
           ],
           frequency: [
             { required: true, message: '请填写默认广播频率', trigger: 'blur' },
           ],
           sendChannel: [
-             { required: true, message: '请选择下发通道', trigger: 'change' }
+            { required: true, message: '请选择下发通道', trigger: 'change' }
           ],
           infoType: [
             { required: true, message: '请填写子类型代码', trigger: 'blur' },
@@ -168,9 +177,7 @@
                 if (response.status >= 200 && response.status < 300) {
 
                     this.frequencyUnitList = response.data ? response.data : [];
-
-                    if(this.frequencyUnitList.length){
-                                           
+                    if(this.frequencyUnitList.length){                                           
                       this.select.frequencyUnit = this.frequencyUnitList[0];
                     }
                    
@@ -189,9 +196,7 @@
         //  console.log('upload --------------- ' + this.param.get('upfile')); //FormData私有类对象，访问不到，可以通过get判断值是否传进去
 
         // this.validator.isFile = true;
-
-         this.uploadFile(param);   
-
+        this.uploadFile(param);
       },
       uploadFile(formData){
         let url = this.uploadPath;
@@ -208,14 +213,10 @@
                   this.$message('上传成功！');
               }
 
-              if(response.data.status != '200'){
-              
+              if(response.data.status != '200'){              
                   this.$message('上传失败！');
                   console.log('error data --- ' + JSON.stringify(response.data.data))
-
               }
-
-
           }
         ).catch( (error) => {
 
@@ -225,11 +226,24 @@
         }) ; 
       },
   
-      resetForm(formName) {
-        this.$refs[formName].resetFields();
-      },
       frequencyUnitChange(e){
         this.data.frequencyUnit = this.ruleForm.frequencyUnit.key;
+      },
+
+      submitForm(formName='ruleForm') {
+        let bool = false;
+        this.$refs[formName].validate((valid) => {
+          if (valid) {           
+            bool = true;
+          } else {
+            console.log('error submit!!');
+            bool = false;
+          }
+        });
+        return bool;
+      },
+      resetForm(formName='ruleForm') {
+        this.$refs[formName].resetFields();
       }
     },
     created(){

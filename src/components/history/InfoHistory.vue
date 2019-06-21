@@ -81,16 +81,19 @@
                     </span>
                 </template>
             </el-table-column>
+            
             <el-table-column
                 prop="taskCode"
                 label="信息编号"
                 >
             </el-table-column>
+
             <el-table-column
                 prop="eventName"
                 label="信息类型"
                 width="120">
             </el-table-column>
+
             <el-table-column
                 prop="status"
                 label="信息状态" width="80">
@@ -101,6 +104,7 @@
                     <span v-show="scope.row.status == 3">完成</span>
                 </template>
             </el-table-column>
+
             <el-table-column
                 prop="longitude,latitude "
                 label="中心位置">
@@ -108,23 +112,28 @@
                     {{scope.row.longitude}} , {{scope.row.latitude}}
                 </template>
             </el-table-column>
+
             <el-table-column
                 prop="beginTime"
                 label="发布时间">
             </el-table-column>
+
             <el-table-column
                 prop="endTime"
                 label="失效时间">
             </el-table-column>
+
             <el-table-column
                 prop="content"
                 label="信息内容">
             </el-table-column>
+
             <el-table-column
                 prop="sendNumber"
                 label="下发次数" 
                 width="80">
             </el-table-column>
+
             <el-table-column
                 prop="datasource"
                 label="信息来源">

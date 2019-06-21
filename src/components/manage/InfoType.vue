@@ -95,7 +95,7 @@
             >
 
             <span v-if="popData.type == 'info-type-delete'"> {{ popData.msg }} </span>
-            <info-type-pop v-if="popData.type == 'info-type-add' || popData.type == 'info-type-update'" :data="popData.data"></info-type-pop>
+            <info-type-pop ref="refInfoTypePop" v-if="popData.type == 'info-type-add' || popData.type == 'info-type-update'" :data="popData.data"></info-type-pop>
             <info-type-detail v-if="popData.type == 'info-type-check'" :data="popData.data"></info-type-detail>
 
             <span slot="footer" class="dialog-footer">
@@ -210,12 +210,17 @@ export default {
             this.initData();
         },
         handleOk(){
+            let bool = this.$refs.refInfoTypePop.submitForm();
+            if(!bool) return;
+            
+            alert(bool);
+
             this.popData.visible = false;            
-    
             this.successBack(this.popData.data);
         },
         handleCancel(){
-            this.popData.visible = false
+            this.popData.visible = false;
+            this.$refs.refInfoTypePop.resetForm();
         },
         handleClose(done) {
             // this.$confirm('确认关闭？')
