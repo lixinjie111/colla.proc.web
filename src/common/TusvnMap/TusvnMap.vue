@@ -348,14 +348,14 @@ export default {
         initMap:function(){
 
             this.$data.map = new Map({
-                controls: defaultControls({attribution: false}).extend([
+                controls: defaultControls({attribution: false,zoom: false,}).extend([
                     // overviewMapControl
                     new ScaleLine()
                     // ,new FullScreen()
                     // ,new MousePosition()
                 ]),
                 interactions: defaultInteractions().extend([
-                    new DragRotateAndZoom()
+                    // new DragRotateAndZoom()
                 ]),
                 layers: [
                     new TileLayer({
@@ -704,27 +704,50 @@ export default {
                this.$data.map.removeLayer(layer);
            }
         },        
+        // /**
+        //  * 向地图中添加图片
+        //  * 
+        //  * @param {number} lon 浮点型的值
+        //  * @param {number} lat 浮点型的值
+        //  * @param {string} id 图片id
+        //  * @param {string} layerId 图层id
+        //  * @param {string} carImgUrl 图片地址
+        //  * @param {Array.<number>} size 图片大小，例如：[22,37]
+        //  * @param {number} rotation 旋转角度（弧度），顺时针方向为正。例如：顺时针方向偏转90度，对应的值是Math.PI/2
+        //  * @param {boolean} rotateWithView 是否跟view一起旋转
+        //  * @param {number} opacity 透明度，0到1之间的值
+        //  * @param {Array.<number>} offset x、y方向的偏移，默认值是[0,0]。例如：[0,0]
+        //  * @param {number} scale 图片缩放，默认为1
+        //  */
+        // addImg:function(lon,lat,id,layerId,carImgUrl,size,rotation,rotateWithView,opacity,offset,scale){
+        //      let carStyle = new Style({
+        //         image:mapInit.generateIcon(carImgUrl||"static/images/warning.png",size||[22,37],rotation||0,rotateWithView||true,opacity||1,offset||[0,0],scale)
+        //     });
+        //     mapInit.addPoint(lon,lat,id,carStyle,this.getLayerById(layerId));
+        // },
         /**
-         * 向地图中添加图片
-         * 
-         * @param {number} lon 浮点型的值
-         * @param {number} lat 浮点型的值
-         * @param {string} id 图片id
-         * @param {string} layerId 图层id
-         * @param {string} carImgUrl 图片地址
-         * @param {Array.<number>} size 图片大小，例如：[22,37]
-         * @param {number} rotation 旋转角度（弧度），顺时针方向为正。例如：顺时针方向偏转90度，对应的值是Math.PI/2
-         * @param {boolean} rotateWithView 是否跟view一起旋转
-         * @param {number} opacity 透明度，0到1之间的值
-         * @param {Array.<number>} offset x、y方向的偏移，默认值是[0,0]。例如：[0,0]
-         * @param {number} scale 图片缩放，默认为1
-         */
-        addImg:function(lon,lat,id,layerId,carImgUrl,size,rotation,rotateWithView,opacity,offset,scale){
-             let carStyle = new Style({
-                image:mapInit.generateIcon(carImgUrl||"static/images/warning.png",size||[22,37],rotation||0,rotateWithView||true,opacity||1,offset||[0,0],scale)
-            });
-            mapInit.addPoint(lon,lat,id,carStyle,this.getLayerById(layerId));
+        * 向地图中添加图片
+        *
+        * @param {number} lon 浮点型的值
+        * @param {number} lat 浮点型的值
+        * @param {string} id 图片id
+        * @param {string} layerId 图层id
+        * @param {string} carImgUrl 图片地址
+        * @param {Array.<number>} size 图片大小，例如：[22,37]
+        * @param {number} rotation 旋转角度（弧度），顺时针方向为正。例如：顺时针方向偏转90度，对应的值是Math.PI/2
+        * @param {boolean} rotateWithView 是否跟view一起旋转
+        * @param {number} opacity 透明度，0到1之间的值
+        * @param {Array.<number>} offset x、y方向的偏移，默认值是[0,0]。例如：[0,0]
+        * @param {number} scale 图片缩放，默认为1
+        * @param {Array.<number>} anchor Anchor. Default value is the icon center.
+        */
+        addImg:function(lon,lat,id,layerId,carImgUrl,size,rotation,rotateWithView,opacity,offset,scale,anchor){
+        let carStyle = new Style({
+        image:mapInit.generateIcon(carImgUrl||"../../static/assets/images/geolocation_marker_heading.png",size||[22,37],rotation||0,rotateWithView||true,opacity||1,offset||[0,0],scale,anchor)
+        });
+        mapInit.addPoint(lon,lat,id,carStyle,this.getLayerById(layerId));
         },
+
 
         
 

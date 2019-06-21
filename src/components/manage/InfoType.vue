@@ -29,11 +29,12 @@
             <el-table-column
                 prop="name"
                 label="信息类型名称"
+                width="160"
                 >
             </el-table-column>
             <el-table-column
                 prop="eventCategory"
-                label="信息分类">
+                label="信息分类" width="160">
                 <template slot-scope="scope">
                     <span v-if="scope.row.eventCategory == 'TI01'">车辆异常信息</span>
                     <span v-if="scope.row.eventCategory == 'TI02'">道路异常信息</span>
@@ -44,7 +45,14 @@
             </el-table-column>
             <el-table-column
                 prop="icon"
-                label="图标">
+                label="图标" 
+                width="80">
+                <template slot-scope="scope">
+                    <!-- <img :src="iconPath + scope.row.icon" class="image"> -->
+                    <div class="image-box">
+                        <img :src="iconPath + scope.row.icon" class="image">
+                    </div>
+                </template>
             </el-table-column>
             <el-table-column
                 prop="content"
@@ -52,7 +60,8 @@
             </el-table-column>
             <el-table-column
                 prop="frequency"
-                label="默认广播范围">
+                label="默认广播范围"
+                width="120">
             </el-table-column>
             <el-table-column
                 label="管理"
@@ -105,6 +114,7 @@ export default {
     },
     data(){
         return {
+            iconPath: window.cfg.iconPath,
             paging: {
                 index: 0,
                 size: 10,
@@ -358,10 +368,6 @@ export default {
     padding: 5px 0px!important;
 }
 
-/* .el-button{
-    padding: 5px 15px!important;
-} */
-
 .el-dialog__header{
     border-bottom: 1px solid #eeeaea;
 } 
@@ -388,6 +394,22 @@ export default {
 }
 .yk-w180{
     width: 180px;
+}
+
+.image-box{
+    margin: 0 auto;
+    width: 44px;
+    height: 44px;       
+    background-image: url('./ico-bg.png');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    text-align: center;
+}
+.image{        
+    margin: 0 auto;
+    position: relative;
+    top: 50%; /*偏移*/
+    transform: translateY(-50%);
 }
 </style>
 

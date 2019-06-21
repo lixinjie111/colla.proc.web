@@ -48,7 +48,7 @@
         <el-form-item label="下发通道" prop="">
           <el-select size="mini" v-model="data.sendChannel" placeholder="请选择">
               <template v-for="(item,index) in sendChannelList">
-                <el-option :key="index" :label="item.name" :value="item.key">{{item.name}}</el-option>
+                <el-option :key="index" :label="item.key" :value="item.key">{{item.key}}</el-option>
               </template>               
             </el-select>
         </el-form-item>

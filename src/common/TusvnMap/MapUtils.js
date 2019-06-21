@@ -441,29 +441,54 @@ export function removeAllFeature(layer) {
 }
 
 
+// /**
+//  * 生成ICON:ol/style/Icon
+//  * @param {string} src 图片的路径
+//  * @param {module:ol/size~Size} size 图片大小，默认值[22,22]
+//  * @param {number} rotation  图片旋转角度，单位是弧度，顺时针为正,例如：顺时针旋转90度，Math.PI/2
+//  * @param {boolean} rotateWithView 是否跟view一起旋转图片，默认值是false
+//  * @param {number} opacity 0-1之间的值
+//  * @param {Array.<number>} offset 位置偏移，默认值是[0,0]
+//  * @param {number} scale 图片缩放，默认为1
+//  */
+// export function generateIcon(src, size, rotation, rotateWithView, opacity, offset, scale) {
+//     console.log(src);
+//     let icon = new Icon({
+//         src: src || "@/assets/images/geolocation_marker.png",
+//         size: size || [22, 22],
+//         rotation: rotation || 0,
+//         rotateWithView: rotateWithView || false,
+//         opacity: opacity || 1,
+//         offset: offset || [0, 0],
+//         scale: scale || 1
+//     });
+//     return icon;
+// }
 /**
- * 生成ICON:ol/style/Icon
- * @param {string} src 图片的路径
- * @param {module:ol/size~Size} size 图片大小，默认值[22,22]
- * @param {number} rotation  图片旋转角度，单位是弧度，顺时针为正,例如：顺时针旋转90度，Math.PI/2
- * @param {boolean} rotateWithView 是否跟view一起旋转图片，默认值是false
- * @param {number} opacity 0-1之间的值
- * @param {Array.<number>} offset 位置偏移，默认值是[0,0]
- * @param {number} scale 图片缩放，默认为1
- */
-export function generateIcon(src, size, rotation, rotateWithView, opacity, offset, scale) {
+* 生成ICON:ol/style/Icon
+* @param {string} src 图片的路径
+* @param {module:ol/size~Size} size 图片大小，默认值[22,22]
+* @param {number} rotation 图片旋转角度，单位是弧度，顺时针为正,例如：顺时针旋转90度，Math.PI/2
+* @param {boolean} rotateWithView 是否跟view一起旋转图片，默认值是false
+* @param {number} opacity 0-1之间的值
+* @param {Array.<number>} offset 位置偏移，默认值是[0,0]
+* @param {number} scale 图片缩放，默认为1
+* @param {Array.<number>} anchor Anchor. Default value is the icon center.
+*/
+export function generateIcon(src, size, rotation, rotateWithView, opacity, offset, scale,anchor) {
     console.log(src);
     let icon = new Icon({
-        src: src || "@/assets/images/geolocation_marker.png",
-        size: size || [22, 22],
-        rotation: rotation || 0,
-        rotateWithView: rotateWithView || false,
-        opacity: opacity || 1,
-        offset: offset || [0, 0],
-        scale: scale || 1
+    src: src || "@/assets/images/geolocation_marker.png",
+    size: size || [22, 22],
+    rotation: rotation || 0,
+    rotateWithView: rotateWithView || false,
+    opacity: opacity || 1,
+    offset: offset || [0, 0],
+    scale: scale || 1,
+    anchor:anchor||[0.5,0.5]
     });
     return icon;
-}
+    }
 
 /**
  * 生成ICON:ol/style/Text

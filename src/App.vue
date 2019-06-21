@@ -41,7 +41,7 @@
               </template>
               <el-menu-item-group>
                 <el-menu-item index="3-1" @click="navChange('/infoType');">
-                  <div class="yk-sub-title">系统配置</div>
+                  <div class="yk-sub-title">信息类型</div>
                 </el-menu-item>
               </el-menu-item-group>
             </el-submenu>

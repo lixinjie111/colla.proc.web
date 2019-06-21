@@ -75,7 +75,13 @@
             </el-table-column>
             <el-table-column
                 prop="status"
-                label="信息状态">
+                label="信息状态" width="80">
+                <template slot-scope="scope">
+                    <!-- {{scope.row.status}} -->
+                    <span v-show="scope.row.status == 1">有效</span>
+                    <span v-show="scope.row.status == 2">失效</span>
+                    <span v-show="scope.row.status == 3">完成</span>
+                </template>
             </el-table-column>
             <el-table-column
                 prop="longitude,latitude "
@@ -98,7 +104,7 @@
             </el-table-column>
             <el-table-column
                 prop="sendNumber"
-                label="下发次数">
+                label="下发次数" width="80">
             </el-table-column>
             <el-table-column
                 prop="datasource"
@@ -137,7 +143,12 @@ export default {
                 index: 0,
                 size: 10,
                 total: 0,
-            }
+            },
+            statusList: [
+                { id: 1, name: '有效', key: 1},
+                { id: 2, name: '失效', key: 2},
+                { id: 3, name: '完成', key: 3},
+            ]
         }
     },
     methods: {

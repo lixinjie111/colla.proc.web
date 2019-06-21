@@ -102,8 +102,7 @@ export default {
                 response => {
                     if (response.status >= 200 && response.status < 300) {
 
-                        let t = response.data ? response.data : [];
-                        
+                        let t = response.data ? response.data : [];                        
 
                         for(let i=0;i<t.length;i++){
                             let item = t[i];
@@ -111,29 +110,20 @@ export default {
                             // let icon = 'https://webapi.amap.com/theme/v1.3/markers/n/mark_b.png';
                             if(item.icon){
                                 icon = this.iconPath + item.icon;
-                            }
-              
-                            // 给marker添加点击事件
-                            // marker.on('click',this.markerClick);
-                            // let tid = item.eventType + item.longitude + '_' + item.latitude;
-                            // let id = this.generataIcoName(tid);
+                            }              
+                          
                             let lon = item.longitude;
                             let lat = item.latitude;                            
                             let id = item.taskCode;
-                            let size = [30,30];
-                            // let offset = [];
+                            let size = [30,30];                           
 
                             let bgImgId = 'bg_' + id;
-                            let bgImgSrc = 'static/images/ico-bg2.png';
-                            let bgImgOffset = [15,15];
-                            let bgImgSize = [44,58]
-                            // this.$refs.refTusvnMap.addImgOverlay( bgImgId, bgImgSrc, null, lon, lat, bgImgId, bgImgOffset, null );
+                            let bgImgSrc = 'static/images/ico-bg2.png';                            
+                            let bgImgSize = [44,58];
+                            let bgImgOffset = [0,0];                            
+                            this.$refs.refTusvnMap.addImg(lon, lat, bgImgId,this.mapLayer.messageBg,bgImgSrc,bgImgSize,0,true,1,bgImgOffset,1,[0.5,1]);                            
 
-                            // lon,lat,id,layerId,carImgUrl,size,rotation,rotateWithView,opacity,offset,scale
-                            this.$refs.refTusvnMap.addImg(lon, lat, bgImgId,this.mapLayer.messageBg,bgImgSrc,bgImgSize);
-
-                            // id, imgUrl, courseAngle, lon, lat, bdata, offset, callback
-                            let imgOffset = [0,-5];
+                            let imgOffset = [0,-34];
                             this.$refs.refTusvnMap.addImgOverlay( id, icon, null, lon, lat, id, imgOffset, (e) => {
                                 
                                 e.preventDefault();
@@ -148,12 +138,8 @@ export default {
                                 };
 
                                 this.cricleID = 'icon_' + item.id;  
-
                                 this.$refs.refTusvnMap.addMyInfoWindow(marker);
 
-                                //lon, lat, radius, id,fillColor,strokeColor, lineCap, lineJoin, lineDash, lineDashOffset, miterLimit, width, layerId
-                                
-                                
                             }); 
                             this.pubMsgList.push(item);                            
                             // this.$refs.refTusvnMap.centerAt(116.448583,39.930821);

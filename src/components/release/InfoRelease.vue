@@ -41,7 +41,7 @@
                 <div class="yk-card-title">
                     <span>{{item.num}}</span>
                 </div>
-            </el-card>           
+            </el-card>
 
         </div>
 
@@ -63,7 +63,7 @@
 
                 <el-form-item class="yk-f-right">
                      <!-- :collapse-tags='collapseTags' -->
-                    <el-select placeholder="POI" multiple v-model="search.poi" value-key="value" @remove-tag="removeTagClick($event);">                                    
+                    <el-select placeholder="POI" multiple v-model="search.poi" value-key="value" collapse-tags @remove-tag="removeTagClick($event);">                                    
                         <el-option-group v-for="(group,groupIndex) in poiGruop" label="POI" :key="groupIndex">            
                             <template v-for="(item,index) in poiList">
                                 <el-option :key="index" :value="item.name" @click.native="poiClick(item);">
