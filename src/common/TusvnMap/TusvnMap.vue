@@ -26,9 +26,9 @@
                         <el-row class="yk-pad-10 yk-bottom-border">
                             <label class="yk-info-window-title">交通信息发布</label>                        
                         </el-row>
-                        <el-row class="yk-pad-1040">
-                            <!-- :model="ruleForm" :rules="rules"-->
-                            <el-form ref="ruleForm" size="mini" label-width="100px" class="demo-ruleForm yk-left">
+                        <el-row class="yk-pad-1040">                            
+                            
+                            <el-form ref="ruleFormMap" :rules="rules" :model="trafficInfo" size="mini" label-width="108px" class="demo-ruleForm yk-left">
 
                                 <el-form-item label="信息类型" class="yk-bottom-6">                               
                                     <label>{{trafficInfo.eventName}}</label>
@@ -42,21 +42,21 @@
                                     <el-slider v-model="trafficInfo.affectRange" :marks="broadcastRangeMarks" :max="broadcastMax" :step="broadcastStep" @change="sliderChange"></el-slider>
                                 </el-form-item>
 
-                                <el-form-item label="信息内容" prop="name" class="yk-bottom-6">
+                                <el-form-item label="信息内容" prop="content" class="yk-bottom-16">
                                     <el-input type="textarea" size="mini" v-model="trafficInfo.content"></el-input>
                                 </el-form-item>
 
-                                <el-form-item label="默认广播频率" prop="frequency" class="yk-bottom-6">
+                                <el-form-item label="默认广播频率" prop="frequency" class="yk-bottom-12">
                                     <el-input size="mini" v-model="trafficInfo.frequency">
                                         <template slot="append">
                                             <select class="yk-w-60 yk-border-left-none" v-model="select.frequencyUnit">
                                                 <option v-for="(item,index) in frequencyUnitList" :key="index" :value="item">{{item.name}}</option>
                                             </select>
                                         </template>
-                                    </el-input>                                                
-                                </el-form-item>                               
+                                    </el-input>
+                                </el-form-item>
                                 
-                                <el-form-item label="发送生效时间" prop="" class="yk-bottom-6">
+                                <el-form-item label="发送生效时间" prop="beginTime" class="yk-bottom-12">
                                     <el-date-picker
                                         v-model="trafficInfo.beginTime"
                                         type="datetime"
@@ -64,7 +64,7 @@
                                     </el-date-picker>
                                 </el-form-item>
 
-                                <el-form-item label="发送失效时间" prop="" class="yk-bottom-6">
+                                <el-form-item label="发送失效时间" prop="endTime" class="yk-bottom-12">
                                     <el-date-picker
                                         v-model="trafficInfo.endTime"
                                         type="datetime"
@@ -72,13 +72,7 @@
                                     </el-date-picker>
                                 </el-form-item>
 
-                                <el-form-item v-show="trafficInfo.isEdit" label="信息来源" class="yk-bottom-6">
-                                    <!-- <el-select size="mini" v-model="select.datasource" placeholder="请选择">
-                                        <template v-for="(item,index) in datasourceList">
-                                            <el-option :key="index" :label="item.name" :value="item">{{item.name}}</el-option>
-                                            <el-option :key="index" label="test" value="test">test</el-option>
-                                        </template>
-                                    </el-select> -->
+                                <el-form-item v-show="trafficInfo.isEdit" prop="datasource" label="信息来源" class="yk-bottom-12">                                    
                                     <select v-model="select.datasource">
                                         <option v-for="(item,index) in datasourceList" :key="index" :value="item">{{item.name}}</option>                                        
                                     </select>
@@ -89,16 +83,13 @@
                                     <el-button class="yk-w-80" type="info" v-show="!trafficInfo.isEdit" @click="closeInforWindow($event);">取消</el-button>
 
                                     <el-button class="yk-w-80" type="warning" v-show="trafficInfo.isEdit" @click="updateInfo($event);">更新</el-button>
-                                    <el-button type="info" v-show="trafficInfo.isEdit" @click="destroyInfo($event);">手动失效</el-button>
-                                    
+                                    <el-button type="info" v-show="trafficInfo.isEdit" @click="destroyInfo($event);">手动失效</el-button>                                    
                                 </el-form-item>
 
                             </el-form>
                         </el-row>
                     </div>
-                    
                 </div>
-
             </div>
         </template>
     </div>
@@ -130,6 +121,7 @@ import Point from 'ol/geom/Point';
 import MousePosition from 'ol/control/MousePosition.js';
 import * as mapInit from './MapUtils.js';
 
+import TDate from '@/common/date.js'
 
 export default {
     name:"TusvnMap",
@@ -155,6 +147,7 @@ export default {
             // 交通信息发布系统
             showTrafficInfoPop: false,
             ruleForm: {
+                eventName: '',
                 eventType: '',
                 name: '',
                 eventCategory: '',
@@ -163,7 +156,24 @@ export default {
                 delivery: false,
                 content: '',
             },
-            rules: {},
+            rules: {                
+                content: [
+                    { required: true, message: '请输入默认信息内容', trigger: 'blur' },
+                    // { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+                ],
+                frequency: [
+                    { required: true, message: '请填写默认广播频率', trigger: 'blur' },
+                ],
+                // beginTime: [
+                //     { type: 'date', required: true, message: '发送生效时间', trigger: 'change' },
+                // ],
+                // endTime: [
+                //     { type: 'date', required: true, message: '发送失效时间', trigger: 'change' },
+                // ],
+                datasource: [
+                    { required: true, message: '请选择信息来源', trigger: 'change' }
+                ],
+            },
 
             trafficInfo : {
                 id: '',
@@ -178,8 +188,8 @@ export default {
                 content: '',
                 frequency: 500,
                 frequencyUnit: '',
-                beginTime: '',
-                endTime: '',
+                beginTime: TDate.formatTime(),
+                endTime: TDate.formatTime(),
                 datasource: '',
             },
             frequencyUnitList: [],
@@ -214,6 +224,21 @@ export default {
     watch:{
     },
     methods: {
+        submitForm(formName='ruleFormMap') {
+            let bool = false;
+            this.$refs[formName].validate((valid) => {
+                if (valid) {           
+                    bool = true;
+                } else {
+                    console.log('error submit!!');
+                    bool = false;
+                }
+            });
+            return bool;
+        },
+        resetForm(formName='ruleFormMap') {
+            this.$refs[formName].resetFields();
+        },
         
         // 表单事件
         sliderChange(value){
@@ -227,6 +252,8 @@ export default {
             this.trafficInfo.frequencyUnit = this.select.frequencyUnit ? (this.select.frequencyUnit.key ? this.select.frequencyUnit.key : '') : '';
             this.trafficInfo.affectRange = this.select.sliderVal;
 
+            if(!this.submitForm()) return; 
+
             this.$emit('PublishInfo',this.trafficInfo);
             this.closeMyInfoWindow();
         },        
@@ -236,15 +263,17 @@ export default {
             this.trafficInfo.frequencyUnit = this.select.frequencyUnit ? (this.select.frequencyUnit.key ? this.select.frequencyUnit.key : '') : '';
             this.trafficInfo.affectRange = this.select.sliderVal;
 
+           if(!this.submitForm()) return; 
+
             this.$emit('UpdateInfo',this.trafficInfo);
             this.closeMyInfoWindow();
         },
         destroyInfo(e){           
-
             this.$emit('DestroyInfo',this.trafficInfo);
             this.closeMyInfoWindow(e);
         },
         closeInforWindow(e){
+            this.resetForm();
             this.closeMyInfoWindow();
         },
         initDatasourceList(isEdit=false,datasource){
