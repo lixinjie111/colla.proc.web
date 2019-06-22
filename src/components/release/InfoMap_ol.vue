@@ -4,15 +4,15 @@
             ref="refTusvnMap"   
             style="height: 998px;"  
             class="ref-map" 
-            targetId="ddd" 
-            overlayContainerId="ccc" 
-            :isMasker='false' 
+            targetId="ddd"
+            overlayContainerId="ccc"
+            :isMasker='false'
             :isCircle='false'
             
             @MapClick="mapClick"
-            @ExtentChange="extentChange"  
+            @ExtentChange="extentChange"
             @ViewLevelChange="viewLevelChange"
-            @MapInitComplete='mapInitComplete'                
+            @MapInitComplete='mapInitComplete'
 
             @PublishInfo = 'publishInfo' 
             @UpdateInfo = 'updateInfo'
@@ -134,6 +134,7 @@ export default {
                                     lon: lon,
                                     lat: lat,
                                     isEdit: true,
+                                    icon: this.iconPath + this.msgTypeInfo.icon,            
                                     trafficInfo: this.trafficInfo,
                                 };
 
@@ -431,6 +432,9 @@ export default {
             let tomorrow = (new Date()).getTime() + 24 * 60 * 60 * 1000;
             let endTime = TDate.formatTime(tomorrow);
 
+            console.log('this.msgTypeInfo --- ' + JSON.stringify(this.msgTypeInfo))
+            debugger
+
             this.trafficInfo = {
                 title: '信息发布',
                 isEdit: false,
@@ -453,11 +457,14 @@ export default {
                 lat: lat,
                 trafficInfo: this.trafficInfo,
                 isEdit: false,
+                icon: this.iconPath + this.msgTypeInfo.icon,     
             };
             
             this.$refs.refTusvnMap.addMyInfoWindow(marker);
             // this.$refs.refTusvnMap.addInfoWindow(marker);
-
+            
+            
+            
         },
        
         mapInitComplete:function(tusvnmap){
@@ -499,7 +506,7 @@ export default {
 
 <style scoped>
 .yk-pointer-ico{
-    cursor: url('position.png'), default;
+    cursor: url('position3.png') 8 24 , url('position3.png') , auto;
 }
 .yk-pointer-normal{
     cursor: default;

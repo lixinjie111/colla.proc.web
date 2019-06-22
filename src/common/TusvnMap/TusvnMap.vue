@@ -491,17 +491,20 @@ export default {
                 this.$data.overlays[obj.id]=overlay;
                 this.$data.map.addOverlay(overlay);
                 overlay.setPosition([obj.lon,obj.lat]);
+
+                // 设置偏移
+                overlay.setOffset([0,-29]);
             });
 
             this.circleID= 'circle_' + obj.id;
             this.circleLon = obj.lon;
             this.circleLat = obj.lat;
-            this.drawBgCircle(obj.lon,obj.lat);
+            this.drawBgCircle(obj.lon,obj.lat);         
 
-            this.pubMsgIconID = 'pub_msg_ico_' + obj.id;
-            // let icoSrc = obj.
-            // this.drawPubMsgIcon(lon,lat,);
-
+            if(!obj.isEdit){
+                this.pubMsgIconID = 'pub_msg_ico_' + obj.id;
+                this.drawPubMsgIcon(obj.lon,obj.lat,obj.icon);
+            }
         },
         // 画圆形背景图片
         drawBgCircle(lon,lat){
@@ -513,17 +516,28 @@ export default {
         clearCircle(){
             // MessageLayer
             if(!this.circleID) return;
+            
             this.removeFeature(this.circleID,'MessageLayer');
         },
         // 画 发布信息图标
         drawPubMsgIcon(lon,lat,icon){
-
             // lon,lat,id,layerId,carImgUrl,size,rotation,rotateWithView,opacity,offset,scale
-            this.addImg(lon,lat,this.pubMsgIconID,'MessageLayer',icon)            
+            let pubMsgBgIco = 'static/images/ico-bg2.png';
+            let pubMsgBgIcoID = 'bg_' + this.pubMsgIconID;
+
+            // [44,58]
+            this.addImg(lon,lat,pubMsgBgIcoID,'MessageLayer',pubMsgBgIco,[44,87],null,null,null,[0,15]);
+
+            // [22,37]
+            this.addImg(lon,lat,this.pubMsgIconID,'MessageLayer',icon,[22,66],null,null,null,[0,15]);
         },
         // 移除 发布信息图标
         clearPubMsgIcon(){
             if(!this.pubMsgIconID) return;
+
+            let pubMsgBgIcoID = 'bg_' + this.pubMsgIconID;
+
+            this.removeFeature(pubMsgBgIcoID,'MessageLayer');
             this.removeFeature(this.pubMsgIconID,'MessageLayer');
         },
 
@@ -533,6 +547,7 @@ export default {
         closeMyInfoWindow:function(e){
 
            this.clearCircle();
+           this.clearPubMsgIcon();
            this.resetForm();
 
            // 关闭信息框
@@ -773,14 +788,11 @@ export default {
         * @param {Array.<number>} anchor Anchor. Default value is the icon center.
         */
         addImg:function(lon,lat,id,layerId,carImgUrl,size,rotation,rotateWithView,opacity,offset,scale,anchor){
-        let carStyle = new Style({
-        image:mapInit.generateIcon(carImgUrl||"../../static/assets/images/geolocation_marker_heading.png",size||[22,37],rotation||0,rotateWithView||true,opacity||1,offset||[0,0],scale,anchor)
-        });
-        mapInit.addPoint(lon,lat,id,carStyle,this.getLayerById(layerId));
-        },
-
-
-        
+            let carStyle = new Style({
+                image:mapInit.generateIcon(carImgUrl||"../../static/assets/images/geolocation_marker_heading.png",size||[22,37],rotation||0,rotateWithView||true,opacity||1,offset||[0,0],scale,anchor)
+            });
+            mapInit.addPoint(lon,lat,id,carStyle,this.getLayerById(layerId));
+        },       
 
         /**                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
          * 向地图中添加规则图形形点
