@@ -32,24 +32,47 @@
             </el-card> -->
 
             <el-card v-for="(item,index) in statisicsData" :key="index" :body-style="{ padding: '0px' }">
-                <!-- 背景图片 -->
-                <!-- <img src="static/images/ico-bg.png" class="image-bg">
-                <img :src="iconPath + item.icon" class="image"> -->
-                <div class="image-box">
-                    <img :src="iconPath + item.icon" class="image">
-                </div>
-                <div class="yk-card-title">
-                    <span>{{item.num}}</span>
-                </div>
+                <div class="react-bg">
+                    <!-- 背景图片 -->
+                    <!-- <img src="static/images/ico-bg.png" class="image-bg">
+                    <img :src="iconPath + item.icon" class="image"> -->
+                    <div class="image-box">
+                        <img :src="iconPath + item.icon" class="image">
+                    </div>
+                    <div class="yk-card-title">
+                        <span>{{item.num}}</span>
+                    </div>
+                </div>                
             </el-card>
 
         </div>
 
+        
+
+
         <!-- 右侧信息 -->
         <div class="yk-right">
+
+            <!-- <div class="yk-block yk-f-right">
+                <select class="yk-select yk-135" label="POI" placeholder="POI">
+                    <option v-for="(item,index) in poiList" :key="index" :value="item.name" @click="poiClick(item);">
+                        {{item.name}}
+                    </option>
+                </select>
+            </div>
+        
+            <div class="yk-block yk-f-right">
+                <select class="yk-select yk-135" label="发布信息" placeholder="发布信息">
+                    <option v-for="(item,index) in pubMsgList" :key="index" :value="item" @click="pubMsgClick(item);">
+                        {{item.name}}
+                    </option>
+                </select>
+            </div> -->
+
+
             <el-form size="mini">
 
-                <el-form-item class="yk-f-right">
+                <el-form-item class="yk-form-item yk-f-right">
                     <el-select placeholder="发布信息" v-model="search.pubMsg" :clearable='clearPoiSelect' value-key="name" @clear="clearPubMsgClick($event);">                        
                         <el-option-group v-for="(group,groupIndex) in pubMsgGroup" label="发布信息" :key="groupIndex">
                             <template v-for="(item,index) in pubMsgList">
@@ -59,15 +82,13 @@
                             </template>
                         </el-option-group>
                     </el-select>                    
-                </el-form-item>
+                </el-form-item>                
 
-                <el-form-item class="yk-f-right">
-                     <!-- :collapse-tags='collapseTags' -->
+                <el-form-item class="yk-form-item yk-f-right yk-border-r">                    
                     <el-select placeholder="POI" multiple v-model="search.poi" value-key="value" collapse-tags @remove-tag="removeTagClick($event);">                                    
                         <el-option-group v-for="(group,groupIndex) in poiGruop" label="POI" :key="groupIndex">            
                             <template v-for="(item,index) in poiList">
-                                <el-option :key="index" :value="item.name" @click.native="poiClick(item);">
-                                    <!-- <el-checkbox v-model="olMarker[item.value]"></el-checkbox> -->                                    
+                                <el-option :key="index" :value="item.name" @click.native="poiClick(item);">                                                           
                                     {{item.name}}                                
                                 </el-option>
                             </template>
@@ -153,21 +174,13 @@ export default {
         },
 
         initPubMsgList(){
-            let url = 'event/info/queryPage';
-            let params = {
-                code: this.search.code,
-                "page": {    
-                    "pageIndex": 0,
-                    "pageSize": 100,
-                },
-            };
+            let url = 'event/info/queryAll';
+            let params = {};
             this.$api.post( url,params,
                 response => {
                     if (response.status >= 200 && response.status < 300) {
 
-                        this.pubMsgList = response.data.list;
-                      
-                        // this.paging.total = response.data.totalCount;
+                        this.pubMsgList = response.data ? response.data : [];                      
                         
                     } else {                     
                         this.$message("获取信息类型列表失败  ！"); 
@@ -225,11 +238,36 @@ export default {
 </script>
 <style scoped>
 
+    .el-select-group__wrap{
+        background: #666!important;        
+    }
+    .el-select-dropdown__item{
+        color: #fff!important;
+    }
+    .hover{
+        color: #F59307!important;
+        background: #666!important;
+    }
+    .selected{
+        color: #F59307!important;
+        background: #666!important;
+    }
+   
+
     .el-card{
-        width: 80px;
-        height: 80px;
-        padding: 6px;
         margin-bottom: 20px;
+        width: 94px;
+        background: transparent;
+        border: 0px;
+    }
+    .react-bg{
+        width: 94px;
+        height: 94px;
+        /* background-image: url('rect.png');
+        background-repeat: no-repeat;
+        background-size: 100% 100%; */
+        background-color: rgba(255,255,255,0.7);
+        box-shadow: #F59307;
     }
     .image-bg{
         /* top: 3px;
@@ -240,6 +278,10 @@ export default {
         margin: 0 auto;
     }
     .image-box{
+        top: 12px;
+        left: 0px;
+        right: 0px;
+        position: relative;
         width: 44px;
         height: 44px;
         margin: 0 auto;
@@ -281,14 +323,25 @@ export default {
         position: absolute;
     }
 
+    .yk-form-item{
+        width: 150px;
+        background: #666!important;
+    }
+    .yk-border-r{
+        border-right: 1px solid rgb(145, 143, 143)!important;
+    }
+
     .yk-f-right{
-        float: right;
+        float: right;        
+    }
+
+    .yk-r-10{
         margin-right: 10px;
     }
 
     .yk-card-title{
         color: #F59307;
-        padding-top: 3px;
+        padding-top: 18px;
         font-weight: bold;
         font-size: 16px;
         user-select: none;
@@ -301,7 +354,10 @@ export default {
         background: #ffffff;
     }
 
-    
+    .yk-135{
+        width: 135px;
+        font-size: 14px;
+    }
 
 </style>
 

@@ -35,7 +35,7 @@
             <el-input size="mini" v-model="data.frequency">             
             
               <template slot="append">
-                <select class="yk-w-60 yk-border-left-none" v-model="data.frequencyUnit" placeholder="请选择">
+                <select class="yk-w-60 yk-border-left-none yk-input-select" v-model="data.frequencyUnit" placeholder="请选择">
                     <option v-for="(item,index) in frequencyUnitList" :key="index" :value="item.key">{{item.name}}</option>
                 </select>
               </template>
@@ -57,8 +57,7 @@
 
         <el-form-item label="子类型代码" prop="infoType">
             <el-input size="mini" v-model="data.infoType"></el-input>
-        </el-form-item>
-        
+        </el-form-item>        
    
     </el-form>
 </template>
@@ -269,4 +268,6 @@
   padding-left: 20px;
   padding-right: 20px;
 }
+
+
 </style>

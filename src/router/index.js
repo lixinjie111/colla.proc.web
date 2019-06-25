@@ -7,9 +7,19 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'index',
-      redirect: 'infoRelease'
+      name: 'login',
+      redirect: 'Login'
     },
+    {
+      path: '/login',
+      name: 'index',
+      component: ()=> import('@/components/Login.vue')
+    },
+    // {
+    //   path: '/',
+    //   name: 'index',
+    //   redirect: 'infoRelease'
+    // },
     {
       path: '/infoRelease',
       name: 'InfoRelease',

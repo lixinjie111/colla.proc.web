@@ -18,7 +18,11 @@
         
         <template>
             <div v-show="showTrafficInfoPop" id="traffic-info-release-popup" class="ol-popup yk-pointer-normal" >
-                <a href="#" overlayid="traffic-info-release" id="traffic-info-release-popup-closer" class="ol-popup-closer" @click="closeMyInfoWindow($event)"></a>
+
+                <!-- <a href="#" overlayid="traffic-info-release" id="traffic-info-release-popup-closer" class="ol-popup-closer" @click="closeMyInfoWindow($event)"></a> -->
+
+                <img class="yk-close-btn" src="static/images/close.png" @click="closeMyInfoWindow($event)">
+
                 <div id="traffic-info-release-popup-content">
                     <!-- <span v-html="popupData.content"></span> -->
 
@@ -30,33 +34,39 @@
                             
                             <el-form ref="ruleFormMap" :rules="rules" :model="trafficInfo" size="mini" label-width="108px" class="demo-ruleForm yk-left">
 
-                                <el-form-item label="信息类型" class="yk-bottom-6">                               
+                                <el-form-item label="信息类型" class="yk-bottom-6 yk-txt">
                                     <span>{{trafficInfo.eventName}}</span>
                                 </el-form-item>
 
-                                <el-form-item label="中心位置" prop="name" class="yk-bottom-6">                                
+                                <el-form-item label="中心位置" prop="name" class="yk-bottom-6 yk-txt">                                
                                     <span>{{trafficInfo.longitude + ',' + trafficInfo.latitude}}</span>
                                 </el-form-item>
 
-                                <el-form-item label="广播范围" prop="name" class="yk-bottom-6" style="height: 50px;">
+                                <el-form-item label="广播范围" prop="name" class="yk-bottom-6 yk-txt" style="height: 50px;">
                                     <el-slider v-model="trafficInfo.affectRange" :marks="broadcastRangeMarks" :max="broadcastMax" :step="broadcastStep" @change="sliderChange"></el-slider>
                                 </el-form-item>
 
-                                <el-form-item label="信息内容" prop="content" class="yk-bottom-16">
+                                <el-form-item label="信息内容" prop="content" class="yk-bottom-16 yk-txt">
                                     <el-input type="textarea" size="mini" v-model="trafficInfo.content"></el-input>
                                 </el-form-item>
 
-                                <el-form-item label="默认广播频率" prop="frequency" class="yk-bottom-12">
+                                <el-form-item label="默认广播频率" prop="frequency" class="yk-bottom-12 yk-txt">
                                     <el-input size="mini" v-model="trafficInfo.frequency">
+
                                         <template slot="append">
-                                            <select class="yk-w-60 yk-border-left-none" v-model="select.frequencyUnit">
+                                            <select class="yk-w-60 yk-input-select-2" v-model="select.frequencyUnit">
                                                 <option v-for="(item,index) in frequencyUnitList" :key="index" :value="item">{{item.name}}</option>
                                             </select>
                                         </template>
+
+                                        <!-- <el-select  v-model="select.frequencyUnit" slot="append" placeholder="请选择" value-key="name">
+                                            <el-option v-for="(item,index) in frequencyUnitList" :key="index" :value="item"></el-option>                                            
+                                        </el-select> -->
+
                                     </el-input>
                                 </el-form-item>
                                 
-                                <el-form-item label="发送生效时间" prop="beginTime" class="yk-bottom-12">
+                                <el-form-item label="发送生效时间" prop="beginTime" class="yk-bottom-12 yk-txt">
                                     <el-date-picker
                                         v-model="trafficInfo.beginTime"
                                         type="datetime"
@@ -64,7 +74,7 @@
                                     </el-date-picker>
                                 </el-form-item>
 
-                                <el-form-item label="发送失效时间" prop="endTime" class="yk-bottom-12">
+                                <el-form-item label="发送失效时间" prop="endTime" class="yk-bottom-12 yk-txt">
                                     <el-date-picker
                                         v-model="trafficInfo.endTime"
                                         type="datetime"
@@ -72,10 +82,20 @@
                                     </el-date-picker>
                                 </el-form-item>
 
-                                <el-form-item v-show="trafficInfo.isEdit" prop="datasource" label="信息来源" class="yk-bottom-12">                                    
-                                    <select v-model="select.datasource">
+                                <el-form-item v-show="trafficInfo.isEdit" prop="datasource" label="信息来源" class="yk-bottom-12  yk-txt">                                    
+                                    <select class="yk-select" v-model="select.datasource">
                                         <option v-for="(item,index) in datasourceList" :key="index" :value="item">{{item.name}}</option>                                        
                                     </select>
+
+                                    <!-- <el-select v-model="select.datasource" placeholder="请选择" value-key="name" class="yk-txt">
+                                        <el-option
+                                        v-for="(item,index) in datasourceList"
+                                        :key="index"
+                                        :label="item.name"
+                                        :value="item">
+                                        </el-option>
+                                    </el-select> -->
+
                                 </el-form-item>
 
                                 <el-form-item style="text-align:right;">
@@ -358,7 +378,9 @@ export default {
                         this.trafficInfo.frequencyUnit = response.data.frequencyUnit; 
                         this.trafficInfo.beginTime = response.data.beginTime; 
                         this.trafficInfo.endTime = response.data.endTime; 
-                        this.trafficInfo.datasource = response.data.datasource;                                 
+                        this.trafficInfo.datasource = response.data.datasource;     
+                        this.trafficInfo.infoType = response.data.infoType;
+                        this.trafficInfo.sendChannel = response.data.sendChannel;                           
 
                         if(response.data.status == 200){                            
                             this.$message('获取详情成功！');
@@ -462,9 +484,6 @@ export default {
 
         addMyInfoWindow: function(obj){
 
-            console.log('addMyInfoWindow --- ' + obj);
-            // debugger
-            
             this.trafficInfo.id = obj.id;
             this.trafficInfo.eventName = obj.trafficInfo.eventName;
             
@@ -1077,7 +1096,7 @@ export default {
     }
 }
 </script>
-<style>
+<style scoped>
 
     #map {
         width: 100%;
@@ -1109,11 +1128,15 @@ export default {
 
     .ol-popup {
         position: absolute;
-        background-color: white;
+
+        /* background-color: white; */
+        background-color: #333333;
+        color: #fff;
+
         -webkit-filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
         filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
-        padding: 15px;
-        border-radius: 10px;
+        /* padding: 15px; */
+        /* border-radius: 10px; */
         border: 1px solid #cccccc;
         bottom: 12px;
         left: -50px;
@@ -1143,22 +1166,54 @@ export default {
     .ol-popup-closer {
         text-decoration: none;
         position: absolute;
-        top: 18px;
-        right: 18px;
+        top: 10px;
+        right: 10px;
+        /* top: 18px;
+        right: 18px; */
         font-size: 16px;
-        color: #F59307;
+        color: #fff;
+        /* color: #F59307; */
         cursor: pointer;
         z-index: 9999;
     }
     .ol-popup-closer:hover{
-        color: rgb(238, 195, 131);
+        color: rgb(224, 217, 205);
+        /* color: rgb(238, 195, 131); */
     }
     .ol-popup-closer:after {
-        content: "✖";        
+        content: "✖";
     }
    
 
     .yk-pointer-normal{
         cursor: default;
     }
+
+    .yk-close-btn{
+        top: 13px;
+        right: 10px;
+        position: absolute;
+        width: 12px;
+        cursor: pointer;
+        z-index: 2001;
+    }
+    .yk-close-btn:hover{
+        opacity: 0.6;
+    }
+
+    .el-textarea__inner{
+        border: 0px!important;
+        background: rgb(102, 102, 102)!important;
+        border: 0px!important;
+        border-radius: 0px!important;
+        color: #fff!important;
+
+    }
+
+    .el-select-dropdown__list{
+        padding: 0px!important;
+        height: 28px!important;
+        line-height: 28px!important;
+    }
+
 </style>

@@ -11,7 +11,7 @@
     <!-- <script src="https://cache.amap.com/lbs/static/es5.min.js"></script>
     <script src="https://webapi.amap.com/maps?v=1.4.15&key=fddb3257dbff99ca1637b565e26d4e3d"></script> -->
     <!-- <link rel="stylesheet" href="https://a.amap.com/jsapi_demos/static/demo-center/css/demo-center.css" /> -->
-    <link rel="stylesheet" href="https://a.amap.com/jsapi_demos/static/demo-center/css/demo-center.css"/>
+    <!-- <link rel="stylesheet" href="https://a.amap.com/jsapi_demos/static/demo-center/css/demo-center.css"/> -->
 
       <style>
 
@@ -26,7 +26,7 @@
         .yk-bottom-6 {
             margin-left: 5px!important;
             margin-bottom: 6px!important;
-            color: #606266!important;
+            /* color: #606266!important; */
         }
         .yk-bottom-12 {
             margin-left: 5px!important;
@@ -52,7 +52,8 @@
           padding: 10px 40px!important;
         }
         .yk-bottom-border{
-          border-bottom: 1px solid #ccc;
+          border-bottom: 1px solid #666666;
+          /* border-bottom: 1px solid #ccc; */
         }
         .yk-w-80{
           width: 80px;
@@ -68,9 +69,78 @@
           border-top-left-radius: 0px!important;
           border-bottom-left-radius: 0px!important;
         }
+
+        .yk-input-select{
+            height: 28px;
+            border: 1px solid #DCDFE6;
+            border-top-right-radius: 3px;
+            border-bottom-right-radius: 3px;
+        }
+        .yk-input-select-2{
+          height: 28px;
+          background: #666;
+          border: 1px solid #666;
+          border-left: 1px solid #555454;
+          border-top-left-radius: 0px!important;
+          border-bottom-left-radius: 0px!important;
+          color: #fff;
+        }
+        .yk-input-select-2:hover{
+          border: 1px solid #666;
+        }
+
+        .yk-select{
+          padding: 0px 15px;
+          height: 28px;
+          line-height: 28px;
+          width: 220px;
+          background: #666;
+          color: #fff;
+          border: 0px;
+        }
+        
+        .yk-txt .el-input__inner{
+          background: #666666;
+          color: #fff;
+          border: 0px;
+          border-radius: 0px;
+
+        }
+        .yk-txt .el-textarea__inner{
+          border: 0px!important;
+          background: rgb(102, 102, 102)!important;
+          border: 0px!important;
+          border-radius: 0px!important;
+          color: #fff!important;
+        }
+
+        .yk-txt .el-select-dropdown__item{
+          background: #888!important;
+          height: 28px!important;
+          line-height: 28px!important;
+        }
+
+        .yk-txt .el-popper{
+          border-bottom-color: #888888!important;
+        }
+
+        .yk-txt .el-select-dropdown__list{
+          padding: 0px!important;
+          height: 28px!important;
+          line-height: 28px!important;
+        }
+
+        .yk-txt .el-form-item__label{
+          color: #A6A6A6;
+        }
+        
         
         .amap-info-content{
           padding: 0px!important; 
+        }
+
+        .el-select-dropdown__list{
+          padding: 0px!important;
         }
         .el-slider__marks-text{
           width: 60px;
@@ -122,16 +192,28 @@
 
         .yk-info-window-title{
           font-size: 15px;
-          color: #F59307;
+          color: #fff;
+          /* color: #F59307; */
           font-weight: bold;
         }
         .el-slider__marks-text{
           margin-top: 3px!important;
         }
+
+        .yk-f-right .el-input__inner{
+          background-color: #4D4D4D!important;
+          border: 0px!important;
+          border-radius: 0px!important;
+        } 
+        .yk-f-right .el-tag.el-tag--info{
+          background-color: #666!important;
+          color: #F59307!important;
+        }
+
       </style>
 
-    <script src="https://cache.amap.com/lbs/static/es5.min.js"></script>
-    <script src="https://webapi.amap.com/maps?v=1.4.15&key=fddb3257dbff99ca1637b565e26d4e3d"></script>
+    <!-- <script src="https://cache.amap.com/lbs/static/es5.min.js"></script>
+    <script src="https://webapi.amap.com/maps?v=1.4.15&key=fddb3257dbff99ca1637b565e26d4e3d"></script> -->
   </head>
   <body>
     <div id="app"></div>

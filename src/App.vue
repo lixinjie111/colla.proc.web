@@ -131,7 +131,7 @@ export default {
 .el-header{
   height: 62px!important;
   line-height: 62px!important;
-  background: #FFFFFF;
+  background: #000;
   padding: 0px;
   text-align: right;
   border-bottom: 1px solid #f2f1f1;
@@ -175,6 +175,11 @@ export default {
   right: auto;
 }
 
+.el-submenu [class^=el-icon-]{
+  width: auto!important;
+  margin-right: 0px!important;
+}
+
 
 .yk-menu-item{
   cursor: pointer;
@@ -183,7 +188,7 @@ export default {
   display: inline-block;
   margin-right: 20px;
   cursor: pointer;
-  width: 50px;
+  width: 60px;
   position: relative;
 }
 .yk-title{
@@ -196,7 +201,8 @@ export default {
     margin-top: 0px;
     padding: 12px;
     font-size: 20px;
-    background:#21272F;
+    background:#000;
+    /* background:#21272F; */
 }
 .yk-top{
   vertical-align: top;
@@ -222,10 +228,11 @@ export default {
 .yk-label{
   display: inline-block;
   margin: 0px!important;
+  color: #b5afaf;
 }
 
 .yk-sub-title{
-  margin-left: 38px;
+  margin-left: 27px;
   font-size: 15px;
 }
 </style>

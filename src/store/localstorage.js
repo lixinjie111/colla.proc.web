@@ -1,7 +1,7 @@
 import store from './index'
 import router from '@/router/index'
 
-class CookieUtil {
+class LocalStorageUtil {
     constructor(){
 
     }
@@ -47,4 +47,4 @@ class CookieUtil {
     }
 }
 
-export default CookieUtil
+export default LocalStorageUtil

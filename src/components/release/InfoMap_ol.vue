@@ -73,10 +73,11 @@ export default {
                 content: '',
                 frequency: 500,
                 frequencyUnit: '',
-                 beginTime: TDate.formatTime(),
+                beginTime: TDate.formatTime(),
                 endTime: TDate.formatTime(),
                 datasource: '',
-                trafficSource: '',
+                infoType: '',
+                sendChannel: '',
             },
             isPointerIco: false,    // 是否修改鼠标的图标
             pubMsgList: [],
@@ -134,11 +135,12 @@ export default {
                                     lon: lon,
                                     lat: lat,
                                     isEdit: true,
-                                    icon: this.iconPath + this.msgTypeInfo.icon,            
+                                    icon: this.iconPath + this.msgTypeInfo.icon,
                                     trafficInfo: this.trafficInfo,
+
                                 };
 
-                                this.cricleID = 'icon_' + item.id;  
+                                this.cricleID = 'icon_' + item.id;
                                 this.$refs.refTusvnMap.addMyInfoWindow(marker);
 
                             }); 
@@ -432,9 +434,6 @@ export default {
             let tomorrow = (new Date()).getTime() + 24 * 60 * 60 * 1000;
             let endTime = TDate.formatTime(tomorrow);
 
-            console.log('this.msgTypeInfo --- ' + JSON.stringify(this.msgTypeInfo))
-            debugger
-
             this.trafficInfo = {
                 title: '信息发布',
                 isEdit: false,
@@ -450,6 +449,8 @@ export default {
                 beginTime: beginTime,
                 endTime: endTime,
                 datasource: '',
+                infoType: this.msgTypeInfo.infoType,
+                sendChannel: this.msgTypeInfo.sendChannel,
             };
             let marker = {
                 id: 'marker' + (new Date()).getTime(),
