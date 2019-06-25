@@ -7,10 +7,11 @@ import App from './App'
 import router from './router'
 
 import ElementUI from 'element-ui'
-
+import store from './store/index.js'
 
 import Api from './api/index.js';
 
+import LocalStorageUtil from '@/store/localstorage.js'
 // import AMap from 'vue-amap';
 // Vue.use(AMap);
 
@@ -27,11 +28,29 @@ Vue.prototype.$api = Api;
 //   // 插件集合
 //   plugin: ['AMap.MapType']
 // });
+// 路由拦截器
+router.beforeEach((to, from, next) => {
+  if (to.meta.requireAuth) {  // 判断该路由是否需要登录权限
+      if (LocalStorageUtil.getItem('login')) {  // 通过vuex state获取当前的token是否存在
+          next();
+      }
+      else {
+          next({
+              path: '/login',
+              query: {redirect: to.fullPath}  // 将跳转的路由path作为参数，登录成功后跳转到该路由
+          })
+      }
+  }
+  else {
+      next();
+  }
+})
 
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
   router,
+  store,
   components: { App },
   template: '<App/>'
 })

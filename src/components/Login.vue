@@ -80,16 +80,18 @@ export default {
             },response => {
                 if(response.status >= 200 && response.status < 300){
                     if(response.data.status == 1){
-                        this.$message('showPrompt',response.data.message);
+                        this.$message(response.data.message);
                         return;
                     }else if(response.status == 200){
                         let temp = response.data.body;                            
                         temp = JSON.parse(temp);
                         this.$store.dispatch('login',true,temp);
                         LocalStorageUtil.setItem('login',temp);
+                        LocalStorageUtil.setItem('currentMenu','/infoRelease');
+                        LocalStorageUtil.setItem('currentMenuId','1');
                     
-                        console.log(response.data);
-                        debugger;
+                        // console.log(response.data);
+                        // debugger;
 
                         // LocalStorageUtil.login(tUser);
                         this.$router.push({ path: '/infoRelease' ,params: {key:'登录成功!'}});

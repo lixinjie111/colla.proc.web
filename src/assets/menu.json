@@ -2,7 +2,7 @@
     {
         "id": 1, "name": "信息发布", "path": "/release", "isCheck": false,"css": "yk-tree-li", "ico" : "el-icon-s-promotion",
         "children": [
-            { "id": 10, "name": "信息发布", "path": "/infoRelease", "isCheck": false,"css": "yk-tree-li"}
+            { "id": 10, "name": "信息发布", "path": "/infoRelease", "isCheck": true,"css": "yk-tree-li"}
         ]
     },
     {

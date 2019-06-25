@@ -9,10 +9,27 @@
           <el-menu
             default-active="1-1"
             class="el-menu-vertical-demo"
+            :default-openeds="openedItems"
             >
             <!-- @open="handleOpen"
             @close="handleClose" -->
-            <el-submenu index="1">
+            <el-submenu v-for="(item,index) in menuList"  :key="index" :index="index + ''" >
+              <template slot="title">
+                <i :class="item.ico"></i>
+                <span>{{item.name}}</span>
+              </template>
+              <el-menu-item-group>
+                <template v-for="(sub,skey) in item.children" >
+                  <el-menu-item :key="skey" :index="sub.path" @click="navChange(sub);">
+                    <div class="yk-sub-title" :class="sub.isCheck ? 'yk-tree-select' : ''">{{sub.name}}</div>
+                  </el-menu-item>
+                </template>
+                
+              </el-menu-item-group>
+            </el-submenu>
+
+
+            <!-- <el-submenu index="1">
               <template slot="title">
                 <i class="el-icon-s-promotion"></i>
                 <span>信息发布</span>
@@ -23,6 +40,7 @@
                 </el-menu-item>
               </el-menu-item-group>
             </el-submenu>
+
             <el-submenu index="2">
               <template slot="title">
                 <i class="el-icon-s-order"></i>
@@ -44,7 +62,7 @@
                   <div class="yk-sub-title">信息类型</div>
                 </el-menu-item>
               </el-menu-item-group>
-            </el-submenu>
+            </el-submenu> -->
           </el-menu>
         </el-aside>
         <el-main>
@@ -61,6 +79,13 @@
               <label class="yk-label">用户</label>
 
             </div>
+
+            <div class="yk-header-block">
+              
+              <img class="yk-ico-user" src="static/images/ico-logout.png" @click="logoutClick();">              
+              <label class="yk-label" @click="logoutClick();">登出</label>
+
+            </div>
           </el-header>
           <router-view/>
         </el-main>
@@ -68,20 +93,54 @@
   </div>
 </template>
 <script>
+import LocalStorageUtil from '@/store/localstorage.js'
+import MenuList from './assets/menu.json'
+import { Utils } from '@/common/utils/utils.js'
 export default {
   name: 'App',
   data(){
     return {
-      openedItems: ['1-1']
+      openedItems: ['0','1','2'],
+      menuList: [],
+      collapse: true,
     }
   },
   methods: {
-    navChange(path){
-      this.$router.push(path);
-    }
+    navChange(item){
+      this.$router.push(item.path);
+      LocalStorageUtil.setItem('currentMenu',item.path);
+      Utils.setMenuByPath(item.path);
+     
+    },
+    
+    initMenu(){
+        let url = window.location.hash;
+        // let url = window.location.pathname;
+
+        console.log('url -- ' + url);
+        url = url.slice(1);
+        if(!url){
+          url = '/infoRelease';
+        }
+        Utils.setMenuByPath(url);
+    },
+    logoutClick(){
+      this.$router.push('/login');
+            
+      //  LocalStorageUtil.deleteItem('login');
+       LocalStorageUtil.clearItems();
+    },
   },
   created(){
-    this.$router.push('/');
+    
+    window.onload = () =>{            
+      this.initMenu();           
+    }
+
+    this.menuList = MenuList;
+  },
+  mounted(){
+    this.initMenu();
   }
 }
 </script>
@@ -180,6 +239,9 @@ export default {
   margin-right: 0px!important;
 }
 
+.yk-tree-select{
+  color: #F59307 !important;
+}
 
 .yk-menu-item{
   cursor: pointer;
@@ -229,8 +291,11 @@ export default {
   display: inline-block;
   margin: 0px!important;
   color: #b5afaf;
+  cursor: pointer;
 }
-
+.yk-label:hover{
+  color: #888484;
+}
 .yk-sub-title{
   margin-left: 27px;
   font-size: 15px;
