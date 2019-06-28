@@ -47,6 +47,10 @@
             <el-input type="textarea" v-model="data.content"></el-input>
         </el-form-item>
 
+        <el-form-item label="默认影响范围" prop="alertRadius">
+            <el-input-number size="mini" v-model="data.alertRadius" controls-position="right" :min="1" ></el-input-number>
+        </el-form-item>
+
         <el-form-item label="下发通道" prop="sendChannel">
           <el-select size="mini" v-model="data.sendChannel" placeholder="请选择">
               <template v-for="(item,index) in sendChannelList">

@@ -30,7 +30,7 @@
                         <el-row class="yk-pad-10 yk-bottom-border">
                             <label class="yk-info-window-title">交通信息发布</label>                        
                         </el-row>
-                        <el-row class="yk-pad-1040">                            
+                        <el-row class="yk-pad-1040">
                             
                             <el-form ref="ruleFormMap" :rules="rules" :model="trafficInfo" size="mini" label-width="108px" class="demo-ruleForm yk-left">
 
@@ -44,13 +44,29 @@
 
                                 <el-form-item label="广播范围" prop="name" class="yk-bottom-6 yk-txt" style="height: 50px;">
                                     <el-slider v-model="trafficInfo.affectRange" :marks="broadcastRangeMarks" :max="broadcastMax" :step="broadcastStep" @change="sliderChange"></el-slider>
+                                </el-form-item>                                
+
+                                <el-form-item label="影响路径" prop="alertPath" class="yk-bottom-6 yk-txt">
+
+                                    <!-- <el-input size="mini" v-model="select.alertPath" placeholder="格式：1.1,2.2;3.3,4.4"></el-input> -->
+                                    
+                                    <el-input size="mini" placeholder="格式：1.1,2.2;3.3,4.4" v-model="select.alertPath">
+                                        <template slot="append">
+                                            <el-button class="yk-btn-append" type="primary" @click="addEffectPath();">添加</el-button>
+                                        </template>
+                                    </el-input>
+
+                                </el-form-item>
+
+                                <el-form-item label="影响范围" prop="alertRadius" class="yk-bottom-6 yk-txt">
+                                    <el-input size="mini" v-model="select.alertRadius"></el-input>
                                 </el-form-item>
 
                                 <el-form-item label="信息内容" prop="content" class="yk-bottom-16 yk-txt">
                                     <el-input type="textarea" size="mini" v-model="trafficInfo.content"></el-input>
                                 </el-form-item>
 
-                                <el-form-item label="默认广播频率" prop="frequency" class="yk-bottom-12 yk-txt">
+                                <el-form-item label="发布频率" prop="frequency" class="yk-bottom-12 yk-txt">
                                     <el-input size="mini" v-model="trafficInfo.frequency">
 
                                         <template slot="append">
@@ -58,10 +74,6 @@
                                                 <option v-for="(item,index) in frequencyUnitList" :key="index" :value="item">{{item.name}}</option>
                                             </select>
                                         </template>
-
-                                        <!-- <el-select  v-model="select.frequencyUnit" slot="append" placeholder="请选择" value-key="name">
-                                            <el-option v-for="(item,index) in frequencyUnitList" :key="index" :value="item"></el-option>                                            
-                                        </el-select> -->
 
                                     </el-input>
                                 </el-form-item>
@@ -143,6 +155,8 @@ import * as mapInit from './MapUtils.js';
 
 import TDate from '@/common/date.js'
 
+import axios from 'axios'
+
 export default {
     name:"TusvnMap",
     props:["targetId","overlayContainerId",], //'trafficInfo'
@@ -211,6 +225,8 @@ export default {
                 beginTime: TDate.formatTime(),
                 endTime: TDate.formatTime(),
                 datasource: '',
+                alertRadius: 1024,
+                alertPath: '',              //格式 "[[12.333,23.333],[12.444,23,444]]"，转换显示为 12.333,23.333;12.444,23,444
             },
             frequencyUnitList: [],
             datasourceList: [],
@@ -234,11 +250,26 @@ export default {
                     value: '',
                 },
                 sliderVal: 1000,
+                alertPath: '',// 格式：'12.3,23.3;12.3,23.3;'
             },
             circleRadius: 1000,    // 圆形半径
             circleID: '',
             circleLon: '',
             circleLat: '',
+
+            TempLayer: 'TempLayer',         // 临时层，处理临时数据
+            mapStatus: 'normal',        // 1，normal 正常状态  2，TempLayerInteraction 临时交互 
+            pathPoint: {        // 路径的当前点和上一个点
+                newVal: {
+                    lon: '',
+                    lat: '',
+                },
+                oldVal: {
+                    lon: '',
+                    lat: '',
+                },
+                list: [],
+            },
         }
     },
     watch:{
@@ -267,10 +298,252 @@ export default {
             // this.circleRadius = this.circleRadius + 0.001;
             this.drawBgCircle(this.circleLon,this.circleLat);
         },
+
+        // 添加影响路径
+        // 1 隐藏 弹框 2 画点 鼠标事件处理  点击打点 画线 ，可以点击多个点， 3 点击确定或关闭 清空 点、线、鼠标事件 ，确定则提交数据
+        addEffectPath(){
+            this.closeInforWindow();    // 隐藏 弹框
+            this.pathPoint.newVal.lon = this.trafficInfo.longitude;
+            this.pathPoint.newVal.lat = this.trafficInfo.latitude;
+            this.pathPoint.oldVal.lon = '';
+            this.pathPoint.oldVal.lat = '';
+            this.pathPoint.list = [];
+            this.mapStatus = 'TempLayerInteraction';            
+
+            this.addClickEvent();
+
+            console.log('addEffectPath -- this.trafficInfo.longitude ： ' + this.trafficInfo.longitude + ' ---- this.trafficInfo.latitude : ' + this.trafficInfo.latitude);
+            debugger
+
+            this.addPathIco( this.trafficInfo.longitude, this.trafficInfo.latitude );
+            
+        },
+
+        // 临时交互处理，处理完毕清空TempLayer图层
+        tempLayerInteractive(){
+            
+            
+
+            // 画点 连线 鼠标事件，关闭：清空tempLayer 确定：提交数据
+
+        },
+
+        // 添加 点附近的按钮：关闭，确定
+        addPathIcoBtn(lon,lat){
+
+            // 确定按钮
+            let id = 'path_ico_ok_btn';
+            let imgUrl = 'static/images/ok4.png';
+            let courseAngle = null;
+            let bdata = null;
+            let offset = [50,0];
+            let callback = null;
+            this.addImgOverlay(id, imgUrl, courseAngle, lon, lat, bdata, offset, this.okClick);
+
+            // 关闭按钮
+            let id2 = 'path_ico_close_btn';
+            let imgUrl2 = 'static/images/close4.png';
+            let courseAngle2 = null;
+            let bdata2 = null;
+            let offset2 = [-50,0];
+            let callback2 = null;
+            this.addImgOverlay(id2, imgUrl2, courseAngle2, lon, lat, bdata2, offset2, this.closeClick);
+        },
+
+        // 提交数据
+        okClick(e){
+            this.trafficInfo.alertPath = JSON.stringify(this.pathPoint.list);
+
+            console.log('this.trafficInfo' + this.trafficInfo.alertPath);
+            debugger
+
+            if(this.trafficInfo.isEdit){        // 修改
+                this.updateInfo();
+            }else {     // 新增
+                this.publichInfo();
+            }
+            this.clearTempLayer();
+        },
+        // 关闭窗口
+        closeClick(e){
+
+            console.log('close click ---' + e);
+
+            e.preventDefault();
+            e.stopPropagation();
+            this.clearTempLayer();
+        },
+        clearTempLayer(){
+            this.removeAllFeature(this.TempLayer);
+            this.removeAllFeature('vectorLayer_01');
+            this.removeOverlayById('path_ico_ok_btn');
+            this.removeOverlayById('path_ico_close_btn');
+        },
+        
+        // 添加路径
+        addPathIco(lon,lat,type="normal"){            
+            
+            // id, imgUrl, courseAngle, lon, lat, bdata, offset, callback
+            let id = 'temp_' + (new Date()).getTime();
+            let imgUrl = 'static/images/circle11.png';    // 红色
+            let imgUrl2 = 'static/images/circle22.png';    // 绿色
+            let courseAngle = null;
+            let bdata = null;
+            let offset = [-32,-32];
+            // let callback = this.tempClick();
+            let layerId = this.TempLayer;
+            let size = [36,36];
+            let rotation = null;
+            let rotateWithView = null;
+            let opacity = null;
+            let scale = null;
+            let anchor = null;
+
+            let imgPath = type == 'normal' ? imgUrl : imgUrl2;
+
+            console.log('layerId --- ' + layerId);
+            debugger
+            
+            // this.addImgOverlay(id, imgUrl, courseAngle, lon, lat, bdata, offset, callback);
+            // lon,lat,id,layerId,carImgUrl,size,rotation,rotateWithView,opacity,offset,scale,anchor
+            this.addImg(lon,lat,id,layerId,imgPath,size,null,null,null);
+
+        },
+        // 画路径线条
+        addPathLine(startLon,startLat,endLon,endLat){
+
+            // 这里要调用路网系统的接口
+            // // ===============================================
+
+            // 请求后台接口 
+            let url = window.cfg.mapApiUrl + 'route/getRoadCoornatesByCoordinate.do';
+            let params = {
+                edgeTableName: 'dl_shcsq_wgs84_rc_withoutz',
+                vertexTableName: 'dl_shcsq_wgs84_rc_withoutz_vertices_pgr',
+                startX: startLon,
+                startY: startLat,
+                endX: endLon,
+                endY: endLat,
+            };
+
+            let formData = new FormData(); //创建form对象
+
+            formData.append('edgeTableName', 'dl_shcsq_wgs84_rc_withoutz');//通过append向form对象添加数据
+            formData.append('vertexTableName', 'dl_shcsq_wgs84_rc_withoutz_vertices_pgr');//通过append向form对象添加数据
+            formData.append('startX', startLon);//通过append向form对象添加数据
+            formData.append('startY', startLat);//通过append向form对象添加数据
+            formData.append('endX', endLon);//通过append向form对象添加数据
+            formData.append('endY', endLat);//通过append向form对象添加数据
+
+            let config = {
+                headers: {
+                    'Accept': '*/*',
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            }; //添加请求头
+
+            axios.post(url, formData, config)
+                .then(response => {
+                    let pointList = response.data.data ? response.data.data : [];
+                        
+                    let points = [];
+                    for(let i=0;i<pointList.length;i++){
+                        let temp = pointList[i];
+                        points.push([temp.x,temp.y]);
+                    }
+
+                    
+                    let coordinates = points;
+                    let id = 'TempLine_' + (new Date()).getTime();
+                    let color = 'red';
+                    let lineGap = 'round';
+                    let lineJoin = 'round';
+                    let lineDash = [0,5];
+                    let lineDashOffset = 0;
+                    let miterLimit = 10;
+                    let width = 5;
+                    let layerId = this.TempLayer;
+
+                    console.log('id --- ' + id);
+                    console.log('坐标点 ——------ ' + JSON.stringify(coordinates));
+                    debugger
+                    // let arr =  [[121.29600709500005,31.25298004700005],[121.29599668500009,31.252981350000027],[121.29598627400003,31.25298265400005],[121.29597586300008,31.252983957000026],[121.29596545200002,31.25298526000006],[121.29595504100007,31.252986564000025],[121.29594463000001,31.25298786700006],[121.29593421900006,31.252989171000024]];
+
+                    /**
+                     * 添加线条
+                     * @param {Array.<Array.<number>>} coordinates 坐标序列[[112,39],[113,40]]
+                     * @param {string} id 线条的ID
+                     * @param {module:ol/color~Color | module:ol/colorlike~ColorLike} color 颜色值，'black'、'red'、'green'、'white'、'#4271AE' [red, green, blue, alpha]
+                     * @param {string} lineCap 线端点的样式。butt, round, or square.
+                     * @param {string} lineJoin 线连接处的样式。bevel, round, or miter.
+                     * @param {Array.<number>} lineDash 虚线设置。[5,5]
+                     * @param {number} lineDashOffset 默认值是0。
+                     * @param {number} miterLimit 默认值10
+                     * @param {number} width 线宽度
+                     * @param {string} layerId 图层id
+                     */
+                    // coordinates, id, color, lineCap, lineJoin, lineDash, lineDashOffset, miterLimit, width, layerId
+                    // this.addLineString(coordinates, id, color, lineCap, lineJoin, lineDash, lineDashOffset, miterLimit, width, layerId);
+
+                    // this.centerAt(116.38921511745102,39.912577179827466);
+
+                    // "line_01"
+                    this.addLineString(
+                        coordinates,
+                        id,
+                        "red",
+                        "round",
+                        "round",
+                        [5,0],
+                        0,
+                        10,
+                        5,
+                        "vectorLayer_01"
+                    );
+
+                    
+
+                }).catch((error) => {
+
+                }
+            );
+            
+        },
+        tempClick(){
+
+        },
+        hidePopWin(){
+
+        },
+        
+
+        // 转换影响路径
+        converAlertPath(){
+            
+            if(this.select.alertPath && this.select.alertPath.indexOf(';')){
+                let t = this.select.alertPath.split(';');
+                let arr= [];
+
+                for(let i=0;i<t.length;i++){
+                    let m = t[i].split(',');
+                    arr.push(m);
+                }
+                
+                let str = JSON.stringify(arr);
+
+                console.log('converAlertPath --- ' + str)
+                debugger
+
+                return str;
+            }
+            return '';
+        },
         publichInfo(e){
             this.trafficInfo.datasource = this.select.datasource ? (this.select.datasource.key ? this.select.datasource.key : '') : '';
             this.trafficInfo.frequencyUnit = this.select.frequencyUnit ? (this.select.frequencyUnit.key ? this.select.frequencyUnit.key : '') : '';
             this.trafficInfo.affectRange = this.select.sliderVal;
+                                  
+            // this.trafficInfo.alertPath = this.converAlertPath(this.select.alertPath);
 
             if(!this.submitForm()) return; 
 
@@ -282,6 +555,8 @@ export default {
             this.trafficInfo.datasource = this.select.datasource ? (this.select.datasource.key ? this.select.datasource.key : '') : '';
             this.trafficInfo.frequencyUnit = this.select.frequencyUnit ? (this.select.frequencyUnit.key ? this.select.frequencyUnit.key : '') : '';
             this.trafficInfo.affectRange = this.select.sliderVal;
+
+            // this.trafficInfo.alertPath = this.converAlertPath(this.select.alertPath);
 
            if(!this.submitForm()) return; 
 
@@ -380,7 +655,9 @@ export default {
                         this.trafficInfo.endTime = response.data.endTime; 
                         this.trafficInfo.datasource = response.data.datasource;     
                         this.trafficInfo.infoType = response.data.infoType;
-                        this.trafficInfo.sendChannel = response.data.sendChannel;                           
+                        this.trafficInfo.sendChannel = response.data.sendChannel;  
+                        this.trafficInfo.alertRadius = response.data.alertRadius;                         
+                        this.trafficInfo.alertPath = response.data.alertPath;                         
 
                         if(response.data.status == 200){                            
                             this.$message('获取详情成功！');
@@ -436,13 +713,37 @@ export default {
                     zoom: this.$data.zoom
                 })
             });
-           
+            this.addWms("shanghai_qcc:dl_shcsq_wgs84","http://113.208.118.62:8080/geoserver/shanghai_qcc/wms","shanghai_qcc:dl_shcsq_wgs84","",1,true,null); // 上海汽车城
+
             // this.clickEventKey = this.$data.map.on("click",this.mapClick);
             this.$data.map.getView().on("change:resolution",this.viewLevelChange);
             this.$data.map.on("moveend",this.moveEnd);
             
             this.removeClickEvent();
             // unByKey(this.clickEventKey);
+
+            //测试用
+            this.addVectorLayer("vectorLayer_01");
+
+            // 添加临时层
+            this.addVectorLayer(this.TempLayer);
+
+            // this.centerAt(116.38921511745102,39.912577179827466);
+            // this.addLineString([[116.38921511745102,39.912577179827466]
+            //     ,[116.39051330661422,39.91280248538472]
+            //     ,[116.3911033925975,39.91340330020405]
+            //     ,[116.39159691905624,39.91415431872822]
+            //     ,[116.39247668361313,39.914336708941235]],
+            //     "line_01",
+            //     "red",
+            //     "round",
+            //     "round",
+            //     [5,0],
+            //     0,
+            //     10,
+            //     5,
+            //     "vectorLayer_01"
+            // );
         },
 
         addClickEvent(){
@@ -567,7 +868,10 @@ export default {
 
            this.clearCircle();
            this.clearPubMsgIcon();
-           this.resetForm();
+           
+           
+            //重置 表单
+            // this.resetForm();
 
            // 关闭信息框
             let overlayid = 'traffic-info-release';
@@ -580,7 +884,6 @@ export default {
             return false;
         },
         
-
 
         /**
          *关闭信息框
@@ -596,9 +899,46 @@ export default {
         //     console.log(e.target.getAttribute("bdata"));
         // },
         mapClick:function(mevent){
-            this.$emit("MapClick",this,mevent);
 
-            this.removeClickEvent();        // 移除点击事件
+            if(this.mapStatus == 'normal'){
+
+                this.$emit("MapClick",this,mevent);
+                this.removeClickEvent();        // 移除点击事件
+
+            }else if(this.mapStatus == 'TempLayerInteraction'){
+                
+                let lon = mevent.coordinate[0];
+                let lat = mevent.coordinate[1];
+
+                // 把新的坐标赋值给旧的坐标
+                this.pathPoint.oldVal.lon = this.pathPoint.newVal.lon;
+                this.pathPoint.oldVal.lat = this.pathPoint.newVal.lat;
+
+                // 把当前坐标赋值给新的坐标
+                this.pathPoint.newVal.lon = lon;
+                this.pathPoint.newVal.lat = lat;
+                
+                // 第一次点击， 点击同一个位置 不画线
+                // 判断 起点 ，终点
+                if((this.pathPoint.newVal.lon != this.pathPoint.oldVal.lon) && (this.pathPoint.newVal.lat != this.pathPoint.oldVal.lat)){
+                    
+                    
+                    this.addPathLine(this.pathPoint.newVal.lon,this.pathPoint.newVal.lat,this.pathPoint.oldVal.lon,this.pathPoint.oldVal.lat);
+
+                    
+                    // 打点 画线
+                    this.addPathIco(this.pathPoint.newVal.lon,this.pathPoint.newVal.lat,'new');
+                    // 画按钮
+                    this.addPathIcoBtn(this.pathPoint.newVal.lon,this.pathPoint.newVal.lat);
+
+                    // 加点
+                    this.pathPoint.list.push([lon,lat]);
+
+                    // 暂时无法区分覆盖物点击事件和地图点击事件，支持选一个点
+                    // this.removeClickEvent();
+                }               
+               
+            }            
         },
         viewLevelChange:function(mevent){
             let z = parseInt(this.$data.map.getView().getZoom());
@@ -768,7 +1108,7 @@ export default {
            {
                this.$data.map.removeLayer(layer);
            }
-        },        
+        },
         // /**
         //  * 向地图中添加图片
         //  * 

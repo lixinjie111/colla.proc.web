@@ -153,6 +153,8 @@ export default {
                 eventCategory: '',  // 信息所属分类
                 sendChannel: '',      // 下发通道
                 infoType: '',       // 子类型代码
+                alertRadius: 1024,    // 默认影响范围
+                alertPath: '',      // 影响路径
             }
         },
         initData(){
@@ -323,6 +325,7 @@ export default {
                 content: data.content,
                 sendChannel: data.sendChannel,
                 infoType: data.infoType,
+                alertRadius: data.alertRadius,
             };
             this.$api.post( url,params,
                 response => {

@@ -78,6 +78,8 @@ export default {
                 datasource: '',
                 infoType: '',
                 sendChannel: '',
+                alertRadius: 1024,
+                // alertPath: '',              //格式 "[[12.333,23.333],[12.444,23,444]]"，转换显示为 12.333,23.333;12.444,23,444
             },
             isPointerIco: false,    // 是否修改鼠标的图标
             pubMsgList: [],
@@ -186,6 +188,8 @@ export default {
                 datasource: e.datasource,     // 信息来源
                 sendChannel: e.sendChannel,         //  4G下发通道
                 infoType: e.infoType,       // 子类型代码
+                alertRadius: e.alertRadius,                      
+                alertPath: e.alertPath,
             };
 
             this.$api.post( url,params,
@@ -225,6 +229,8 @@ export default {
                 datasource: e.datasource,     // 信息来源
                 sendChannel: e.sendChannel,         //  4G下发通道
                 infoType: e.infoType,       // 子类型代码
+                alertRadius: e.alertRadius,                      
+                alertPath: e.alertPath,
             };
 
             this.$api.post( url,params,
@@ -434,6 +440,9 @@ export default {
             let tomorrow = (new Date()).getTime() + 24 * 60 * 60 * 1000;
             let endTime = TDate.formatTime(tomorrow);
 
+            console.log('this.msgTypeInfo --- ' + JSON.stringify(this.msgTypeInfo))
+            debugger
+
             this.trafficInfo = {
                 title: '信息发布',
                 isEdit: false,
@@ -451,6 +460,8 @@ export default {
                 datasource: '',
                 infoType: this.msgTypeInfo.infoType,
                 sendChannel: this.msgTypeInfo.sendChannel,
+                alertRadius: 1024,
+                alertPath: '',              //格式 "[[12.333,23.333],[12.444,23,444]]"，转换显示为 12.333,23.333;12.444,23,444
             };
             let marker = {
                 id: 'marker' + (new Date()).getTime(),
