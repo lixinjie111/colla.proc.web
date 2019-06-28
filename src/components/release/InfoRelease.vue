@@ -301,14 +301,15 @@ export default {
         top: 50%; /*偏移*/
         transform: translateY(-50%);
     }
-    #ykMap {
+    /* #ykMap {
         width: 100%;
         height: 100%;
-    }
+    } */
     .yk-map{
         width:100%;
         height: 100%;
         position: relative;
+        overflow: hidden;
     }
 
     .yk-left{

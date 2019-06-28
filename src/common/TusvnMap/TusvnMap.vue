@@ -227,6 +227,7 @@ export default {
                 datasource: '',
                 alertRadius: 1024,
                 alertPath: '',              //格式 "[[12.333,23.333],[12.444,23,444]]"，转换显示为 12.333,23.333;12.444,23,444
+                icon: '',
             },
             frequencyUnitList: [],
             datasourceList: [],
@@ -250,7 +251,7 @@ export default {
                     value: '',
                 },
                 sliderVal: 1000,
-                alertPath: '',// 格式：'12.3,23.3;12.3,23.3;'
+                alertPath: '',  // 格式：'12.3,23.3;12.3,23.3;'
             },
             circleRadius: 1000,    // 圆形半径
             circleID: '',
@@ -258,6 +259,12 @@ export default {
             circleLat: '',
 
             TempLayer: 'TempLayer',         // 临时层，处理临时数据
+            TempIcoLayer: 'TempIcoLayer',
+            tempElement: {
+                closeBtnId: 'path_ico_close_btn',
+                okBtnId: 'path_ico_ok_btn',
+                markerId: 'marker_ico_green'
+            },
             mapStatus: 'normal',        // 1，normal 正常状态  2，TempLayerInteraction 临时交互 
             pathPoint: {        // 路径的当前点和上一个点
                 newVal: {
@@ -268,8 +275,9 @@ export default {
                     lon: '',
                     lat: '',
                 },
-                list: [],
+                pointList: [],
             },
+            pointData: null,
         }
     },
     watch:{
@@ -278,7 +286,7 @@ export default {
         submitForm(formName='ruleFormMap') {
             let bool = false;
             this.$refs[formName].validate((valid) => {
-                if (valid) {           
+                if (valid) {
                     bool = true;
                 } else {
                     console.log('error submit!!');
@@ -303,12 +311,12 @@ export default {
         // 1 隐藏 弹框 2 画点 鼠标事件处理  点击打点 画线 ，可以点击多个点， 3 点击确定或关闭 清空 点、线、鼠标事件 ，确定则提交数据
         addEffectPath(){
             this.closeInforWindow();    // 隐藏 弹框
-            this.pathPoint.newVal.lon = this.trafficInfo.longitude;
-            this.pathPoint.newVal.lat = this.trafficInfo.latitude;
-            this.pathPoint.oldVal.lon = '';
-            this.pathPoint.oldVal.lat = '';
-            this.pathPoint.list = [];
-            this.mapStatus = 'TempLayerInteraction';            
+            this.pathPoint.newVal.lon = '';
+            this.pathPoint.newVal.lat = '';
+            this.pathPoint.oldVal.lon = this.trafficInfo.longitude;
+            this.pathPoint.oldVal.lat = this.trafficInfo.latitude;
+            this.pathPoint.lineList = [];
+            this.mapStatus = 'TempLayerInteraction';
 
             this.addClickEvent();
 
@@ -320,9 +328,7 @@ export default {
         },
 
         // 临时交互处理，处理完毕清空TempLayer图层
-        tempLayerInteractive(){
-            
-            
+        tempLayerInteractive(){                       
 
             // 画点 连线 鼠标事件，关闭：清空tempLayer 确定：提交数据
 
@@ -332,7 +338,7 @@ export default {
         addPathIcoBtn(lon,lat){
 
             // 确定按钮
-            let id = 'path_ico_ok_btn';
+            let id = this.tempElement.okBtnId;
             let imgUrl = 'static/images/ok4.png';
             let courseAngle = null;
             let bdata = null;
@@ -341,7 +347,7 @@ export default {
             this.addImgOverlay(id, imgUrl, courseAngle, lon, lat, bdata, offset, this.okClick);
 
             // 关闭按钮
-            let id2 = 'path_ico_close_btn';
+            let id2 = this.tempElement.closeBtnId;
             let imgUrl2 = 'static/images/close4.png';
             let courseAngle2 = null;
             let bdata2 = null;
@@ -352,46 +358,74 @@ export default {
 
         // 提交数据
         okClick(e){
-            this.trafficInfo.alertPath = JSON.stringify(this.pathPoint.list);
+            
+            this.trafficInfo.alertPath = JSON.stringify(this.pathPoint.pointList);
 
             console.log('this.trafficInfo' + this.trafficInfo.alertPath);
             debugger
 
-            if(this.trafficInfo.isEdit){        // 修改
-                this.updateInfo();
-            }else {     // 新增
-                this.publichInfo();
-            }
+            // if(this.trafficInfo.isEdit){        // 修改
+            //     this.updateInfo();
+            // }else {     // 新增
+            //     this.publichInfo();
+            // }
             this.clearTempLayer();
+
+            this.pointData.trafficInfo.alertPath = JSON.stringify(this.pathPoint.pointList);
+            // 重新打开窗口
+            this.addMyInfoWindow(this.pointData);
+
         },
         // 关闭窗口
         closeClick(e){
 
             console.log('close click ---' + e);
 
-            e.preventDefault();
-            e.stopPropagation();
-            this.clearTempLayer();
+            this.deleteTempMarker();
+
+            this.addClickEvent();
+            
+            // e.preventDefault();
+            // e.stopPropagation();
+            // this.clearTempLayer();
+        },
+        deleteTempMarker(){
+            this.removeOverlayById(this.tempElement.okBtnId);
+            this.removeOverlayById(this.tempElement.closeBtnId);
+            this.removeAllFeature(this.TempIcoLayer);
         },
         clearTempLayer(){
             this.removeAllFeature(this.TempLayer);
             this.removeAllFeature('vectorLayer_01');
-            this.removeOverlayById('path_ico_ok_btn');
-            this.removeOverlayById('path_ico_close_btn');
+            this.deleteTempMarker();
+
+            this.mapStatus = 'normal';
+            this.pathPoint.pathPoint = {        // 路径的当前点和上一个点
+                newVal: {
+                    lon: '',
+                    lat: '',
+                },
+                oldVal: {
+                    lon: '',
+                    lat: '',
+                },
+                list: [],
+                pointList: [],
+            };
         },
         
         // 添加路径
         addPathIco(lon,lat,type="normal"){            
             
             // id, imgUrl, courseAngle, lon, lat, bdata, offset, callback
-            let id = 'temp_' + (new Date()).getTime();
+            let id = this.tempElement.markerId;//'temp_' + (new Date()).getTime();
             let imgUrl = 'static/images/circle11.png';    // 红色
             let imgUrl2 = 'static/images/circle22.png';    // 绿色
             let courseAngle = null;
             let bdata = null;
             let offset = [-32,-32];
             // let callback = this.tempClick();
-            let layerId = this.TempLayer;
+            let layerId = type == 'normal' ? this.TempLayer : this.TempIcoLayer;;
             let size = [36,36];
             let rotation = null;
             let rotateWithView = null;
@@ -452,6 +486,11 @@ export default {
                         points.push([temp.x,temp.y]);
                     }
 
+                    if(points){
+
+                        this.pathPoint.pointList = this.pathPoint.pointList.concat(points);
+                        console.log('------ this.pathPoint.pointList = ' + JSON.stringify(this.pathPoint.pointList))
+                    }
                     
                     let coordinates = points;
                     let id = 'TempLine_' + (new Date()).getTime();
@@ -462,7 +501,7 @@ export default {
                     let lineDashOffset = 0;
                     let miterLimit = 10;
                     let width = 5;
-                    let layerId = this.TempLayer;
+                    let layerId = this.TempIcoLayer;
 
                     console.log('id --- ' + id);
                     console.log('坐标点 ——------ ' + JSON.stringify(coordinates));
@@ -498,10 +537,8 @@ export default {
                         0,
                         10,
                         5,
-                        "vectorLayer_01"
-                    );
-
-                    
+                        layerId                        
+                    );    // "vectorLayer_01"               
 
                 }).catch((error) => {
 
@@ -514,8 +551,7 @@ export default {
         },
         hidePopWin(){
 
-        },
-        
+        },        
 
         // 转换影响路径
         converAlertPath(){
@@ -567,8 +603,7 @@ export default {
             this.$emit('DestroyInfo',this.trafficInfo);
             this.closeMyInfoWindow(e);
         },
-        closeInforWindow(e){
-            
+        closeInforWindow(e){            
             this.closeMyInfoWindow();
         },
         initDatasourceList(isEdit=false,datasource){
@@ -713,7 +748,8 @@ export default {
                     zoom: this.$data.zoom
                 })
             });
-            this.addWms("shanghai_qcc:dl_shcsq_wgs84","http://113.208.118.62:8080/geoserver/shanghai_qcc/wms","shanghai_qcc:dl_shcsq_wgs84","",1,true,null); // 上海汽车城
+            
+            // this.addWms("shanghai_qcc:dl_shcsq_wgs84","http://113.208.118.62:8080/geoserver/shanghai_qcc/wms","shanghai_qcc:dl_shcsq_wgs84","",1,true,null); // 上海汽车城
 
             // this.clickEventKey = this.$data.map.on("click",this.mapClick);
             this.$data.map.getView().on("change:resolution",this.viewLevelChange);
@@ -727,6 +763,7 @@ export default {
 
             // 添加临时层
             this.addVectorLayer(this.TempLayer);
+            this.addVectorLayer(this.TempIcoLayer);
 
             // this.centerAt(116.38921511745102,39.912577179827466);
             // this.addLineString([[116.38921511745102,39.912577179827466]
@@ -785,8 +822,12 @@ export default {
 
         addMyInfoWindow: function(obj){
 
+            this.pointData = obj;
+
             this.trafficInfo.id = obj.id;
             this.trafficInfo.eventName = obj.trafficInfo.eventName;
+
+            // this.trafficInfo.icon =
             
             if(obj.isEdit){
                 this.initDetail(obj);
@@ -867,8 +908,7 @@ export default {
         closeMyInfoWindow:function(e){
 
            this.clearCircle();
-           this.clearPubMsgIcon();
-           
+           this.clearPubMsgIcon();           
            
             //重置 表单
             // this.resetForm();
@@ -910,32 +950,31 @@ export default {
                 let lon = mevent.coordinate[0];
                 let lat = mevent.coordinate[1];
 
-                // 把新的坐标赋值给旧的坐标
-                this.pathPoint.oldVal.lon = this.pathPoint.newVal.lon;
-                this.pathPoint.oldVal.lat = this.pathPoint.newVal.lat;
+                // // 把新的坐标赋值给旧的坐标
+                // this.pathPoint.oldVal.lon = this.pathPoint.newVal.lon;
+                // this.pathPoint.oldVal.lat = this.pathPoint.newVal.lat;
 
                 // 把当前坐标赋值给新的坐标
                 this.pathPoint.newVal.lon = lon;
                 this.pathPoint.newVal.lat = lat;
                 
+                this.pathPoint.pointList = [];
+
                 // 第一次点击， 点击同一个位置 不画线
                 // 判断 起点 ，终点
-                if((this.pathPoint.newVal.lon != this.pathPoint.oldVal.lon) && (this.pathPoint.newVal.lat != this.pathPoint.oldVal.lat)){
+                if((this.pathPoint.newVal.lon != this.pathPoint.oldVal.lon) && (this.pathPoint.newVal.lat != this.pathPoint.oldVal.lat)){       
                     
-                    
+                    // 画线
                     this.addPathLine(this.pathPoint.newVal.lon,this.pathPoint.newVal.lat,this.pathPoint.oldVal.lon,this.pathPoint.oldVal.lat);
-
                     
-                    // 打点 画线
+                    // 打点 
                     this.addPathIco(this.pathPoint.newVal.lon,this.pathPoint.newVal.lat,'new');
                     // 画按钮
                     this.addPathIcoBtn(this.pathPoint.newVal.lon,this.pathPoint.newVal.lat);
 
-                    // 加点
-                    this.pathPoint.list.push([lon,lat]);
-
+                    
                     // 暂时无法区分覆盖物点击事件和地图点击事件，支持选一个点
-                    // this.removeClickEvent();
+                    this.removeClickEvent();
                 }               
                
             }            
@@ -1053,7 +1092,8 @@ export default {
 
             if(callback!=null)
             {
-                overLay_img.onclick=callback;                
+                overLay_img.onclick=callback;
+
             }
             
             overLay_container.appendChild(overLay_img);

@@ -76,16 +76,30 @@
             <div class="yk-header-block">
               
               <img class="yk-ico-user" src="static/images/ico-user.png">              
-              <label class="yk-label">用户</label>
+              <label class="yk-label">dev</label>
 
             </div>
 
             <div class="yk-header-block">
               
               <img class="yk-ico-user" src="static/images/ico-logout.png" @click="logoutClick();">              
-              <label class="yk-label" @click="logoutClick();">登出</label>
+              <label class="yk-label" @click="logoutClick();">退出</label>
 
             </div>
+            
+            <!-- v-if="$store.state.isSubMenu" -->
+            <!-- <div class="yk-f-right">
+                <ul class="yk-nav yk-sub-menu-box yk-sub-menu">                
+                    <li>
+                        <img class="yk-user-ico" src="static/images/version.png">
+                        <div class="yk-user-title">版本v1.0</div>
+                    </li>
+                    <li>
+                        <img class="yk-user-ico" src="static/images/logout.png">
+                        <div class="yk-user-title" title="退出登录" @click="logoutClick();">退出</div>
+                    </li>                    
+                </ul>
+            </div> -->
           </el-header>
           <router-view/>
         </el-main>
@@ -299,5 +313,80 @@ export default {
 .yk-sub-title{
   margin-left: 27px;
   font-size: 15px;
+}
+
+.yk-nav{
+    margin-top: 25px;
+}
+.yk-nav li{
+    display: inline-block;
+    vertical-align: top;
+    width: 120px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    cursor: pointer;
+    color: #475669;
+    font-size: 14px;
+    text-align: left;
+
+    /* border-left: 1px solid #00C1DE;
+    border-right: 1px solid #00C1DE; */
+}
+.yk-nav li:hover{
+    background: rgb(36, 36, 39);
+    /* background: rgb(232, 232, 233); */
+    /* background: #F4F8FC; */
+}
+.yk-sub-menu-box{
+    top: 30px;
+    right: 0px;
+    position: absolute;
+    width: 120px;
+    z-index: 9999;
+    
+}
+.yk-sub-menu{
+    margin-top: 25px;
+    /* background: #f6f8fa; */
+    background: rgb(36, 36, 39);
+}
+.yk-sub-menu li{
+    display: block;
+    float:right;
+    /* vertical-align: top; */
+    width: 160px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    cursor: pointer;
+    color: #475669;
+    font-size: 14px;
+    text-align: left;
+    border-bottom: 1px solid #454646;
+
+}
+.yk-sub-menu li:hover{
+    /* background: rgb(232, 232, 233); */
+    background: #000000;;
+}
+
+.yk-sub-menu li:first-child{
+    border-top: 1px solid #454646;
+    /* border-top: 1px solid #e3e8e9; */
+}
+
+.yk-user-title{
+    display: inline-block;
+    vertical-align: top;
+    color: #e3e8e9;
+}
+
+.yk-user-ico{
+    margin-top: 5px;
+    /* margin-top: 17px; */
+    margin-left: 15px;
+    margin-right: 5px;
+    width: 20px;
 }
 </style>

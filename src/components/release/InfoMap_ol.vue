@@ -1,8 +1,10 @@
 <template>
     <div :class="isPointerIco ? 'yk-pointer-ico' : 'yk-pointer-normal'">
+
+        <!--    -->
         <tusvn-map 
             ref="refTusvnMap"   
-            style="height: 998px;"  
+            style="height: 998px;"
             class="ref-map" 
             targetId="ddd"
             overlayContainerId="ccc"
