@@ -422,7 +422,7 @@ export default {
         },
         // // 移除 地图点击事件
         removeMapClickEvent(){
-            this.$refs.refTusvnMap.removeClickEvent();
+            this.$refs.refTusvnMap.removeClickEvent(); 
         },
         mapClick: function(map,evt){
             
@@ -431,7 +431,7 @@ export default {
             if(!this.msgTypeInfo){
                 this.$message('请选择信息类型 ！');
                 return;
-            }        
+            }
            
             let lon = evt.coordinate[0];
             let lat = evt.coordinate[1];
@@ -514,7 +514,8 @@ export default {
             // console.log(tusvnmap);
             // console.log(newextent);
         },
-    }
+    },
+    
 }
 </script>
 

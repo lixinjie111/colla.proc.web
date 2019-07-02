@@ -23,72 +23,36 @@
                   <el-menu-item :key="skey" :index="sub.path" @click="navChange(sub);">
                     <div class="yk-sub-title" :class="sub.isCheck ? 'yk-tree-select' : ''">{{sub.name}}</div>
                   </el-menu-item>
-                </template>
-                
+                </template>                
               </el-menu-item-group>
             </el-submenu>
 
-
-            <!-- <el-submenu index="1">
-              <template slot="title">
-                <i class="el-icon-s-promotion"></i>
-                <span>信息发布</span>
-              </template>
-              <el-menu-item-group>
-                <el-menu-item index="1-1" @click="navChange('/infoRelease');">
-                  <div class="yk-sub-title">信息发布</div>
-                </el-menu-item>
-              </el-menu-item-group>
-            </el-submenu>
-
-            <el-submenu index="2">
-              <template slot="title">
-                <i class="el-icon-s-order"></i>
-                <span>信息历史</span>
-              </template>
-              <el-menu-item-group>
-                <el-menu-item index="2-1" @click="navChange('/infoHistory');">
-                  <div class="yk-sub-title">信息历史</div>
-                </el-menu-item>
-              </el-menu-item-group>
-            </el-submenu>
-            <el-submenu index="3">
-              <template slot="title">
-                <i class="el-icon-s-tools"></i>
-                <span>系统配置</span>
-              </template>
-              <el-menu-item-group>
-                <el-menu-item index="3-1" @click="navChange('/infoType');">
-                  <div class="yk-sub-title">信息类型</div>
-                </el-menu-item>
-              </el-menu-item-group>
-            </el-submenu> -->
           </el-menu>
         </el-aside>
         <el-main>
           <el-header>
-            <div class="yk-header-block">
+            <!-- <div class="yk-header-block">
 
               <img class="yk-ico-msg" src="static/images/ico-msg.png">
               <label class="yk-label">消息</label>
 
-            </div>
-            <div class="yk-header-block">
+            </div> -->
+            <div class="yk-header-block" @click="showSubMenu();">
               
               <img class="yk-ico-user" src="static/images/ico-user.png">              
               <label class="yk-label">dev</label>
 
             </div>
 
-            <div class="yk-header-block">
+            <!-- <div class="yk-header-block">
               
               <img class="yk-ico-user" src="static/images/ico-logout.png" @click="logoutClick();">              
               <label class="yk-label" @click="logoutClick();">退出</label>
 
-            </div>
+            </div> -->
             
             <!-- v-if="$store.state.isSubMenu" -->
-            <!-- <div class="yk-f-right">
+            <div v-if="$store.state.isSubMenu" class="yk-f-right">
                 <ul class="yk-nav yk-sub-menu-box yk-sub-menu">                
                     <li>
                         <img class="yk-user-ico" src="static/images/version.png">
@@ -99,7 +63,8 @@
                         <div class="yk-user-title" title="退出登录" @click="logoutClick();">退出</div>
                     </li>                    
                 </ul>
-            </div> -->
+            </div>
+
           </el-header>
           <router-view/>
         </el-main>
@@ -144,6 +109,11 @@ export default {
       //  LocalStorageUtil.deleteItem('login');
        LocalStorageUtil.clearItems();
     },
+    showSubMenu(){
+        let bool = !this.$store.state.isSubMenu;           
+        
+        this.$store.dispatch('showSubMenu',bool);
+    },
   },
   created(){
     
@@ -177,7 +147,7 @@ export default {
   position: absolute;
 }
 .el-aside{
-  width: 260px!important;
+  width: 240px!important;
   background: #101113;
   color: #ffffff;
 }
@@ -315,29 +285,43 @@ export default {
   font-size: 15px;
 }
 
-.yk-nav{
-    margin-top: 25px;
+.yk-user-title{
+    display: inline-block;
+    vertical-align: top;
+    color: #e3e8e9;
 }
+
+.yk-user-ico{
+    margin-top: 8px;
+    margin-left: 15px;
+    margin-right: 5px;
+    width: 20px;
+}
+
+.yk-f-right{
+    float: right;
+}
+
 .yk-nav li{
     display: inline-block;
     vertical-align: top;
     width: 120px;
-    height: 30px;
-    line-height: 30px;
+    height: 55px;
+    line-height: 55px;
     text-align: center;
     cursor: pointer;
     color: #475669;
     font-size: 14px;
-    text-align: left;
-
-    /* border-left: 1px solid #00C1DE;
-    border-right: 1px solid #00C1DE; */
+    text-align: left;       
 }
 .yk-nav li:hover{
-    background: rgb(36, 36, 39);
-    /* background: rgb(232, 232, 233); */
-    /* background: #F4F8FC; */
+    background: rgb(36, 36, 39);        
 }
+
+.yk-border0{
+    border: 0!important;
+}
+
 .yk-sub-menu-box{
     top: 30px;
     right: 0px;
@@ -347,46 +331,30 @@ export default {
     
 }
 .yk-sub-menu{
-    margin-top: 25px;
-    /* background: #f6f8fa; */
+    margin-top: 25px;       
     background: rgb(36, 36, 39);
 }
 .yk-sub-menu li{
     display: block;
-    float:right;
-    /* vertical-align: top; */
+    float:right;        
     width: 160px;
-    height: 30px;
-    line-height: 30px;
+    height: 36px;
+    line-height: 36px;
     text-align: center;
     cursor: pointer;
     color: #475669;
     font-size: 14px;
     text-align: left;
+    /* border-left: 1px solid #454646; */
+    /* border-right: 1px solid #454646; */
     border-bottom: 1px solid #454646;
-
 }
-.yk-sub-menu li:hover{
-    /* background: rgb(232, 232, 233); */
+.yk-sub-menu li:hover{        
     background: #000000;;
 }
-
 .yk-sub-menu li:first-child{
-    border-top: 1px solid #454646;
-    /* border-top: 1px solid #e3e8e9; */
+    border-top: 1px solid #454646;        
 }
+    
 
-.yk-user-title{
-    display: inline-block;
-    vertical-align: top;
-    color: #e3e8e9;
-}
-
-.yk-user-ico{
-    margin-top: 5px;
-    /* margin-top: 17px; */
-    margin-left: 15px;
-    margin-right: 5px;
-    width: 20px;
-}
 </style>

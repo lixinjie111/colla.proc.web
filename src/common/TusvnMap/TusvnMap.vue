@@ -30,23 +30,23 @@
                         <el-row class="yk-pad-10 yk-bottom-border">
                             <label class="yk-info-window-title">交通信息发布</label>                        
                         </el-row>
-                        <el-row class="yk-pad-1040">
+                        <el-row class="yk-pad-1060">
                             
-                            <el-form ref="ruleFormMap" :rules="rules" :model="trafficInfo" size="mini" label-width="108px" class="demo-ruleForm yk-left">
+                            <el-form ref="ruleFormMap" :rules="rules" :model="trafficInfo" size="mini" label-width="108px" class="demo-ruleForm yk-left" style="margin-right: 7px;">
 
-                                <el-form-item label="信息类型" class="yk-bottom-6 yk-txt">
+                                <el-form-item label="信息类型" class="yk-bottom-12 yk-txt">
                                     <span>{{trafficInfo.eventName}}</span>
                                 </el-form-item>
 
-                                <el-form-item label="中心位置" prop="name" class="yk-bottom-6 yk-txt">                                
+                                <el-form-item label="中心位置" prop="name" class="yk-bottom-12 yk-txt">                                
                                     <span>{{trafficInfo.longitude + ',' + trafficInfo.latitude}}</span>
                                 </el-form-item>
 
-                                <el-form-item label="广播范围" prop="name" class="yk-bottom-6 yk-txt" style="height: 50px;">
-                                    <el-slider v-model="trafficInfo.affectRange" :marks="broadcastRangeMarks" :max="broadcastMax" :step="broadcastStep" @change="sliderChange"></el-slider>
+                                <el-form-item label="广播范围" prop="name" class="yk-bottom-12 yk-txt" style="height: 45px;">
+                                    <el-slider style="padding: 0px 5px;" v-model="trafficInfo.affectRange" :marks="broadcastRangeMarks" :min="broadcastMin" :max="broadcastMax" :step="broadcastStep" @change="sliderChange"></el-slider>
                                 </el-form-item>                                
 
-                                <el-form-item label="影响路径" prop="alertPath" class="yk-bottom-6 yk-txt">
+                                <el-form-item label="影响路径" prop="alertPath" class="yk-bottom-12 yk-txt">
 
                                     <!-- <el-input size="mini" v-model="select.alertPath" placeholder="格式：1.1,2.2;3.3,4.4"></el-input> -->
                                     
@@ -58,7 +58,7 @@
 
                                 </el-form-item>
 
-                                <el-form-item label="影响范围" prop="alertRadius" class="yk-bottom-6 yk-txt">
+                                <el-form-item label="影响范围" prop="alertRadius" class="yk-bottom-12 yk-txt">
                                     <el-input size="mini" v-model="select.alertRadius"></el-input>
                                 </el-form-item>
 
@@ -110,12 +110,12 @@
 
                                 </el-form-item>
 
-                                <el-form-item style="text-align:right;">
-                                    <el-button class="yk-w-80" type="warning" v-show="!trafficInfo.isEdit" @click="publichInfo($event);">发布</el-button>
-                                    <el-button class="yk-w-80" type="info" v-show="!trafficInfo.isEdit" @click="closeInforWindow($event);">取消</el-button>
+                                <el-form-item style="text-align:right;margin-top: 10px;margin-top: 15px;margin-bottom: 10px;">
+                                    <el-button class="yk-w-80 yk-border-normal" type="warning" v-show="!trafficInfo.isEdit" @click="publichInfo($event);">发布</el-button>
+                                    <el-button class="yk-w-80 yk-border-normal" type="info" v-show="!trafficInfo.isEdit" @click="closeInforWindow($event);">取消</el-button>
 
-                                    <el-button class="yk-w-80" type="warning" v-show="trafficInfo.isEdit" @click="updateInfo($event);">更新</el-button>
-                                    <el-button type="info" v-show="trafficInfo.isEdit" @click="destroyInfo($event);">手动失效</el-button>                                    
+                                    <el-button class="yk-w-80 yk-border-normal" type="warning" v-show="trafficInfo.isEdit" @click="updateInfo($event);">更新</el-button>
+                                    <el-button class="yk-border-normal" type="info" v-show="trafficInfo.isEdit" @click="destroyInfo($event);">手动失效</el-button>                                    
                                 </el-form-item>
 
                             </el-form>
@@ -231,6 +231,7 @@ export default {
             },
             frequencyUnitList: [],
             datasourceList: [],
+            broadcastMin: 200,
             broadcastMax: 3000,
             broadcastStep: 100,
             broadcastRangeMarks: {
@@ -1532,13 +1533,15 @@ export default {
         pointer-events: none;
     }
     .ol-popup:after {
-        border-top-color: white;
+        /* border-top-color: white; */
+        border-top-color: #413d3d;
         border-width: 10px;
         left: 48px;
         margin-left: -10px;
     }
     .ol-popup:before {
-        border-top-color: #cccccc;
+        /* border-top-color: #cccccc; */
+        border-top-color: #413d3d;
         border-width: 11px;
         left: 48px;
         margin-left: -11px;

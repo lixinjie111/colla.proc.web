@@ -6,7 +6,7 @@
                     <form>
                         <div class="yk-form-group yk-login-header yk-center">                    
                             <div class="yk-logo-img-box">
-                                <img class="yk-margin-left-30" src="static/images/logo.png">                                
+                                <img class="yk-margin-left-30" src="static/images/logo-2.png">                                
                             </div>
                             <div class="yk-title">
                                 交通信息发布平台
@@ -232,7 +232,7 @@ export default {
         letter-spacing: 5px;
     }
     .yk-logo-img-box{
-        display:inline-block;
+        /* display:inline-block; */
         text-align:left;
         margin-top:5px;
     }

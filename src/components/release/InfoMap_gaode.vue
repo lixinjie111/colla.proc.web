@@ -456,7 +456,7 @@ export default {
                     <el-row class="yk-pad-10 yk-bottom-border">
                         <label class="yk-info-window-title">交通信息发布</label>                        
                     </el-row>
-                    <el-row class="yk-pad-1040">
+                    <el-row class="yk-pad-1060">
                         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" size="mini" label-width="120px" class="demo-ruleForm yk-left">
 
                             <el-form-item label="信息类型" class="yk-bottom-6">                               

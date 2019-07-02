@@ -224,11 +224,31 @@ export default {
         clearPubMsgClick(e){            
             this.$refs.refInfoMap.setPointer(false);
         },
-     
+
+        winResize(){
+            let offsetHeight = window.outerHeight;
+            let offsetWidth = window.outerWidth;
+            console.log('offsetHeight --- ' + offsetHeight + ' ------ offsetWidth --- ' + window.outerWidth)
+        },
+        pageResize(){
+            const borwserHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+            this.pageHeight = borwserHeight;
+            console.log('pageHeight : ' + this.pageHeight)
+
+        }
     },
     created(){
         this.initStatisics();
         this.initPubMsgList();   
+       
+        // this.winResize();
+        // window.onresize = document.body.onresize = this.winResize();
+
+        this.pageResize();
+        window.onresize = () => {
+            this.pageResize();
+        }
+        
     },
     mounted(){
             
