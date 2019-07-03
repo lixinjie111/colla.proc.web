@@ -1,7 +1,6 @@
 <template>
  
     <div id="ykMap" class="yk-map">
-
        
         <!-- openlayer地图 -->
         <div>
@@ -9,33 +8,9 @@
         </div>
 
         <!-- 左侧信息 -->
-        <div class="yk-left">
-            <!-- <el-card :body-style="{ padding: '0px' }"> 
-                <img src="static/images/ico1.png" class="image">
-                <div class="yk-card-title">
-                    <span >27</span>
-                </div>
-            </el-card>
-
-            <el-card :body-style="{ padding: '0px' }">
-                <img src="static/images/ico2.png" class="image">
-                <div class="yk-card-title">
-                    <span>30</span>                    
-                </div>
-            </el-card>
-
-            <el-card :body-style="{ padding: '0px' }">
-                <img src="static/images/ico3.png" class="image">
-                <div class="yk-card-title">
-                    <span>22</span>
-                </div>
-            </el-card> -->
-
+        <div class="yk-left">            
             <el-card v-for="(item,index) in statisicsData" :key="index" :body-style="{ padding: '0px' }">
-                <div class="react-bg">
-                    <!-- 背景图片 -->
-                    <!-- <img src="static/images/ico-bg.png" class="image-bg">
-                    <img :src="iconPath + item.icon" class="image"> -->
+                <div class="react-bg">                    
                     <div class="image-box">
                         <img :src="iconPath + item.icon" class="image">
                     </div>
@@ -44,34 +19,11 @@
                     </div>
                 </div>                
             </el-card>
-
         </div>
-
-        
-
 
         <!-- 右侧信息 -->
         <div class="yk-right">
-
-            <!-- <div class="yk-block yk-f-right">
-                <select class="yk-select yk-135" label="POI" placeholder="POI">
-                    <option v-for="(item,index) in poiList" :key="index" :value="item.name" @click="poiClick(item);">
-                        {{item.name}}
-                    </option>
-                </select>
-            </div>
-        
-            <div class="yk-block yk-f-right">
-                <select class="yk-select yk-135" label="发布信息" placeholder="发布信息">
-                    <option v-for="(item,index) in pubMsgList" :key="index" :value="item" @click="pubMsgClick(item);">
-                        {{item.name}}
-                    </option>
-                </select>
-            </div> -->
-
-
             <el-form size="mini">
-
                 <el-form-item class="yk-form-item yk-f-right">
                     <el-select placeholder="发布信息" v-model="search.pubMsg" :clearable='clearPoiSelect' value-key="name" @clear="clearPubMsgClick($event);">                        
                         <el-option-group v-for="(group,groupIndex) in pubMsgGroup" label="发布信息" :key="groupIndex">
@@ -82,8 +34,7 @@
                             </template>
                         </el-option-group>
                     </el-select>                    
-                </el-form-item>                
-
+                </el-form-item>
                 <el-form-item class="yk-form-item yk-f-right yk-border-r">                    
                     <el-select placeholder="POI" multiple v-model="search.poi" value-key="value" collapse-tags @remove-tag="removeTagClick($event);">                                    
                         <el-option-group v-for="(group,groupIndex) in poiGruop" label="POI" :key="groupIndex">            
@@ -94,18 +45,14 @@
                             </template>
                         </el-option-group>
                     </el-select>
-                </el-form-item>
-                
+                </el-form-item>                
             </el-form>
         </div>
     </div>
-
 </template>
 <script>
 
 import Vue from 'vue';
-
-
 import InfoMapOL from '@/components/release/InfoMap_ol.vue'
 
 export default {
@@ -298,7 +245,7 @@ export default {
         margin: 0 auto;
     }
     .image-box{
-        top: 12px;
+        top: 17px;
         left: 0px;
         right: 0px;
         position: relative;
@@ -363,7 +310,6 @@ export default {
     .yk-card-title{
         color: #F59307;
         padding-top: 18px;
-        font-weight: bold;
         font-size: 16px;
         user-select: none;
     }

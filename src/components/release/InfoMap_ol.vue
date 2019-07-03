@@ -442,9 +442,6 @@ export default {
             let tomorrow = (new Date()).getTime() + 24 * 60 * 60 * 1000;
             let endTime = TDate.formatTime(tomorrow);
 
-            console.log('this.msgTypeInfo --- ' + JSON.stringify(this.msgTypeInfo))
-            debugger
-
             this.trafficInfo = {
                 title: '信息发布',
                 isEdit: false,

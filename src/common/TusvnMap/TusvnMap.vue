@@ -19,12 +19,9 @@
         <template>
             <div v-show="showTrafficInfoPop" id="traffic-info-release-popup" class="ol-popup yk-pointer-normal" >
 
-                <!-- <a href="#" overlayid="traffic-info-release" id="traffic-info-release-popup-closer" class="ol-popup-closer" @click="closeMyInfoWindow($event)"></a> -->
-
                 <img class="yk-close-btn" src="static/images/close.png" @click="closeMyInfoWindow($event)">
 
-                <div id="traffic-info-release-popup-content">
-                    <!-- <span v-html="popupData.content"></span> -->
+                <div id="traffic-info-release-popup-content">                   
 
                     <div>
                         <el-row class="yk-pad-10 yk-bottom-border">
@@ -32,7 +29,7 @@
                         </el-row>
                         <el-row class="yk-pad-1060">
                             
-                            <el-form ref="ruleFormMap" :rules="rules" :model="trafficInfo" size="mini" label-width="108px" class="demo-ruleForm yk-left" style="margin-right: 7px;">
+                            <el-form ref="ruleFormMap" :rules="rules" :model="trafficInfo" size="mini" label-width="108px" class="demo-ruleForm yk-left" style="margin-right: 10px;">
 
                                 <el-form-item label="信息类型" class="yk-bottom-12 yk-txt">
                                     <span>{{trafficInfo.eventName}}</span>
@@ -48,8 +45,6 @@
 
                                 <el-form-item label="影响路径" prop="alertPath" class="yk-bottom-12 yk-txt">
 
-                                    <!-- <el-input size="mini" v-model="select.alertPath" placeholder="格式：1.1,2.2;3.3,4.4"></el-input> -->
-                                    
                                     <el-input size="mini" placeholder="格式：1.1,2.2;3.3,4.4" v-model="select.alertPath">
                                         <template slot="append">
                                             <el-button class="yk-btn-append" type="primary" @click="addEffectPath();">添加</el-button>
@@ -59,10 +54,10 @@
                                 </el-form-item>
 
                                 <el-form-item label="影响范围" prop="alertRadius" class="yk-bottom-12 yk-txt">
-                                    <el-input size="mini" v-model="select.alertRadius"></el-input>
+                                    <el-input size="mini" v-model="trafficInfo.alertRadius"></el-input>
                                 </el-form-item>
 
-                                <el-form-item label="信息内容" prop="content" class="yk-bottom-16 yk-txt">
+                                <el-form-item label="信息内容" prop="content" class="yk-bottom-16 yk-textarea">
                                     <el-input type="textarea" size="mini" v-model="trafficInfo.content"></el-input>
                                 </el-form-item>
 
@@ -70,7 +65,7 @@
                                     <el-input size="mini" v-model="trafficInfo.frequency">
 
                                         <template slot="append">
-                                            <select class="yk-w-60 yk-input-select-2" v-model="select.frequencyUnit">
+                                            <select class="yk-w-51 yk-input-select-2" v-model="select.frequencyUnit">
                                                 <option v-for="(item,index) in frequencyUnitList" :key="index" :value="item">{{item.name}}</option>
                                             </select>
                                         </template>
@@ -98,16 +93,6 @@
                                     <select class="yk-select" v-model="select.datasource">
                                         <option v-for="(item,index) in datasourceList" :key="index" :value="item">{{item.name}}</option>                                        
                                     </select>
-
-                                    <!-- <el-select v-model="select.datasource" placeholder="请选择" value-key="name" class="yk-txt">
-                                        <el-option
-                                        v-for="(item,index) in datasourceList"
-                                        :key="index"
-                                        :label="item.name"
-                                        :value="item">
-                                        </el-option>
-                                    </el-select> -->
-
                                 </el-form-item>
 
                                 <el-form-item style="text-align:right;margin-top: 10px;margin-top: 15px;margin-bottom: 10px;">
@@ -304,7 +289,6 @@ export default {
         sliderChange(value){
             this.select.sliderVal = value;
             this.circleRadius = value;
-            // this.circleRadius = this.circleRadius + 0.001;
             this.drawBgCircle(this.circleLon,this.circleLat);
         },
 
@@ -319,20 +303,9 @@ export default {
             this.pathPoint.lineList = [];
             this.mapStatus = 'TempLayerInteraction';
 
-            this.addClickEvent();
-
-            console.log('addEffectPath -- this.trafficInfo.longitude ： ' + this.trafficInfo.longitude + ' ---- this.trafficInfo.latitude : ' + this.trafficInfo.latitude);
-            debugger
-
+            this.addClickEvent();     
             this.addPathIco( this.trafficInfo.longitude, this.trafficInfo.latitude );
             
-        },
-
-        // 临时交互处理，处理完毕清空TempLayer图层
-        tempLayerInteractive(){                       
-
-            // 画点 连线 鼠标事件，关闭：清空tempLayer 确定：提交数据
-
         },
 
         // 添加 点附近的按钮：关闭，确定
@@ -361,17 +334,7 @@ export default {
         okClick(e){
             
             this.trafficInfo.alertPath = JSON.stringify(this.pathPoint.pointList);
-
-            console.log('this.trafficInfo' + this.trafficInfo.alertPath);
-            debugger
-
-            // if(this.trafficInfo.isEdit){        // 修改
-            //     this.updateInfo();
-            // }else {     // 新增
-            //     this.publichInfo();
-            // }
             this.clearTempLayer();
-
             this.pointData.trafficInfo.alertPath = JSON.stringify(this.pathPoint.pointList);
             // 重新打开窗口
             this.addMyInfoWindow(this.pointData);
@@ -380,12 +343,8 @@ export default {
         // 关闭窗口
         closeClick(e){
 
-            console.log('close click ---' + e);
-
             this.deleteTempMarker();
-
-            this.addClickEvent();
-            
+            this.addClickEvent();            
             // e.preventDefault();
             // e.stopPropagation();
             // this.clearTempLayer();
@@ -420,14 +379,14 @@ export default {
             
             // id, imgUrl, courseAngle, lon, lat, bdata, offset, callback
             let id = this.tempElement.markerId;//'temp_' + (new Date()).getTime();
-            let imgUrl = 'static/images/circle11.png';    // 红色
-            let imgUrl2 = 'static/images/circle22.png';    // 绿色
+            let imgUrl = 'static/images/circle112.png';    // 红色
+            let imgUrl2 = 'static/images/circle222.png';    // 绿色
             let courseAngle = null;
             let bdata = null;
             let offset = [-32,-32];
             // let callback = this.tempClick();
             let layerId = type == 'normal' ? this.TempLayer : this.TempIcoLayer;;
-            let size = [36,36];
+            let size = [18,18];
             let rotation = null;
             let rotateWithView = null;
             let opacity = null;
@@ -435,9 +394,6 @@ export default {
             let anchor = null;
 
             let imgPath = type == 'normal' ? imgUrl : imgUrl2;
-
-            console.log('layerId --- ' + layerId);
-            debugger
             
             // this.addImgOverlay(id, imgUrl, courseAngle, lon, lat, bdata, offset, callback);
             // lon,lat,id,layerId,carImgUrl,size,rotation,rotateWithView,opacity,offset,scale,anchor
@@ -462,7 +418,6 @@ export default {
             };
 
             let formData = new FormData(); //创建form对象
-
             formData.append('edgeTableName', 'dl_shcsq_wgs84_rc_withoutz');//通过append向form对象添加数据
             formData.append('vertexTableName', 'dl_shcsq_wgs84_rc_withoutz_vertices_pgr');//通过append向form对象添加数据
             formData.append('startX', startLon);//通过append向form对象添加数据
@@ -488,9 +443,7 @@ export default {
                     }
 
                     if(points){
-
-                        this.pathPoint.pointList = this.pathPoint.pointList.concat(points);
-                        console.log('------ this.pathPoint.pointList = ' + JSON.stringify(this.pathPoint.pointList))
+                        this.pathPoint.pointList = this.pathPoint.pointList.concat(points);                       
                     }
                     
                     let coordinates = points;
@@ -504,30 +457,6 @@ export default {
                     let width = 5;
                     let layerId = this.TempIcoLayer;
 
-                    console.log('id --- ' + id);
-                    console.log('坐标点 ——------ ' + JSON.stringify(coordinates));
-                    debugger
-                    // let arr =  [[121.29600709500005,31.25298004700005],[121.29599668500009,31.252981350000027],[121.29598627400003,31.25298265400005],[121.29597586300008,31.252983957000026],[121.29596545200002,31.25298526000006],[121.29595504100007,31.252986564000025],[121.29594463000001,31.25298786700006],[121.29593421900006,31.252989171000024]];
-
-                    /**
-                     * 添加线条
-                     * @param {Array.<Array.<number>>} coordinates 坐标序列[[112,39],[113,40]]
-                     * @param {string} id 线条的ID
-                     * @param {module:ol/color~Color | module:ol/colorlike~ColorLike} color 颜色值，'black'、'red'、'green'、'white'、'#4271AE' [red, green, blue, alpha]
-                     * @param {string} lineCap 线端点的样式。butt, round, or square.
-                     * @param {string} lineJoin 线连接处的样式。bevel, round, or miter.
-                     * @param {Array.<number>} lineDash 虚线设置。[5,5]
-                     * @param {number} lineDashOffset 默认值是0。
-                     * @param {number} miterLimit 默认值10
-                     * @param {number} width 线宽度
-                     * @param {string} layerId 图层id
-                     */
-                    // coordinates, id, color, lineCap, lineJoin, lineDash, lineDashOffset, miterLimit, width, layerId
-                    // this.addLineString(coordinates, id, color, lineCap, lineJoin, lineDash, lineDashOffset, miterLimit, width, layerId);
-
-                    // this.centerAt(116.38921511745102,39.912577179827466);
-
-                    // "line_01"
                     this.addLineString(
                         coordinates,
                         id,
@@ -539,7 +468,7 @@ export default {
                         10,
                         5,
                         layerId                        
-                    );    // "vectorLayer_01"               
+                    );          
 
                 }).catch((error) => {
 
@@ -567,10 +496,6 @@ export default {
                 }
                 
                 let str = JSON.stringify(arr);
-
-                console.log('converAlertPath --- ' + str)
-                debugger
-
                 return str;
             }
             return '';
@@ -579,8 +504,6 @@ export default {
             this.trafficInfo.datasource = this.select.datasource ? (this.select.datasource.key ? this.select.datasource.key : '') : '';
             this.trafficInfo.frequencyUnit = this.select.frequencyUnit ? (this.select.frequencyUnit.key ? this.select.frequencyUnit.key : '') : '';
             this.trafficInfo.affectRange = this.select.sliderVal;
-                                  
-            // this.trafficInfo.alertPath = this.converAlertPath(this.select.alertPath);
 
             if(!this.submitForm()) return; 
 
@@ -592,8 +515,6 @@ export default {
             this.trafficInfo.datasource = this.select.datasource ? (this.select.datasource.key ? this.select.datasource.key : '') : '';
             this.trafficInfo.frequencyUnit = this.select.frequencyUnit ? (this.select.frequencyUnit.key ? this.select.frequencyUnit.key : '') : '';
             this.trafficInfo.affectRange = this.select.sliderVal;
-
-            // this.trafficInfo.alertPath = this.converAlertPath(this.select.alertPath);
 
            if(!this.submitForm()) return; 
 
@@ -788,8 +709,8 @@ export default {
             this.clickEventKey = this.$data.map.on("click",this.mapClick);
         },
         removeClickEvent(){
-            
-            unByKey(this.clickEventKey);
+                
+            unByKey(this.clickEventKey);      
             
         },
 
