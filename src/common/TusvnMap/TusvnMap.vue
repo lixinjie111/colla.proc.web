@@ -748,8 +748,6 @@ export default {
 
             this.trafficInfo.id = obj.id;
             this.trafficInfo.eventName = obj.trafficInfo.eventName;
-
-            // this.trafficInfo.icon =
             
             if(obj.isEdit){
                 this.initDetail(obj);

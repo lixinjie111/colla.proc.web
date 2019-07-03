@@ -307,7 +307,8 @@ export default {
                 response => {
                     if (response.status >= 200 && response.status < 300) {
 
-                        let rsuList = response.data ? response.data : [];      
+                        let rsuList = response.data ? response.data : []; 
+                        
                         for(let i=0;i<rsuList.length;i++){
                             
                             let item = rsuList[i];
@@ -324,8 +325,7 @@ export default {
                             let lon = rsuList.length ? rsuList[0].longitude : '116.397';
                             let lat = rsuList.length ? rsuList[0].latitude : '39.918';
                             this.$refs.refTusvnMap.centerAt(lon,lat);   
-                        }
-                                             
+                        }                                             
                         
                     } else {                     
                         this.$message("获取设备列表失败 ！"); 
@@ -358,10 +358,11 @@ export default {
                             this.$refs.refTusvnMap.addImg(lon,lat,id,this.mapLayer.roadsideUnit,icon,size);
                         }
 
-                        let lon = roadsideUnitList.length ? roadsideUnitList[0].longitude : '116.397';
-                        let lat = roadsideUnitList.length ? roadsideUnitList[0].latitude : '39.918';
-                        this.$refs.refTusvnMap.centerAt(lon,lat);  
-                        
+                        if(roadsideUnitList.length){
+                            let lon = roadsideUnitList.length ? roadsideUnitList[0].longitude : '116.397';
+                            let lat = roadsideUnitList.length ? roadsideUnitList[0].latitude : '39.918';
+                            this.$refs.refTusvnMap.centerAt(lon,lat);  
+                        }                        
                         
                     } else {                     
                         this.$message("获取路侧单元失败 ！"); 
@@ -394,9 +395,11 @@ export default {
                             this.$refs.refTusvnMap.addImg(lon,lat,id,this.mapLayer.trafficSignal,icon,size);
                         }
 
-                        let lon = trafficSignalList.length ? trafficSignalList[0].longitude : '116.397';
-                        let lat = trafficSignalList.length ? trafficSignalList[0].latitude : '39.918';
-                        this.$refs.refTusvnMap.centerAt(lon,lat);                          
+                        if(trafficSignalList.length){
+                            let lon = trafficSignalList.length ? trafficSignalList[0].longitude : '116.397';
+                            let lat = trafficSignalList.length ? trafficSignalList[0].latitude : '39.918';
+                            this.$refs.refTusvnMap.centerAt(lon,lat);   
+                        }                       
                         
                     } else {                     
                         this.$message("获取红绿灯失败 ！"); 

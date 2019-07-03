@@ -1,9 +1,10 @@
 import axios from 'axios'
+
 // import router from '../router'
 // import queryString from 'querystring';
 
 // import cfg from '@/common/cfg.js'
-// import store from '@/store/index.js'
+import store from '@/store/index.js'
 
 let http = axios.create({
     baseURL: window.cfg.url,
@@ -54,7 +55,7 @@ function apiAxios(method, url, params, response) {
 
     // const random = "?random=" + Math.round(Math.random() * 1000000);
 
-
+    
 
     // 判断url是否包含?
     // const index = url.indexOf('?');
@@ -78,12 +79,7 @@ function apiAxios(method, url, params, response) {
     }).then(function(res) {
          console.log('success !!! ------------- ' + res.status);
 
-        response(res);
-
-        // if(isLoading){
-        //     // store.dispatch('popLoading',false);
-        //     store.dispatch('hideLoading');
-        // }
+        response(res);       
 
     }).catch(function(err) {
         console.log(err.response);
@@ -93,11 +89,6 @@ function apiAxios(method, url, params, response) {
         //     return;
         // };
         // response(err);
-
-        // if(isLoading){
-        //     // store.dispatch('popLoading',false);
-        //     store.dispatch('hideLoading');
-        // }
     });
 }
 

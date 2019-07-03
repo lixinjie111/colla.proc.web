@@ -24,6 +24,7 @@ const store = new VueX.Store({
         isSubMenu: false,   // 显示下拉菜单，版本号、退出登录
         defaultModule: '/vehicleMessage',     // 登录成功，默认打开车辆管理模块vehicleMessage
         breadCrumbs: {},     // 面包屑
+        loadingInstance: null,  // loading 实例
     },
     getters: {
         menuList: state => {

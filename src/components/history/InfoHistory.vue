@@ -70,7 +70,9 @@
         <el-table
                 :data="dataList"
                 border
-                style="width: 100%">
+                style="width: 100%;"
+                stripe
+                :header-cell-style="{background:'#E6E6E6',color:'#606266',border: '0px'}">
             <el-table-column
                 label="序号"
                 type="index"
@@ -157,6 +159,7 @@
 </template>
 <script>
 
+
 import TDate from '@/common/date.js'
 
 export default {
@@ -183,10 +186,11 @@ export default {
             ],
             datasourceList: [
 
-            ]
+            ],
         }
     },
     methods: {
+        
         init(){
             this.initSearch();
             this.initPaging();
@@ -208,6 +212,8 @@ export default {
             };
         },
         initData(type){
+            
+
             let url = 'event/task/queryPage';
             let params = {
                 // code: this.search.code,
@@ -307,5 +313,6 @@ export default {
     vertical-align: top;
     margin-bottom: 5px;
 }
+
 </style>
 

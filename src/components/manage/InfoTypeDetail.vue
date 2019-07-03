@@ -59,8 +59,8 @@ export default {
 </script>
 <style scoped>
 .image-box{
-    width: 44px;
-    height: 44px;
+    width: 34px;
+    height: 34px;
     /* margin: 0 auto; */
     background-image: url('./ico-bg.png');
     background-repeat: no-repeat;
@@ -68,6 +68,7 @@ export default {
     text-align: center;
 }
 .image{
+    width: 20px;
     margin: 0 auto;
     position: relative;
     top: 50%; /*偏移*/

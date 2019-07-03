@@ -15,7 +15,9 @@
         <el-table
                 :data="dataList"
                 border
-                style="width: 100%">
+                style="width: 100%"
+                stripe
+                :header-cell-style="{background:'#E6E6E6',color:'#606266',border: '0px'}">
             <el-table-column
                 label="序号"
                 type="index"
@@ -106,11 +108,14 @@
     </div>
 </template>
 <script>
+
+
 import InfoTypePop from "@/components/manage/InfoTypePop.vue"
 import InfoTypeDetail from "@/components/manage/InfoTypeDetail.vue"
+
 export default {
     components: {
-        InfoTypePop, InfoTypeDetail, 
+        InfoTypePop, InfoTypeDetail,
     },
     data(){
         return {
@@ -133,7 +138,6 @@ export default {
             search: {
                 name: '',
             },
-            
         }
     },
     methods: {
@@ -158,6 +162,7 @@ export default {
             }
         },
         initData(){
+
             let url = 'event/info/queryPage';
             let params = {
                 name: this.search.name,
@@ -212,16 +217,19 @@ export default {
             this.initData();
         },
         handleOk(){
+            this.popData.visible = false;  
+
+            if(this.popData.type == 'info-type-check') return;
+
             let bool = this.$refs.refInfoTypePop.submitForm();
             if(!bool) return;
-            
-            alert(bool);
-
-            this.popData.visible = false;            
+                      
             this.successBack(this.popData.data);
         },
         handleCancel(){
             this.popData.visible = false;
+            if(this.popData.type == 'info-type-check') return;
+            
             this.$refs.refInfoTypePop.resetForm();
         },
         handleClose(done) {
@@ -406,14 +414,15 @@ export default {
 
 .image-box{
     margin: 0 auto;
-    width: 44px;
-    height: 44px;       
+    width: 34px;
+    height: 34px;       
     background-image: url('./ico-bg.png');
     background-repeat: no-repeat;
     background-size: 100% 100%;
     text-align: center;
 }
-.image{        
+.image{
+    width: 20px;
     margin: 0 auto;
     position: relative;
     top: 50%; /*偏移*/

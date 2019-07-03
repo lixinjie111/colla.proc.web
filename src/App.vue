@@ -75,6 +75,9 @@
 import LocalStorageUtil from '@/store/localstorage.js'
 import MenuList from './assets/menu.json'
 import { Utils } from '@/common/utils/utils.js'
+
+
+
 export default {
   name: 'App',
   data(){
@@ -125,6 +128,9 @@ export default {
   },
   mounted(){
     this.initMenu();
+
+    
+
   }
 }
 </script>
