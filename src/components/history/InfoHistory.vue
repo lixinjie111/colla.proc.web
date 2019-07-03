@@ -288,6 +288,7 @@ export default {
 <style scoped>
 .yk-container{
     padding: 20px;
+    overflow-y: auto;
 }
 
 .el-table td, .el-table th{

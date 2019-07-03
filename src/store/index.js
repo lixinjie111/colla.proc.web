@@ -10,8 +10,8 @@ const store = new VueX.Store({
         login: false,
         user: {
             name: '',
-            pass: '',
-        },     // 用户信息
+        },
+        userName: '',     // 用户信息
         auth: {     // 权限
 
         },
@@ -35,7 +35,8 @@ const store = new VueX.Store({
     mutations: {
         login(state,data){
             state.login = data.bool;
-            state.user = JSON.parse(data.data);
+            state.userName = data.data.loginName;
+            state.user = data.data;
         },
         initMenus(state,url){
             state.menus = Utils.setMenuByPath(url);
@@ -66,7 +67,7 @@ const store = new VueX.Store({
             let temp = {
                 type: 'login',
                 bool: true,
-                data: JSON.stringify(user)
+                data: user
             }
             context.commit('login',temp);
         },

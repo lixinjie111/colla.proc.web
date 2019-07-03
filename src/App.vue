@@ -39,8 +39,13 @@
             </div> -->
             <div class="yk-header-block" @click="showSubMenu();">
               
-              <img class="yk-ico-user" src="static/images/ico-user.png">              
-              <label class="yk-label">dev</label>
+              <div class="yk-ico-box">
+                <img class="yk-ico-user" src="static/images/ico-user.png">  
+              </div>              
+              <label class="yk-label">
+                {{$store.state.userName}}
+                <!-- userName -->
+              </label>
 
             </div>
 
@@ -117,11 +122,17 @@ export default {
         
         this.$store.dispatch('showSubMenu',bool);
     },
+    flushUser(){
+      let user = LocalStorageUtil.getItem('login');
+      user = JSON.parse(user);
+      this.$store.state.userName = user.loginName ? user.loginName : '';
+    }
   },
   created(){
     
     window.onload = () =>{            
-      this.initMenu();           
+      this.initMenu(); 
+      this.flushUser();      
     }
 
     this.menuList = MenuList;
@@ -175,6 +186,7 @@ export default {
 
 .el-main{
   padding: 0px;
+  /* overflow: hidden!important; */
 }
 
 .el-header{
@@ -238,10 +250,11 @@ export default {
 }
 .yk-header-block{
   display: inline-block;
-  margin-right: 20px;
+  /* margin-right: 20px; */
   cursor: pointer;
-  width: 60px;
+  width: 160px;
   position: relative;
+  text-align: center;
 }
 .yk-title{
   display: inline-block;
@@ -272,9 +285,9 @@ export default {
 }
 .yk-ico-user{
   width: 22px;
-  top: 18px;
-  left: 0px;
-  position: absolute;
+  display: inline-block;
+  vertical-align: middle;
+  margin-bottom: 3px;
 }
 
 .yk-label{
@@ -362,5 +375,9 @@ export default {
     border-top: 1px solid #454646;        
 }
     
-
+.yk-ico-box{
+  display: inline-block;
+  height: 60px;
+  line-height: 60px;
+}
 </style>
