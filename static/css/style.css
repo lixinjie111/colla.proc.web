@@ -82,7 +82,28 @@
       -moz-border-radius: 0px!important;
       -ms-border-radius: 0px!important;
       -o-border-radius: 0px!important;
-}
+  }
+
+  .yk-readonly{
+    pointer-events: none;
+    user-select: none!important;
+    -webkit-user-select: none!important;
+    -moz-user-select: none!important;
+    -ms-user-select: none!important;
+    cursor: default;
+  }
+  .yk-readonly .el-input__inner{
+    pointer-events: none;
+    user-select: none!important;
+    -webkit-user-select: none!important;
+    -moz-user-select: none!important;
+    -ms-user-select: none!important;
+    cursor: default;
+  }
+
+  .yk-readonly .el-input-group__append{
+    pointer-events: fill;
+  }
 
   .yk-select{
     padding: 0px 15px;
@@ -176,6 +197,10 @@
   .yk-txt .el-slider__marks-text:last-child{
     padding-right: 0px!important;
   }
+
+  .yk-txt .el-input-group__append{
+    pointer-events: auto;
+  }
  
   .yk-textarea .el-form-item__label {
     width: 102px!important;
@@ -198,6 +223,14 @@
   }
   .yk-txt .el-input__prefix{
     display:none!important;
+  }
+
+  .yk-txt .el-input-group__append, .el-input-group__prepend{
+    width: 50px;
+    /* display: inline-block; */
+    text-align: center;
+    color: #fff;
+    background: rgb(102, 102, 102)!important;
   }
 
   .amap-info-content{
@@ -275,4 +308,10 @@
     color: #F59307!important;
   }
 
+  /* 自定义 滚动条样式 */
+/* ::-webkit-scrollbar{
+  width: 1px;
+  height: 16px;
+  background-color: rgb(47, 48, 48);  
+} */
   

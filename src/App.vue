@@ -124,9 +124,13 @@ export default {
     },
     flushUser(){
       let user = LocalStorageUtil.getItem('login');
+      if(!user) return;
+      
       user = JSON.parse(user);
       this.$store.state.userName = user.loginName ? user.loginName : '';
-    }
+    },
+
+    
   },
   created(){
     
@@ -136,12 +140,14 @@ export default {
     }
 
     this.menuList = MenuList;
+
+    
+
   },
   mounted(){
     this.initMenu();
 
     
-
   }
 }
 </script>
@@ -163,6 +169,13 @@ export default {
   bottom:0;
   position: absolute;
 }
+
+.el-container::-webkit-scrollbar{
+  width: 1px;
+  height: 16px;
+  background-color: rgb(47, 48, 48);  
+}
+
 .el-aside{
   width: 240px!important;
   background: #101113;
@@ -250,7 +263,7 @@ export default {
 }
 .yk-header-block{
   display: inline-block;
-  /* margin-right: 20px; */
+  margin-right: 20px;
   cursor: pointer;
   width: 160px;
   position: relative;

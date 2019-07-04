@@ -1,9 +1,11 @@
 <template>
     <div :class="isPointerIco ? 'yk-pointer-ico' : 'yk-pointer-normal'">
 
-        <!--    -->
+        <!--  style="height: 998px;" 
+            :style="'height:' + mapHeight + 'px;'" -->
         <tusvn-map 
-            ref="refTusvnMap"   
+            ref="refTusvnMap"           
+            
             style="height: 998px;"
             class="ref-map" 
             targetId="ddd"
@@ -31,7 +33,7 @@ import TDate from '@/common/date.js'
 export default {
     name: 'InfoMapOL',
     components: { TusvnMap  },
-    props: ['msgTypeInfo'],
+    props: ['msgTypeInfo','mapHeight'],
     data(){
         return {
             mapInitOk: false,
@@ -85,7 +87,8 @@ export default {
             },
             isPointerIco: false,    // 是否修改鼠标的图标
             pubMsgList: [],
-            
+            dyHeight: 'yk-dy-height',
+            isOk: false,
         }
     },
     methods: {
@@ -416,6 +419,22 @@ export default {
         generataIcoName(value){
             return value + (new Date()).getTime();
         },
+        
+        // 防抖
+        avoidShake(height){            
+            let inval = 400;
+            let timer = null;
+            if(!this.isOk){
+                this.isOk = true;
+                timer = setTimeout(()=>{
+                    this.isOk = false;
+                    this.pageHeight = height;
+                    clearTimeout(timer);
+                    timer = null;
+                },inval);
+            }
+        },
+
 
         //------------------------------- 地图回调函数------------------------------
         // 添加 地图点击事件
@@ -515,7 +534,23 @@ export default {
             // console.log(newextent);
         },
     },
-    
+    mounted(){
+        const that = this
+        window.onresize = () => {
+            return (() => {
+                window.screenWidth = document.body.clientWidth;
+                that.screenWidth = window.screenWidth;
+                window.screenHeight = document.body.clientHeight;
+                that.screenHeight = window.screenHeight;
+
+                const borwserHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+
+                console.log('-------- screenHeight = ' + screenHeight + ' --- borwserHeight : ' + borwserHeight);
+
+                
+            })()
+        }
+    },
 }
 </script>
 
@@ -525,6 +560,10 @@ export default {
 }
 .yk-pointer-normal{
     cursor: default;
+}
+
+.yk-dy-height{
+    height: calc(100vh - 100px); 
 }
 </style>
 

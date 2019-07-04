@@ -4,7 +4,7 @@
        
         <!-- openlayer地图 -->
         <div>
-            <InfoMapOL ref="refInfoMap" :msgTypeInfo="search.pubMsg" @PubMsgChange="pubMsgChange"></InfoMapOL>
+            <InfoMapOL ref="refInfoMap" :mapHeight="pageHeight" :msgTypeInfo="search.pubMsg" @PubMsgChange="pubMsgChange"></InfoMapOL>
         </div>
 
         <!-- 左侧信息 -->
@@ -93,6 +93,10 @@ export default {
             },
             clearPoiSelect: true,
             collapseTags: true,
+            screenWidth: 1280,
+            screenHeight: 450,
+            isOk: false,
+            pageHeight: 250,
         }
     },
     methods: {             
@@ -177,28 +181,68 @@ export default {
             let offsetWidth = window.outerWidth;
             console.log('offsetHeight --- ' + offsetHeight + ' ------ offsetWidth --- ' + window.outerWidth)
         },
-        pageResize(){
-            const borwserHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
-            this.pageHeight = borwserHeight;
-            console.log('pageHeight : ' + this.pageHeight)
+        
+        // shaking
+        avoidShake(height){
+            
+            let inval = 400;
+            let timer = null;
+            if(!this.isOk){
+                this.isOk = true;
+                timer = setTimeout(()=>{
+                    this.isOk = false;
+                    this.pageHeight = height - 62;
 
+                    console.log('--avoidShake------ pageHeight = ' + this.pageHeight);
+
+                    clearTimeout(timer);
+                    timer = null;
+                },inval);
+            }
         }
     },
     created(){
         this.initStatisics();
-        this.initPubMsgList();   
+        this.initPubMsgList();
        
         // this.winResize();
         // window.onresize = document.body.onresize = this.winResize();
 
-        this.pageResize();
-        window.onresize = () => {
-            this.pageResize();
-        }
+        // this.pageResize();
+       
         
     },
     mounted(){
-            
+        const that = this
+        window.onload = () => {
+            return (() => {
+                window.screenWidth = document.body.clientWidth;
+                that.screenWidth = window.screenWidth;
+                window.screenHeight = document.body.clientHeight;
+                that.screenHeight = window.screenHeight;
+
+                const borwserHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+
+                console.log('-------- screenHeight = ' + screenHeight + ' --- borwserHeight : ' + borwserHeight);
+                this.avoidShake(borwserHeight);
+                
+            })()
+        };
+
+        window.onresize = () => {
+            return (() => {
+                window.screenWidth = document.body.clientWidth;
+                that.screenWidth = window.screenWidth;
+                window.screenHeight = document.body.clientHeight;
+                that.screenHeight = window.screenHeight;
+
+                const borwserHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+
+                console.log('-------- screenHeight = ' + screenHeight + ' --- borwserHeight : ' + borwserHeight);
+                this.avoidShake(borwserHeight);
+                
+            })()
+        }
     },
 
 }

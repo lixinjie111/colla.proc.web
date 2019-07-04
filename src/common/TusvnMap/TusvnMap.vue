@@ -45,7 +45,8 @@
 
                                 <el-form-item label="影响路径" prop="alertPath" class="yk-bottom-12 yk-txt">
 
-                                    <el-input size="mini" placeholder="格式：1.1,2.2;3.3,4.4" v-model="select.alertPath">
+                                    <!-- placeholder="格式：1.1,2.2;3.3,4.4" -->
+                                    <el-input size="mini" v-model="select.alertPath" class="yk-readonly">
                                         <template slot="append">
                                             <el-button class="yk-btn-append" type="primary" @click="addEffectPath();">添加</el-button>
                                         </template>
@@ -54,7 +55,9 @@
                                 </el-form-item>
 
                                 <el-form-item label="影响范围" prop="alertRadius" class="yk-bottom-12 yk-txt">
-                                    <el-input size="mini" v-model="trafficInfo.alertRadius"></el-input>
+                                    <el-input size="mini" v-model="trafficInfo.alertRadius">
+                                        <span slot="append" class="yk-unit">米</span>
+                                    </el-input>
                                 </el-form-item>
 
                                 <el-form-item label="信息内容" prop="content" class="yk-bottom-16 yk-textarea">
@@ -238,6 +241,7 @@ export default {
                 },
                 sliderVal: 1000,
                 alertPath: '',  // 格式：'12.3,23.3;12.3,23.3;'
+                alertRadius: '1000米'
             },
             circleRadius: 1000,    // 圆形半径
             circleID: '',
@@ -288,6 +292,8 @@ export default {
         // 表单事件
         sliderChange(value){
             this.select.sliderVal = value;
+            this.trafficInfo.affectRange = value;
+
             this.circleRadius = value;
             this.drawBgCircle(this.circleLon,this.circleLat);
         },
@@ -333,7 +339,10 @@ export default {
         // 提交数据
         okClick(e){
             
-            this.trafficInfo.alertPath = JSON.stringify(this.pathPoint.pointList);
+            const path = JSON.stringify(this.pathPoint.pointList);
+            this.trafficInfo.alertPath = path;
+            this.select.alertPath = path;
+
             this.clearTempLayer();
             this.pointData.trafficInfo.alertPath = JSON.stringify(this.pathPoint.pointList);
             // 重新打开窗口
@@ -503,23 +512,23 @@ export default {
         publichInfo(e){
             this.trafficInfo.datasource = this.select.datasource ? (this.select.datasource.key ? this.select.datasource.key : '') : '';
             this.trafficInfo.frequencyUnit = this.select.frequencyUnit ? (this.select.frequencyUnit.key ? this.select.frequencyUnit.key : '') : '';
-            this.trafficInfo.affectRange = this.select.sliderVal;
 
             if(!this.submitForm()) return; 
 
             this.$emit('PublishInfo',this.trafficInfo);
             this.closeMyInfoWindow();
+            this.initSelect();
         },        
         updateInfo(e){
            
             this.trafficInfo.datasource = this.select.datasource ? (this.select.datasource.key ? this.select.datasource.key : '') : '';
             this.trafficInfo.frequencyUnit = this.select.frequencyUnit ? (this.select.frequencyUnit.key ? this.select.frequencyUnit.key : '') : '';
-            this.trafficInfo.affectRange = this.select.sliderVal;
 
            if(!this.submitForm()) return; 
 
             this.$emit('UpdateInfo',this.trafficInfo);
             this.closeMyInfoWindow();
+            this.initSelect();
         },
         destroyInfo(e){           
             this.$emit('DestroyInfo',this.trafficInfo);
@@ -612,9 +621,12 @@ export default {
                         this.trafficInfo.endTime = response.data.endTime; 
                         this.trafficInfo.datasource = response.data.datasource;     
                         this.trafficInfo.infoType = response.data.infoType;
-                        this.trafficInfo.sendChannel = response.data.sendChannel;  
-                        this.trafficInfo.alertRadius = response.data.alertRadius;                         
-                        this.trafficInfo.alertPath = response.data.alertPath;                         
+                        this.trafficInfo.sendChannel = response.data.sendChannel; 
+                        this.trafficInfo.alertPath = response.data.alertPath;   
+                        this.trafficInfo.alertRadius = response.data.alertRadius; 
+
+                        this.select.alertRadius = this.trafficInfo.alertRadius + '米';
+                                               
 
                         if(response.data.status == 200){                            
                             this.$message('获取详情成功！');
@@ -627,6 +639,18 @@ export default {
                     }
                 }
             );
+        },
+
+        initSelect(){
+            this.select.sliderVal = 1000;
+            this.select.alertPath = '';
+            if(Array.isArray(this.frequencyUnitList) && this.frequencyUnitList.length){
+                this.select.frequencyUnit = this.frequencyUnitList[0];
+            }
+            
+            if(Array.isArray(this.datasourceList) && this.datasourceList.length){
+                this.select.datasource = this.datasourceList[0];
+            }
         },
         // ------------------------------------------------------------------------------
 
@@ -777,7 +801,7 @@ export default {
                 overlay.setOffset([0,-29]);
             });
 
-            this.circleID= 'circle_' + obj.id;
+            this.circleID= 'circle_range_id';// + obj.id;
             this.circleLon = obj.lon;
             this.circleLat = obj.lat;
             this.drawBgCircle(obj.lon,obj.lat);         
@@ -789,6 +813,7 @@ export default {
         },
         // 画圆形背景图片
         drawBgCircle(lon,lat){
+            
             // 245,147,7
             this.addCircle(lon,lat,this.circleRadius,this.circleID,[245,147,7,0.1],'#F59307',null,null,null,null,null,null,'MessageLayer');
             
@@ -891,7 +916,6 @@ export default {
                     this.addPathIco(this.pathPoint.newVal.lon,this.pathPoint.newVal.lat,'new');
                     // 画按钮
                     this.addPathIcoBtn(this.pathPoint.newVal.lon,this.pathPoint.newVal.lat);
-
                     
                     // 暂时无法区分覆盖物点击事件和地图点击事件，支持选一个点
                     this.removeClickEvent();
@@ -1501,6 +1525,12 @@ export default {
     }
     .yk-close-btn:hover{
         opacity: 0.6;
+    }
+
+    .yk-unit{
+        width: 30px;
+        display: inline-block;
+        text-align: center;
     }
 
     .el-textarea__inner{
