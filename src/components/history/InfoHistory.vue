@@ -187,6 +187,8 @@ export default {
             datasourceList: [
 
             ],
+            oldTime: null,
+            timeInterval: 400,
         }
     },
     methods: {
@@ -276,6 +278,30 @@ export default {
         pagingChange(value){
             this.paging.index = value - 1;
             this.initData();
+
+            // this.saveWater();
+        },
+
+         // saving
+        saveWater(){
+            let newTime = (new Date()).getTime();
+            
+            if(!this.oldTime){
+                this.oldTime = newTime;
+            }
+
+            let intval = this.newTime - this.oldTime;
+            if( intval > this.timeInterval){
+                console.log('do it !');
+                this.oldTime = newTime;
+
+                this.initData();
+
+            }
+        },
+        saveWater2(){
+            let timer = null;
+            
         }
     },
     created(){

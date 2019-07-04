@@ -420,7 +420,7 @@ export default {
             return value + (new Date()).getTime();
         },
         
-        // 防抖
+        // shaking
         avoidShake(height){            
             let inval = 400;
             let timer = null;

@@ -97,6 +97,8 @@ export default {
             screenHeight: 450,
             isOk: false,
             pageHeight: 250,
+            oldTime: null,
+            timeInterval: 400,
         }
     },
     methods: {             
@@ -199,7 +201,21 @@ export default {
                     timer = null;
                 },inval);
             }
-        }
+        },
+        // // saving
+        // saveWater(){
+        //     let newTime = (new Date()).gettime();
+            
+        //     if(!this.oldTime){
+        //         this.oldTime = newTime;
+        //     }
+
+        //     let intval = this.newTime - this.oldTime;
+        //     if( intval > this.timeInterval){
+        //         console.log('do it !');
+        //         this.oldTime = newTime;
+        //     }
+        // },
     },
     created(){
         this.initStatisics();
@@ -213,36 +229,36 @@ export default {
         
     },
     mounted(){
-        const that = this
-        window.onload = () => {
-            return (() => {
-                window.screenWidth = document.body.clientWidth;
-                that.screenWidth = window.screenWidth;
-                window.screenHeight = document.body.clientHeight;
-                that.screenHeight = window.screenHeight;
+        // const that = this
+        // window.onload = () => {
+        //     return (() => {
+        //         window.screenWidth = document.body.clientWidth;
+        //         that.screenWidth = window.screenWidth;
+        //         window.screenHeight = document.body.clientHeight;
+        //         that.screenHeight = window.screenHeight;
 
-                const borwserHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+        //         const borwserHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
 
-                console.log('-------- screenHeight = ' + screenHeight + ' --- borwserHeight : ' + borwserHeight);
-                this.avoidShake(borwserHeight);
+        //         console.log('-------- screenHeight = ' + screenHeight + ' --- borwserHeight : ' + borwserHeight);
+        //         this.avoidShake(borwserHeight);
                 
-            })()
-        };
+        //     })()
+        // };
 
-        window.onresize = () => {
-            return (() => {
-                window.screenWidth = document.body.clientWidth;
-                that.screenWidth = window.screenWidth;
-                window.screenHeight = document.body.clientHeight;
-                that.screenHeight = window.screenHeight;
+        // window.onresize = () => {
+        //     return (() => {
+        //         window.screenWidth = document.body.clientWidth;
+        //         that.screenWidth = window.screenWidth;
+        //         window.screenHeight = document.body.clientHeight;
+        //         that.screenHeight = window.screenHeight;
 
-                const borwserHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+        //         const borwserHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
 
-                console.log('-------- screenHeight = ' + screenHeight + ' --- borwserHeight : ' + borwserHeight);
-                this.avoidShake(borwserHeight);
+        //         console.log('-------- screenHeight = ' + screenHeight + ' --- borwserHeight : ' + borwserHeight);
+        //         this.avoidShake(borwserHeight);
                 
-            })()
-        }
+        //     })()
+        // }
     },
 
 }
