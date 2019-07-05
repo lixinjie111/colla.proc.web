@@ -24,7 +24,18 @@ const store = new VueX.Store({
         isSubMenu: false,   // 显示下拉菜单，版本号、退出登录
         defaultModule: '/vehicleMessage',     // 登录成功，默认打开车辆管理模块vehicleMessage
         breadCrumbs: {},     // 面包屑
+
         loadingInstance: null,  // loading 实例
+        isLoading: false,
+
+        region: {                // 上海嘉定区 310114
+            code: 310114,
+            position: {
+                lon: 121.250333,
+                lat: 31.383524
+            }
+        },
+        
     },
     getters: {
         menuList: state => {
@@ -43,9 +54,11 @@ const store = new VueX.Store({
         },
         showLoading(state){
             state.action.isLoading = true;
+            state.isLoading = true;
         },
         hideLoading(state){
             state.action.isLoading = false;
+            state.isLoading = false;
         },
         showPrompt(state,msg){
             state.action.isPrompt = true;

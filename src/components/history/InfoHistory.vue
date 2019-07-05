@@ -72,7 +72,8 @@
                 border
                 style="width: 100%;"
                 stripe
-                :header-cell-style="{background:'#E6E6E6',color:'#606266',border: '0px'}">
+                :header-cell-style="{background:'#E6E6E6',color:'#606266',border: '0px'}"
+                v-loading="isLoading">
             <el-table-column
                 label="序号"
                 type="index"
@@ -189,8 +190,10 @@ export default {
             ],
             oldTime: null,
             timeInterval: 400,
+            isLoading: false,
         }
     },
+   
     methods: {
         
         init(){
@@ -214,8 +217,8 @@ export default {
             };
         },
         initData(type){
-            
-
+            this.isLoading = true;
+           
             let url = 'event/task/queryPage';
             let params = {
                 // code: this.search.code,
@@ -239,6 +242,9 @@ export default {
                     } else {                     
                         this.$message("showPrompt", "获取设备列表失败  ！"); 
                     }
+
+                    this.isLoading = false;
+                   
                 }
             );
         },

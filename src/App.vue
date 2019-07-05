@@ -115,17 +115,16 @@ export default {
       this.$router.push('/login');
             
       //  LocalStorageUtil.deleteItem('login');
-       LocalStorageUtil.clearItems();
+      LocalStorageUtil.clearItems();
     },
     showSubMenu(){
-        let bool = !this.$store.state.isSubMenu;           
-        
+        let bool = !this.$store.state.isSubMenu;        
         this.$store.dispatch('showSubMenu',bool);
     },
     flushUser(){
       let user = LocalStorageUtil.getItem('login');
       if(!user) return;
-      
+
       user = JSON.parse(user);
       this.$store.state.userName = user.loginName ? user.loginName : '';
     },

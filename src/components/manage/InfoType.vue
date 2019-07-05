@@ -17,7 +17,8 @@
                 border
                 style="width: 100%"
                 stripe
-                :header-cell-style="{background:'#E6E6E6',color:'#606266',border: '0px'}">
+                :header-cell-style="{background:'#E6E6E6',color:'#606266',border: '0px'}"
+                v-loading="isLoading">
             <el-table-column
                 label="序号"
                 type="index"
@@ -138,6 +139,7 @@ export default {
             search: {
                 name: '',
             },
+            isLoading: false,
         }
     },
     methods: {
@@ -163,6 +165,8 @@ export default {
         },
         initData(){
 
+            this.isLoading = true;
+
             let url = 'event/info/queryPage';
             let params = {
                 name: this.search.name,
@@ -181,7 +185,10 @@ export default {
                     } else {                     
                         this.$message("获取信息类型列表失败  ！"); 
                     }
+
+                    this.isLoading = false;
                 }
+                
             );
         },
         initTypeList(){

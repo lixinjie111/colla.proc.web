@@ -304,7 +304,7 @@ export default {
         showRsu(){
             let url = 'common/queryRsu';
             let params = {                
-                "distcode": "110108"
+                // "distcode": this.$store.state.region.code //"110108"
             };
             this.$api.post( url,params,
                 response => {
@@ -324,11 +324,11 @@ export default {
 
                         }
 
-                        if(rsuList.length){
-                            let lon = rsuList.length ? rsuList[0].longitude : '116.397';
-                            let lat = rsuList.length ? rsuList[0].latitude : '39.918';
-                            this.$refs.refTusvnMap.centerAt(lon,lat);   
-                        }                                             
+                        // if(rsuList.length){
+                        //     let lon = rsuList.length ? rsuList[0].longitude : this.$store.state.region.postion.lon;//'116.397';
+                        //     let lat = rsuList.length ? rsuList[0].latitude : this.$store.state.region.postion.lat;//'39.918';
+                        //     this.$refs.refTusvnMap.centerAt(lon,lat);   
+                        // }                                             
                         
                     } else {                     
                         this.$message("获取设备列表失败 ！"); 
@@ -344,7 +344,7 @@ export default {
         showRoadsideUnit(){            
             let url = 'common/queryRoadSide';
             let params = {
-                "distcode": "110108"
+                // "distcode": this.$store.state.region.code //"110108"
             };
             this.$api.post( url,params,
                 response => {
@@ -361,11 +361,11 @@ export default {
                             this.$refs.refTusvnMap.addImg(lon,lat,id,this.mapLayer.roadsideUnit,icon,size);
                         }
 
-                        if(roadsideUnitList.length){
-                            let lon = roadsideUnitList.length ? roadsideUnitList[0].longitude : '116.397';
-                            let lat = roadsideUnitList.length ? roadsideUnitList[0].latitude : '39.918';
-                            this.$refs.refTusvnMap.centerAt(lon,lat);  
-                        }                        
+                        // if(roadsideUnitList.length){
+                        //     let lon = roadsideUnitList.length ? roadsideUnitList[0].longitude : this.$store.state.region.postion.lon;//'116.397';
+                        //     let lat = roadsideUnitList.length ? roadsideUnitList[0].latitude : this.$store.state.region.postion.lat;//'39.918';
+                        //     this.$refs.refTusvnMap.centerAt(lon,lat);  
+                        // }                        
                         
                     } else {                     
                         this.$message("获取路侧单元失败 ！"); 
@@ -381,7 +381,7 @@ export default {
         showTrafficSignal(){
             let url = 'common/queryLight';
             let params = {
-                "distcode": "310104"
+                // "distcode": this.$store.state.region.code//"310104"
             };
             this.$api.post( url,params,
                 response => {
@@ -398,11 +398,11 @@ export default {
                             this.$refs.refTusvnMap.addImg(lon,lat,id,this.mapLayer.trafficSignal,icon,size);
                         }
 
-                        if(trafficSignalList.length){
-                            let lon = trafficSignalList.length ? trafficSignalList[0].longitude : '116.397';
-                            let lat = trafficSignalList.length ? trafficSignalList[0].latitude : '39.918';
-                            this.$refs.refTusvnMap.centerAt(lon,lat);   
-                        }                       
+                        // if(trafficSignalList.length){
+                        //     let lon = trafficSignalList.length ? trafficSignalList[0].longitude : this.$store.state.region.postion.lon;//'116.397';
+                        //     let lat = trafficSignalList.length ? trafficSignalList[0].latitude : this.$store.state.region.postion.lat;//'39.918';
+                        //     this.$refs.refTusvnMap.centerAt(lon,lat);   
+                        // }
                         
                     } else {                     
                         this.$message("获取红绿灯失败 ！"); 
@@ -434,7 +434,6 @@ export default {
                 },inval);
             }
         },
-
 
         //------------------------------- 地图回调函数------------------------------
         // 添加 地图点击事件
