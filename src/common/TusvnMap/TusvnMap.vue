@@ -39,8 +39,8 @@
                                     <span>{{trafficInfo.longitude + ',' + trafficInfo.latitude}}</span>
                                 </el-form-item>
 
-                                <el-form-item label="广播范围" prop="name" class="yk-bottom-12 yk-txt" style="height: 45px;">
-                                    <el-slider style="padding: 0px 5px;" v-model="trafficInfo.affectRange" :marks="broadcastRangeMarks" :min="broadcastMin" :max="broadcastMax" :step="broadcastStep" @change="sliderChange"></el-slider>
+                                <el-form-item label="广播范围" prop="alertRadius" class="yk-bottom-12 yk-txt" style="height: 45px;">
+                                    <el-slider style="padding: 0px 5px;" v-model="trafficInfo.alertRadius" :marks="broadcastRangeMarks" :min="broadcastMin" :max="broadcastMax" :step="broadcastStep" @change="sliderChange"></el-slider>
                                 </el-form-item>                                
 
                                 <el-form-item label="影响路径" prop="alertPath" class="yk-bottom-12 yk-txt">
@@ -54,8 +54,8 @@
 
                                 </el-form-item>
 
-                                <el-form-item label="影响范围" prop="alertRadius" class="yk-bottom-12 yk-txt">
-                                    <el-input size="mini" v-model="trafficInfo.alertRadius">
+                                <el-form-item label="影响范围" prop="affectRange" class="yk-bottom-12 yk-txt">
+                                    <el-input size="mini" v-model="trafficInfo.affectRange">
                                         <span slot="append" class="yk-unit">米</span>
                                     </el-input>
                                 </el-form-item>
@@ -241,12 +241,12 @@ export default {
                 },
                 sliderVal: 1000,
                 alertPath: '',  // 格式：'12.3,23.3;12.3,23.3;'
-                alertRadius: '1000米'
+                
             },
-            circleRadius: 1000,    // 圆形半径
-            circleID: '',
+
             circleLon: '',
             circleLat: '',
+            circleRangeID: 'circle_range_id',
 
             TempLayer: 'TempLayer',         // 临时层，处理临时数据
             TempIcoLayer: 'TempIcoLayer',
@@ -268,6 +268,7 @@ export default {
                 pointList: [],
             },
             pointData: null,
+            MessageTempLayer: 'MessageTempLayer',
         }
     },
     watch:{
@@ -278,8 +279,7 @@ export default {
             this.$refs[formName].validate((valid) => {
                 if (valid) {
                     bool = true;
-                } else {
-                    console.log('error submit!!');
+                } else {                  
                     bool = false;
                 }
             });
@@ -294,14 +294,13 @@ export default {
             this.select.sliderVal = value;
             this.trafficInfo.affectRange = value;
 
-            this.circleRadius = value;
-            this.drawBgCircle(this.circleLon,this.circleLat);
+            this.drawBgCircle(this.circleLon,this.circleLat,value);
         },
 
         // 添加影响路径
         // 1 隐藏 弹框 2 画点 鼠标事件处理  点击打点 画线 ，可以点击多个点， 3 点击确定或关闭 清空 点、线、鼠标事件 ，确定则提交数据
         addEffectPath(){
-            this.closeInforWindow();    // 隐藏 弹框
+            this.closeMyInfoWindow();    // 隐藏 弹框
             this.pathPoint.newVal.lon = '';
             this.pathPoint.newVal.lat = '';
             this.pathPoint.oldVal.lon = this.trafficInfo.longitude;
@@ -518,6 +517,7 @@ export default {
             this.$emit('PublishInfo',this.trafficInfo);
             this.closeMyInfoWindow();
             this.initSelect();
+            this.initTrafficInof();
         },        
         updateInfo(e){
            
@@ -529,13 +529,18 @@ export default {
             this.$emit('UpdateInfo',this.trafficInfo);
             this.closeMyInfoWindow();
             this.initSelect();
+             this.initTrafficInof();
         },
         destroyInfo(e){           
             this.$emit('DestroyInfo',this.trafficInfo);
             this.closeMyInfoWindow(e);
+            this.initSelect();
+             this.initTrafficInof();
         },
         closeInforWindow(e){            
             this.closeMyInfoWindow();
+            this.initSelect();
+             this.initTrafficInof();
         },
         initDatasourceList(isEdit=false,datasource){
             let url = 'common/queryDictionary';
@@ -598,6 +603,15 @@ export default {
                 }
             );
         },
+        toFixedLen(num,length=7){
+            if(num == ''){
+                return '';
+            }
+            if(Object.prototype.toString.call(num) != '[Object Number]'){
+                num = new Number(num);
+            }    
+            return num.toFixed(length);
+        },
         initDetail(marker) {
             let url = 'event/task/findDetail';
             let params = {
@@ -611,8 +625,8 @@ export default {
                         this.trafficInfo.taskCode = response.data.taskCode;
                         this.trafficInfo.eventName = response.data.eventName;
                         this.trafficInfo.eventType = response.data.eventType;
-                        this.trafficInfo.longitude = response.data.longitude;
-                        this.trafficInfo.latitude = response.data.latitude;
+                        this.trafficInfo.longitude = this.toFixedLen(response.data.longitude);
+                        this.trafficInfo.latitude = this.toFixedLen(response.data.latitude);
                         this.trafficInfo.affectRange = response.data.affectRange; 
                         this.trafficInfo.content = response.data.content; 
                         this.trafficInfo.frequency = response.data.frequency; 
@@ -625,8 +639,11 @@ export default {
                         this.trafficInfo.alertPath = response.data.alertPath;   
                         this.trafficInfo.alertRadius = response.data.alertRadius; 
 
-                        this.select.alertRadius = this.trafficInfo.alertRadius + '米';
-                                               
+                        const radius = response.data.alertRadius;   
+
+                        this.circleLon = response.data.longitude;
+                        this.circleLat = response.data.latitude;
+                        this.drawBgCircle(response.data.longitude,response.data.latitude,radius);                                            
 
                         if(response.data.status == 200){                            
                             this.$message('获取详情成功！');
@@ -650,6 +667,28 @@ export default {
             
             if(Array.isArray(this.datasourceList) && this.datasourceList.length){
                 this.select.datasource = this.datasourceList[0];
+            }
+        },
+        initTrafficInof(){
+            this.trafficInfo = {
+                id: '',
+                title: '信息发布',
+                isEdit: false,
+                eventName: '',
+                eventType: '',
+                taskCode: '',                          
+                longitude: '',
+                latitude: '',
+                affectRange: 1000,
+                content: '',
+                frequency: 500,
+                frequencyUnit: '',
+                beginTime: TDate.formatTime(),
+                endTime: TDate.formatTime(),
+                datasource: '',
+                alertRadius: 1000,
+                alertPath: '',              //格式 "[[12.333,23.333],[12.444,23,444]]"，转换显示为 12.333,23.333;12.444,23,444
+                icon: ''
             }
         },
         // ------------------------------------------------------------------------------
@@ -710,6 +749,8 @@ export default {
             // 添加临时层
             this.addVectorLayer(this.TempLayer);
             this.addVectorLayer(this.TempIcoLayer);
+
+            this.addVectorLayer(this.MessageTempLayer);
 
             // this.centerAt(116.38921511745102,39.912577179827466);
             // this.addLineString([[116.38921511745102,39.912577179827466]
@@ -772,15 +813,24 @@ export default {
 
             this.trafficInfo.id = obj.id;
             this.trafficInfo.eventName = obj.trafficInfo.eventName;
+
+            this.circleLon = obj.lon;
+            this.circleLat = obj.lat;
             
             if(obj.isEdit){
                 this.initDetail(obj);
                 this.trafficInfo.isEdit = true;
             }else{
+
+                obj.trafficInfo.longitude = this.toFixedLen(obj.trafficInfo.longitude);
+                obj.trafficInfo.latitude = this.toFixedLen(obj.trafficInfo.latitude);
                 this.trafficInfo = obj.trafficInfo;
                 this.trafficInfo.isEdit = false;
 
                 this.initDatasourceList();
+
+                let radius = obj.trafficInfo.alertRadius;                
+                this.drawBgCircle(obj.lon,obj.lat,radius);    
             }            
 
             this.showTrafficInfoPop = true;
@@ -801,10 +851,7 @@ export default {
                 overlay.setOffset([0,-29]);
             });
 
-            this.circleID= 'circle_range_id';// + obj.id;
-            this.circleLon = obj.lon;
-            this.circleLat = obj.lat;
-            this.drawBgCircle(obj.lon,obj.lat);         
+                
 
             if(!obj.isEdit){
                 this.pubMsgIconID = 'pub_msg_ico_' + obj.id;
@@ -812,18 +859,16 @@ export default {
             }
         },
         // 画圆形背景图片
-        drawBgCircle(lon,lat){
+        drawBgCircle(lon,lat,radius){
             
             // 245,147,7
-            this.addCircle(lon,lat,this.circleRadius,this.circleID,[245,147,7,0.1],'#F59307',null,null,null,null,null,null,'MessageLayer');
+            this.addCircle(lon,lat,radius,this.circleRangeID,[245,147,7,0.1],'#F59307',null,null,null,null,null,null,this.MessageTempLayer);
             
         },
         // 移除圆形背景图片
-        clearCircle(){
-            // MessageLayer
-            if(!this.circleID) return;
+        clearCircle(){       
             
-            this.removeFeature(this.circleID,'MessageLayer');
+            this.removeFeature(this.circleRangeID,this.MessageTempLayer);
         },
         // 画 发布信息图标
         drawPubMsgIcon(lon,lat,icon){
@@ -832,10 +877,10 @@ export default {
             let pubMsgBgIcoID = 'bg_' + this.pubMsgIconID;
 
             // [44,58]
-            this.addImg(lon,lat,pubMsgBgIcoID,'MessageLayer',pubMsgBgIco,[44,87],null,null,null,[0,15]);
+            this.addImg(lon,lat,pubMsgBgIcoID,this.MessageTempLayer,pubMsgBgIco,[44,87],null,null,null,[0,15]);
 
             // [22,37]
-            this.addImg(lon,lat,this.pubMsgIconID,'MessageLayer',icon,[22,66],null,null,null,[0,15]);
+            this.addImg(lon,lat,this.pubMsgIconID,this.MessageTempLayer,icon,[22,66],null,null,null,[0,15]);
         },
         // 移除 发布信息图标
         clearPubMsgIcon(){
@@ -843,8 +888,8 @@ export default {
 
             let pubMsgBgIcoID = 'bg_' + this.pubMsgIconID;
 
-            this.removeFeature(pubMsgBgIcoID,'MessageLayer');
-            this.removeFeature(this.pubMsgIconID,'MessageLayer');
+            this.removeFeature(pubMsgBgIcoID,this.MessageTempLayer);
+            this.removeFeature(this.pubMsgIconID,this.MessageTempLayer);
         },
 
         /**
@@ -880,9 +925,7 @@ export default {
             e.target.blur();
             return false;
         },
-        // testImgOverlayClick:function(e){
-        //     console.log(e.target.getAttribute("bdata"));
-        // },
+       
         mapClick:function(mevent){
 
             if(this.mapStatus == 'normal'){

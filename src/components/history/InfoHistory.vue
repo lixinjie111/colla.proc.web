@@ -298,7 +298,7 @@ export default {
 
             let intval = this.newTime - this.oldTime;
             if( intval > this.timeInterval){
-                console.log('do it !');
+                
                 this.oldTime = newTime;
 
                 this.initData();

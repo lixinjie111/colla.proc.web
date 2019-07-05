@@ -268,8 +268,7 @@ export default {
             let msg = '确认删除 ' + item.name + ' 吗？';
             this.$confirm(msg)
             .then(_ => {
-                // console.log('handle delete --- ' + _)
-                
+               
                 //  done();
 
                 let url = 'event/info/delete/ids';

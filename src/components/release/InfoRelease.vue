@@ -178,30 +178,30 @@ export default {
             this.$refs.refInfoMap.setPointer(false);
         },
 
-        winResize(){
-            let offsetHeight = window.outerHeight;
-            let offsetWidth = window.outerWidth;
-            console.log('offsetHeight --- ' + offsetHeight + ' ------ offsetWidth --- ' + window.outerWidth)
-        },
+        // winResize(){
+        //     let offsetHeight = window.outerHeight;
+        //     let offsetWidth = window.outerWidth;
+        //     console.log('offsetHeight --- ' + offsetHeight + ' ------ offsetWidth --- ' + window.outerWidth)
+        // },
         
         // shaking
-        avoidShake(height){
+        // avoidShake(height){
             
-            let inval = 400;
-            let timer = null;
-            if(!this.isOk){
-                this.isOk = true;
-                timer = setTimeout(()=>{
-                    this.isOk = false;
-                    this.pageHeight = height - 62;
+        //     let inval = 400;
+        //     let timer = null;
+        //     if(!this.isOk){
+        //         this.isOk = true;
+        //         timer = setTimeout(()=>{
+        //             this.isOk = false;
+        //             this.pageHeight = height - 62;
 
-                    console.log('--avoidShake------ pageHeight = ' + this.pageHeight);
+        //             console.log('--avoidShake------ pageHeight = ' + this.pageHeight);
 
-                    clearTimeout(timer);
-                    timer = null;
-                },inval);
-            }
-        },
+        //             clearTimeout(timer);
+        //             timer = null;
+        //         },inval);
+        //     }
+        // },
         // // saving
         // saveWater(){
         //     let newTime = (new Date()).gettime();
