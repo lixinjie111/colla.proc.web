@@ -469,18 +469,8 @@ export default {
                     let width = 5;
                     let layerId = this.TempIcoLayer;
 
-                    this.addLineString(
-                        coordinates,
-                        id,
-                        "red",
-                        "round",
-                        "round",
-                        [5,0],
-                        0,
-                        10,
-                        5,
-                        layerId                        
-                    );          
+                    // coordinates, id, color, lineCap, lineJoin, lineDash, lineDashOffset, miterLimit, width, layerId
+                    this.addLineString(coordinates, id, "red", "round", "round", [5,0], [-14,0], 10, 5, layerId);          
 
                 }).catch((error) => {
 
