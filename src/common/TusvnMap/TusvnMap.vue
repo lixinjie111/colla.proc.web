@@ -310,6 +310,8 @@ export default {
 
             this.addClickEvent();     
             this.addPathIco( this.trafficInfo.longitude, this.trafficInfo.latitude );
+
+            this.$emit('TemporaryClearPubMsg',{bool:true});
             
         },
 
@@ -346,6 +348,8 @@ export default {
             this.pointData.trafficInfo.alertPath = JSON.stringify(this.pathPoint.pointList);
             // 重新打开窗口
             this.addMyInfoWindow(this.pointData);
+
+            this.$emit('TemporaryClearPubMsg',{bool:false});
 
         },
         // 关闭窗口

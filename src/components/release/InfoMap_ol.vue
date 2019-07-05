@@ -20,7 +20,8 @@
 
             @PublishInfo = 'publishInfo' 
             @UpdateInfo = 'updateInfo'
-            @DestroyInfo = 'destroyInfo'>
+            @DestroyInfo = 'destroyInfo'
+            @TemporaryClearPubMsg='temporaryClearPubMsg($event)'>
 
         </tusvn-map>
         <!--   -->
@@ -110,50 +111,10 @@ export default {
                 response => {
                     if (response.status >= 200 && response.status < 300) {
 
-                        let t = response.data ? response.data : [];                        
+                        this.pubMsgList = response.data ? response.data : [];                        
+                        let t = this.pubMsgList;
 
-                        for(let i=0;i<t.length;i++){
-                            let item = t[i];
-                            let icon = 'static/images/position.png';
-                            // let icon = 'https://webapi.amap.com/theme/v1.3/markers/n/mark_b.png';
-                            if(item.icon){
-                                icon = this.iconPath + item.icon;
-                            }              
-                          
-                            let lon = item.longitude;
-                            let lat = item.latitude;                            
-                            let id = item.taskCode;
-                            let size = [30,30];                           
-
-                            let bgImgId = 'bg_' + id;
-                            let bgImgSrc = 'static/images/ico-bg2.png';                            
-                            let bgImgSize = [44,58];
-                            let bgImgOffset = [0,0];                            
-                            this.$refs.refTusvnMap.addImg(lon, lat, bgImgId,this.mapLayer.messageBg,bgImgSrc,bgImgSize,0,true,1,bgImgOffset,1,[0.5,1]);                            
-
-                            let imgOffset = [0,-34];
-                            this.$refs.refTusvnMap.addImgOverlay( id, icon, null, lon, lat, id, imgOffset, (e) => {
-                                
-                                e.preventDefault();
-                                e.stopPropagation();
-
-                                let marker = {
-                                    id: item.id,
-                                    lon: lon,
-                                    lat: lat,
-                                    isEdit: true,
-                                    icon: this.iconPath + this.msgTypeInfo.icon,
-                                    trafficInfo: this.trafficInfo,
-
-                                };
-
-                                this.cricleID = 'icon_' + item.id;
-                                this.$refs.refTusvnMap.addMyInfoWindow(marker);
-
-                            }); 
-                            this.pubMsgList.push(item);                            
-                            // this.$refs.refTusvnMap.centerAt(116.448583,39.930821);
-                        }
+                        this.addPubMsg();
                         
                         // if(t.length){
                         //     this.$refs.refTusvnMap.centerAt( t.length, t[0], t[1])
@@ -165,14 +126,68 @@ export default {
                 }
             );
         },
+        addPubMsg(){
+            for(let i=0;i<this.pubMsgList.length;i++){
+                let item = this.pubMsgList[i];
+                let icon = 'static/images/position.png';
+                // let icon = 'https://webapi.amap.com/theme/v1.3/markers/n/mark_b.png';
+                if(item.icon){
+                    icon = this.iconPath + item.icon;
+                }              
+                
+                let lon = item.longitude;
+                let lat = item.latitude;                            
+                let id = item.taskCode;
+                let size = [30,30];                           
 
-        clearPubMsg(){
+                let bgImgId = 'bg_' + id;
+                let bgImgSrc = 'static/images/ico-bg2.png';                            
+                let bgImgSize = [44,58];
+                let bgImgOffset = [0,0];                            
+                this.$refs.refTusvnMap.addImg(lon, lat, bgImgId,this.mapLayer.messageBg,bgImgSrc,bgImgSize,0,true,1,bgImgOffset,1,[0.5,1]);                            
 
+                let imgOffset = [0,-34];
+                this.$refs.refTusvnMap.addImgOverlay( id, icon, null, lon, lat, id, imgOffset, (e) => {
+                    
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    let marker = {
+                        id: item.id,
+                        lon: lon,
+                        lat: lat,
+                        isEdit: true,
+                        icon: this.iconPath + this.msgTypeInfo.icon,
+                        trafficInfo: this.trafficInfo,
+
+                    };
+
+                    this.cricleID = 'icon_' + item.id;
+                    this.$refs.refTusvnMap.addMyInfoWindow(marker);
+
+                }); 
+                
+            }
+        },
+        temporaryClearPubMsg(e){
+            
+            if(e.bool){
+                this.clearPubMsgIco();
+            }else{
+                this.addPubMsg();
+            }
+            
+        },
+        clearPubMsgIco(){
             this.$refs.refTusvnMap.removeAllFeature(this.mapLayer.messageBg);
 
             for(let item of this.pubMsgList){
                 this.$refs.refTusvnMap.removeOverlayById(item.taskCode);
             }
+        },
+        clearPubMsg(){
+
+            this.clearPubMsgIco();
             this.pubMsgList = [];
         },
 
