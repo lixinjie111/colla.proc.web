@@ -206,14 +206,14 @@ export default {
                 taskCode: '',                          
                 longitude: '',
                 latitude: '',
-                affectRange: 1000,
+                affectRange: 200,
                 content: '',
                 frequency: 500,
                 frequencyUnit: '',
                 beginTime: TDate.formatTime(),
                 endTime: TDate.formatTime(),
                 datasource: '',
-                alertRadius: 1024,
+                alertRadius: 1000,
                 alertPath: '',              //格式 "[[12.333,23.333],[12.444,23,444]]"，转换显示为 12.333,23.333;12.444,23,444
                 icon: '',
             },
@@ -240,8 +240,7 @@ export default {
                     value: '',
                 },
                 sliderVal: 1000,
-                alertPath: '',  // 格式：'12.3,23.3;12.3,23.3;'
-                
+                alertPath: '',  // 格式：'12.3,23.3;12.3,23.3;'                
             },
 
             circleLon: '',
@@ -292,7 +291,7 @@ export default {
         // 表单事件
         sliderChange(value){
             this.select.sliderVal = value;
-            this.trafficInfo.affectRange = value;
+            this.trafficInfo.alertRadius = value;
 
             this.drawBgCircle(this.circleLon,this.circleLat,value);
         },

@@ -57,7 +57,8 @@
             </div> -->
             
             <!-- v-if="$store.state.isSubMenu" -->
-            <div v-if="$store.state.isSubMenu" class="yk-f-right">
+            <!-- <div v-if="$store.state.isSubMenu" class="yk-f-right"> -->
+            <div v-if="isSubMenu" class="yk-f-right">
                 <ul class="yk-nav yk-sub-menu-box yk-sub-menu">                
                     <li>
                         <img class="yk-user-ico" src="static/images/version.png">
@@ -66,7 +67,7 @@
                     <li>
                         <img class="yk-user-ico" src="static/images/logout.png">
                         <div class="yk-user-title" title="退出登录" @click="logoutClick();">退出</div>
-                    </li>                    
+                    </li>
                 </ul>
             </div>
 
@@ -90,16 +91,25 @@ export default {
       openedItems: ['0','1','2'],
       menuList: [],
       collapse: true,
+      isSubMenu: false,
     }
   },
+  watch: {
+    '$store.state.isSubMenu': 'subMenuFn'
+  },
   methods: {
+
+    subMenuFn(newVal,oldVal){
+      console.log('subMenuFn --- ' + newVal + ' ----- ' + oldVal);
+      this.isSubMenu = newVal;
+    },
+
     navChange(item){
       this.$router.push(item.path);
       LocalStorageUtil.setItem('currentMenu',item.path);
-      Utils.setMenuByPath(item.path);
-     
+      Utils.setMenuByPath(item.path);     
     },
-    
+
     initMenu(){
         let url = window.location.hash;
         // let url = window.location.pathname;
@@ -113,9 +123,12 @@ export default {
     },
     logoutClick(){
       this.$router.push('/login');
-            
+      
+      this.$store.dispatch('logout');
+      this.$store.dispatch('showSubMenu',false);
       //  LocalStorageUtil.deleteItem('login');
       LocalStorageUtil.clearItems();
+
     },
     showSubMenu(){
         let bool = !this.$store.state.isSubMenu;        

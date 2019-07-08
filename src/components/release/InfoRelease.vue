@@ -1,6 +1,6 @@
 <template>
  
-    <div id="ykMap" class="yk-map">
+    <div id="ykMap" class="yk-map" @click="mapBoxClick();">
        
         <!-- openlayer地图 -->
         <div>
@@ -25,7 +25,7 @@
         <div class="yk-right">
             <el-form size="mini">
                 <el-form-item class="yk-form-item yk-f-right">
-                    <el-select placeholder="发布信息" v-model="search.pubMsg" :clearable='clearPoiSelect' value-key="name" @clear="clearPubMsgClick($event);">                        
+                    <el-select id="pubMsgSelect" ref="refPubMsg" placeholder="发布信息" v-model="search.pubMsg" :clearable='clearPoiSelect' value-key="name" @clear="clearPubMsgClick($event);">                        
                         <el-option-group v-for="(group,groupIndex) in pubMsgGroup" label="发布信息" :key="groupIndex">
                             <template v-for="(item,index) in pubMsgList">
                                 <el-option :key="index" :value="item" @click.native="pubMsgClick(item);">                                        
@@ -36,7 +36,7 @@
                     </el-select>                    
                 </el-form-item>
                 <el-form-item class="yk-form-item yk-f-right yk-border-r">                    
-                    <el-select placeholder="POI" multiple v-model="search.poi" value-key="value" collapse-tags @remove-tag="removeTagClick($event);">                                    
+                    <el-select id="poiSelect" ref="refPoi" placeholder="POI" multiple v-model="search.poi" value-key="value" collapse-tags @remove-tag="removeTagClick($event);">                                    
                         <el-option-group v-for="(group,groupIndex) in poiGruop" label="POI" :key="groupIndex">            
                             <template v-for="(item,index) in poiList">
                                 <el-option :key="index" :value="item.name" @click.native="poiClick(item);">                                                           
@@ -176,6 +176,12 @@ export default {
         },
         clearPubMsgClick(e){            
             this.$refs.refInfoMap.setPointer(false);
+        },
+
+        mapBoxClick(){
+            
+            this.$refs.refPubMsg.handleClose()
+            this.$refs.refPoi.handleClose()
         },
 
         // winResize(){
