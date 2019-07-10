@@ -127,6 +127,11 @@
             </el-table-column>
 
             <el-table-column
+                prop="expirationTime"
+                label="实际结束时间">
+            </el-table-column>
+
+            <el-table-column
                 prop="content"
                 label="信息内容">
             </el-table-column>
