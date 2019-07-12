@@ -727,7 +727,7 @@ export default {
                 })
             });
             
-            // this.addWms("shanghai_qcc:dl_shcsq_wgs84","http://113.208.118.62:8080/geoserver/shanghai_qcc/wms","shanghai_qcc:dl_shcsq_wgs84","",1,true,null); // 上海汽车城
+            this.addWms("shanghai_qcc:dl_shcsq_wgs84","http://113.208.118.62:8080/geoserver/shanghai_qcc/wms","shanghai_qcc:dl_shcsq_wgs84","",1,true,null); // 上海汽车城
 
             // this.clickEventKey = this.$data.map.on("click",this.mapClick);
             this.$data.map.getView().on("change:resolution",this.viewLevelChange);
