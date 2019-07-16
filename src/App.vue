@@ -169,7 +169,6 @@ export default {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #2c3e50;
   /* margin-top: 0px; */
 }
@@ -192,6 +191,9 @@ export default {
   width: 240px!important;
   background: #101113;
   color: #ffffff;
+}
+.el-menu {
+  text-align: center;
 }
 .el-menu-item{
   color: #B5B5B5;

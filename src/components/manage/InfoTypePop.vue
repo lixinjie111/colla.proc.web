@@ -8,7 +8,7 @@
     :visible.sync="popData.visible"
     class="yk-left"
     >
-    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" size="mini" label-width="120px" class="demo-ruleForm yk-left">
+    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" size="mini" label-width="120px">
         
         <el-form-item label="信息所属分类" prop="eventCategory">
             <el-select v-model.trim="ruleForm.eventCategory" placeholder="请选择">
@@ -74,11 +74,11 @@
             <el-input v-model.trim="ruleForm.infoType"></el-input>
         </el-form-item>        
    
+        <el-form-item style="text-align: right;">
+            <el-button @click="handleCancel">取 消</el-button>
+            <el-button type="primary" @click="handleOk" :loading="submitLoading">确 定</el-button>
+        </el-form-item>
     </el-form>
-    <span slot="footer" class="dialog-footer">
-        <el-button size="mini" @click="handleCancel">取 消</el-button>
-        <el-button size="mini" type="primary" @click="handleOk" :loading="submitLoading">确 定</el-button>
-    </span>
   </el-dialog>
 </template>
 

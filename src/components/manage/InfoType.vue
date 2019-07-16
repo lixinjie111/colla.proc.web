@@ -1,17 +1,17 @@
 <template>
     <div class="yk-container">
-        <el-row class="yk-search">
-            <label>信息类型名称：</label>
-            <el-input size="mini" v-model="search.name" class="yk-w180"></el-input>
-            <!-- <el-select size="mini" v-model="search.type">
-                <template v-for="(item,index) in typeList">
-                    <el-option :key="index" :label="item.name" :value="item.key">{{item.name}}</el-option>
-                </template>
-            </el-select> -->
-            <el-button size="mini" @click="handleSearch">查询</el-button>
-            <el-button size="mini" @click="handleFlush">刷新</el-button>
-            <el-button class="yk-right" size="mini" @click="handleAdd">新增</el-button>
-        </el-row>
+        <el-form :inline="true" size="mini" class="yk-search">
+            <el-form-item label="信息类型名称：">
+                <el-input v-model.trim="search.name"></el-input>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" @click="handleSearch">查询</el-button>
+                <el-button type="primary" @click="handleFlush">刷新</el-button>
+            </el-form-item>
+            <el-form-item class="yk-right">
+                <el-button type="primary" @click="handleAdd">新增</el-button>
+            </el-form-item>
+        </el-form>
         <el-table
                 :data="dataList"
                 border
@@ -277,42 +277,9 @@ export default {
 }
 </script>
 <style scoped>
-.yk-container{
-    padding: 0px 20px 20px 20px;
-}
-
-.el-table td, .el-table th{
-    padding: 5px 0px!important;
-}
-
-.el-dialog__header{
-    border-bottom: 1px solid #eeeaea;
-} 
-.el-dialog__footer{
-      border-top: 1px solid #eeeaea;
-}
-
-
-.yk-search{
-    padding: 5px;
-    text-align: left;
-}
-
-.yk-left{
-    text-align: left!important;
-}
-.yk-right{
+.yk-right {
     float: right;
 }
-
-.yk-paging{
-    padding: 5px 10px;
-    text-align: right;
-}
-.yk-w180{
-    width: 180px;
-}
-
 .image-box{
     margin: 0 auto;
     width: 34px;

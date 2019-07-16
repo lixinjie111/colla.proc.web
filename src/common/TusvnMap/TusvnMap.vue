@@ -98,8 +98,8 @@
                                     </select>
                                 </el-form-item>
 
-                                <!-- <el-form-item label="告警类别" class="yk-bottom-12  yk-txt" v-if="false">                                     -->
-                                <el-form-item label="告警类别" class="yk-bottom-12  yk-txt">                                    
+                                <el-form-item label="告警类别" class="yk-bottom-12  yk-txt" v-if="false">                                    
+                                <!-- <el-form-item label="告警类别" class="yk-bottom-12  yk-txt">                                     -->
                                     <el-input size="mini" v-model="trafficInfo.alertCategory"></el-input>
                                 </el-form-item>
 

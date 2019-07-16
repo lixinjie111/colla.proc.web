@@ -1,72 +1,43 @@
 <template>
     <div class="yk-container">
-        <el-row class="yk-search">
-            
-            <!-- <el-col :span="6"> -->
-                <div class="yk-block">
-                    <label>信息类型：</label>
-                    <el-input size="mini" v-model="search.eventType" class="yk-w180"></el-input>
-                </div>                
-            <!-- </el-col> -->
-            
-            <!-- <el-col :span="6"> -->
-                <div class="yk-block">
-                    <label>信息状态：</label>
-                    <!-- <el-input size="mini" v-model="search.status" class="yk-w180"></el-input> -->
-                    <el-select v-model="search.status" size="mini" placeholder="请选择">
-                        <el-option
-                            v-for="item in statusList"
-                            :key="item.value"
-                            :label="item.name"
-                            :value="item.key">
-                        </el-option>
-                    </el-select>
-                </div>
-                
-            <!-- </el-col> -->
-            
-            <!-- <el-col :span="6"> -->
-                <div class="yk-block">
-                    <label>发布时间：</label>
-                    <el-date-picker 
-                        size="mini"
-                        v-model="search.publishTime"
-                        type="datetimerange"
-                        range-separator="至"
-                        start-placeholder="开始日期"
-                        end-placeholder="结束日期">
-                    </el-date-picker>
-                </div>
-                
-            <!-- </el-col> -->
-            
-            <!-- <el-col :span="6"> -->
-                <div class="yk-block">
-                   <label>信息来源：</label>
-                    <!-- <el-input size="mini" v-model="search.datasource" class="yk-w180"></el-input>  -->
-
-                    <el-select v-model="search.datasource" size="mini" placeholder="请选择">
-                        <el-option
-                            v-for="item in datasourceList"
-                            :key="item.value"
-                            :label="item.name"
-                            :value="item.key">
-                        </el-option>
-                    </el-select>
-                </div>                
-            <!-- </el-col> -->
-            <!-- <el-select size="mini" v-model="search.type">
-                <template v-for="(item,index) in typeList">
-                    <el-option :key="index" :label="item.name" :value="item.key">{{item.name}}</el-option>
-                </template>
-            </el-select> -->
-            <div class="yk-block">
-                <el-button size="mini" @click="handleSearch();">查询</el-button>
-                <el-button size="mini" @click="handleFlush();">刷新</el-button>    
-            </div>
-            
-            
-        </el-row>
+        <el-form :inline="true" size="mini" class="yk-search">
+            <el-form-item label="信息类型：">
+                <el-input v-model.trim="search.eventType"></el-input>
+            </el-form-item>
+            <el-form-item label="信息状态：">
+                <el-select v-model="search.status" placeholder="请选择">
+                    <el-option
+                        v-for="item in statusList"
+                        :key="item.value"
+                        :label="item.name"
+                        :value="item.key">
+                    </el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="发布时间：">
+                <el-date-picker 
+                    v-model="search.publishTime"
+                    type="datetimerange"
+                    range-separator="至"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期">
+                </el-date-picker>
+            </el-form-item>
+            <el-form-item label="信息来源：">
+                <el-select v-model="search.datasource" placeholder="请选择">
+                    <el-option
+                        v-for="item in datasourceList"
+                        :key="item.value"
+                        :label="item.name"
+                        :value="item.key">
+                    </el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" @click="handleSearch">查询</el-button>
+                <el-button type="primary" @click="handleFlush">刷新</el-button>    
+            </el-form-item>
+        </el-form>
         <el-table
                 :data="dataList"
                 border
@@ -322,35 +293,5 @@ export default {
 
 }
 </script>
-<style scoped>
-.yk-container{
-    padding: 20px;
-    overflow-y: auto;
-}
 
-.el-table td, .el-table th{
-    padding: 5px 0px!important;
-}
-
-.yk-paging{
-    padding: 5px 10px;
-    text-align: right;
-}
-
-.yk-search{
-    padding: 5px;
-    text-align: left;
-}
-
-.yk-w180{
-    width: 180px;
-}
-
-.yk-block{
-    display: inline-block;
-    vertical-align: top;
-    margin-bottom: 5px;
-}
-
-</style>
 

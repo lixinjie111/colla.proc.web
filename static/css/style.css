@@ -314,4 +314,33 @@
   height: 16px;
   background-color: rgb(47, 48, 48);  
 } */
+
+.yk-container{
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.el-table td, .el-table th{
+    padding: 5px 0px!important;
+}
+
+.yk-paging{
+    padding: 5px 10px;
+    text-align: right;
+}
+
+.yk-search{
+    padding: 5px;
+    text-align: left;
+}
+
+.yk-w180{
+    width: 180px;
+}
+
+.yk-block{
+    display: inline-block;
+    vertical-align: top;
+    margin-bottom: 5px;
+}
   

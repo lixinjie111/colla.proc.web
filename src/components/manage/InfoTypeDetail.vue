@@ -6,8 +6,8 @@
     :visible.sync="popData.visible"
     class="yk-left"
     >
-    <el-form ref="ruleForm" size="mini" label-width="120px" class="demo-ruleForm yk-left">
-        <el-form-item label="信息所属分类：" prop="name">
+    <el-form ref="ruleForm" size="mini" label-width="120px">
+        <el-form-item label="信息所属分类：">
             <!-- <el-input size="mini" v-model="data.eventCategory" disabled></el-input> -->
             <!-- {{data.eventCategory}} -->
             <span v-if="ruleForm.eventCategory == 'TI01'">车辆异常信息</span>
@@ -17,11 +17,11 @@
             <span v-else>{{ruleForm.eventCategory}}</span>
 
         </el-form-item>
-        <el-form-item label="信息类型名称：" prop="name">
+        <el-form-item label="信息类型名称：">
             <!-- <el-input size="mini" v-model="data.name" disabled></el-input> -->
             {{ruleForm.name}}
         </el-form-item>
-        <el-form-item label="信息类型图标：" prop="name">
+        <el-form-item label="信息类型图标：">
             
             <!-- <el-image :src="iconPath"></el-image> -->
 
@@ -30,7 +30,7 @@
             </div>
 
         </el-form-item>
-        <el-form-item label="默认广播频率：" prop="name">
+        <el-form-item label="默认广播频率：">
             <!-- <el-input size="mini" v-model="data.name" disabled></el-input> -->
             {{ruleForm.frequency + ' ' }}
             <span v-if="ruleForm.frequencyUnit == 1">毫秒</span>
