@@ -210,6 +210,7 @@ export default {
 }
 
 .el-main{
+  position: relative;
   padding: 0px;
   /* overflow: hidden!important; */
 }

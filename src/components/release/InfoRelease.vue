@@ -8,17 +8,21 @@
         </div>
 
         <!-- 左侧信息 -->
-        <div class="yk-left">            
-            <el-card v-for="(item,index) in statisicsData" :key="index" :body-style="{ padding: '0px' }">
-                <div class="react-bg">                    
-                    <div class="image-box">
-                        <img :src="iconPath + item.icon" class="image">
-                    </div>
-                    <div class="yk-card-title">
-                        <span>{{item.num}}</span>
-                    </div>
-                </div>                
-            </el-card>
+        <div class="yk-left">
+            <div class="c-scroll-wrap">
+                <div class="c-scroll-inner">
+                    <el-card v-for="(item,index) in statisicsData" :key="index" :body-style="{ padding: '0px' }">
+                        <div class="react-bg">                    
+                            <div class="image-box">
+                                <img :src="iconPath + item.icon" class="image">
+                            </div>
+                            <div class="yk-card-title">
+                                <span>{{item.num}}</span>
+                            </div>
+                        </div>                
+                    </el-card>
+                </div>
+            </div>  
         </div>
 
         <!-- 右侧信息 -->
@@ -293,6 +297,9 @@ export default {
         background: transparent;
         border: 0px;
     }
+    .el-card:last-child{
+        margin-bottom: 0;
+    }
     .react-bg{
         width: 94px;
         height: 94px;
@@ -325,27 +332,27 @@ export default {
         top: 50%; 
         transform: translateY(-50%);
     }
-    /* #ykMap {
-        width: 100%;
-        height: 100%;
-    } */
     .yk-map{
-        width:100%;
-        height: 100%;
-        position: relative;
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 60px;
+        bottom: 0;
         overflow: hidden;
     }
 
     .yk-left{
+        position: absolute;
         left: 30px;
         top: 30px;
-        position: absolute;
+        bottom: 30px;
     }
 
     .yk-right{
         right: 30px;
         top: 30px;
         position: absolute;
+        z-index: 2;
     }
 
     .yk-form-item{

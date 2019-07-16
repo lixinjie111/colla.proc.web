@@ -261,14 +261,14 @@ export default {
                         
                         if(response.data.status == 200){
                             this.initPubMsgList();
-                            this.$message('更新成功！');
+                            this.$message.success('更新成功！');
                         }else if(response.data.status == 500){
                             let msg = response.data.message ? response.data.message : '更新失败 !';
-                            this.$message(msg)
+                            this.$message.error(msg)
                         }
                         
                     } else {                     
-                        this.$message("更新失败 ！"); 
+                        this.$message.error("更新失败 ！"); 
                     }
                 }
             );
@@ -290,14 +290,14 @@ export default {
                         if(response.data.status == 200){
                             this.initPubMsgList();
                             this.$emit('PubMsgChange');
-                            this.$message('手动失效成功！');
+                            this.$message.success('手动失效成功！');
                         }else if(response.data.status == 500){
                             let msg = response.data.message ? response.data.message : '手动失效失败 !';
-                            this.$message(msg)
+                            this.$message.error(msg)
                         }                         
                         
                     } else {                     
-                        this.$message("手动失效失败 ！"); 
+                        this.$message.error("手动失效失败 ！"); 
                     }
                 }
             );
@@ -561,7 +561,7 @@ export default {
 
                 const borwserHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
 
-                console.log('-------- screenHeight = ' + screenHeight + ' --- borwserHeight : ' + borwserHeight);
+                // console.log('-------- screenHeight = ' + screenHeight + ' --- borwserHeight : ' + borwserHeight);
 
                 
             })()

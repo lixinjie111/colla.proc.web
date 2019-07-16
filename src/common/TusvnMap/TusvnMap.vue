@@ -39,8 +39,8 @@
                                     <span>{{trafficInfo.longitude + ',' + trafficInfo.latitude}}</span>
                                 </el-form-item>
 
-                                <el-form-item label="广播范围" prop="alertRadius" class="yk-bottom-12 yk-txt" style="height: 45px;">
-                                    <el-slider style="padding: 0px 5px;" v-model="trafficInfo.alertRadius" :marks="broadcastRangeMarks" :min="broadcastMin" :max="broadcastMax" :step="broadcastStep" @change="sliderChange"></el-slider>
+                                <el-form-item label="广播范围" prop="affectRange" class="yk-bottom-12 yk-txt" style="height: 45px;">
+                                    <el-slider style="padding: 0px 5px;" v-model="trafficInfo.affectRange" :marks="broadcastRangeMarks" :min="broadcastMin" :max="broadcastMax" :step="broadcastStep" @change="sliderChange"></el-slider>
                                 </el-form-item>                                
 
                                 <el-form-item label="影响路径" prop="alertPath" class="yk-bottom-12 yk-txt">
@@ -54,8 +54,8 @@
 
                                 </el-form-item>
 
-                                <el-form-item label="影响范围" prop="affectRange" class="yk-bottom-12 yk-txt">
-                                    <el-input size="mini" v-model="trafficInfo.affectRange">
+                                <el-form-item label="影响范围" prop="alertRadius" class="yk-bottom-12 yk-txt">
+                                    <el-input size="mini" v-model="trafficInfo.alertRadius">
                                         <span slot="append" class="yk-unit">米</span>
                                     </el-input>
                                 </el-form-item>
@@ -98,7 +98,8 @@
                                     </select>
                                 </el-form-item>
 
-                                <el-form-item label="告警类别" class="yk-bottom-12  yk-txt" v-if="false">                                    
+                                <!-- <el-form-item label="告警类别" class="yk-bottom-12  yk-txt" v-if="false">                                     -->
+                                <el-form-item label="告警类别" class="yk-bottom-12  yk-txt">                                    
                                     <el-input size="mini" v-model="trafficInfo.alertCategory"></el-input>
                                 </el-form-item>
 
@@ -211,14 +212,16 @@ export default {
                 taskCode: '',                          
                 longitude: '',
                 latitude: '',
-                affectRange: 200,
+                // affectRange: 200,
+                alertRadius: 1024,
                 content: '',
                 frequency: 500,
                 frequencyUnit: '',
                 beginTime: TDate.formatTime(),
                 endTime: TDate.formatTime(),
                 datasource: '',
-                alertRadius: 1000,
+                // alertRadius: 1000,
+                affectRange: 1000,
                 alertPath: '',              //格式 "[[12.333,23.333],[12.444,23,444]]"，转换显示为 12.333,23.333;12.444,23,444
                 icon: '',
                 alertCategory: ''
@@ -297,7 +300,8 @@ export default {
         // 表单事件
         sliderChange(value){
             this.select.sliderVal = value;
-            this.trafficInfo.alertRadius = value;
+            this.trafficInfo.affectRange = value;
+            // this.trafficInfo.alertRadius = value;
 
             this.drawBgCircle(this.circleLon,this.circleLat,value);
         },
@@ -638,7 +642,8 @@ export default {
                         this.trafficInfo.alertRadius = response.data.alertRadius; 
                         this.trafficInfo.alertCategory = response.data.alertCategory; 
 
-                        const radius = response.data.alertRadius;   
+                        // const radius = response.data.alertRadius;   
+                        const radius = response.data.affectRange;   
 
                         this.circleLon = response.data.longitude;
                         this.circleLat = response.data.latitude;
@@ -678,14 +683,16 @@ export default {
                 taskCode: '',                          
                 longitude: '',
                 latitude: '',
-                affectRange: 1000,
+                // affectRange: 1000,
+                alertRadius: 1024,
                 content: '',
                 frequency: 500,
                 frequencyUnit: '',
                 beginTime: TDate.formatTime(),
                 endTime: TDate.formatTime(),
                 datasource: '',
-                alertRadius: 1000,
+                // alertRadius: 1000,
+                affectRange: 1000,
                 alertPath: '',              //格式 "[[12.333,23.333],[12.444,23,444]]"，转换显示为 12.333,23.333;12.444,23,444
                 icon: '',
                 alertCategory: ''
@@ -834,7 +841,8 @@ export default {
 
                 this.initDatasourceList();
 
-                let radius = obj.trafficInfo.alertRadius;                
+                // let radius = obj.trafficInfo.alertRadius;                
+                let radius = obj.trafficInfo.affectRange;                
                 this.drawBgCircle(obj.lon,obj.lat,radius);    
             }            
 
@@ -1561,6 +1569,7 @@ export default {
 
     .yk-pointer-normal{
         cursor: default;
+        z-index: 3;
     }
 
     .yk-close-btn{

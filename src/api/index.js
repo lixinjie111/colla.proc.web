@@ -77,13 +77,13 @@ function apiAxios(method, url, params, response) {
         data: method === 'POST' || method === 'PUT' ? params : null,
         params: method === 'GET' || method === 'DELETE' ? params : null
     }).then(function(res) {
-         console.log('success !!! ------------- ' + res.status);
+         // console.log('success !!! ------------- ' + res.status);
 
         response(res);       
 
     }).catch(function(err) {
         // console.log(err.response);
-        console.log('fail !!! --------------- ' + err);
+        // console.log('fail !!! --------------- ' + err);
         // if(res.response == undefined){
         //     this.$router.push({path:'login'})
         //     return;
