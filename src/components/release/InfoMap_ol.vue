@@ -210,6 +210,7 @@ export default {
                 infoType: e.infoType,       // 子类型代码
                 alertRadius: e.alertRadius,                      
                 alertPath: e.alertPath,
+                alertCategory: e.alertCategory,
             };
 
             this.$api.post( url,params,
@@ -251,6 +252,7 @@ export default {
                 infoType: e.infoType,       // 子类型代码
                 alertRadius: e.alertRadius,                      
                 alertPath: e.alertPath,
+                alertCategory: e.alertCategory,
             };
 
             this.$api.post( url,params,
@@ -452,8 +454,8 @@ export default {
 
         //------------------------------- 地图回调函数------------------------------
         // 添加 地图点击事件
-        addMapClickEvent(){
-            this.$refs.refTusvnMap.addClickEvent();
+        addMapClickEvent(item){
+            this.$refs.refTusvnMap.addClickEvent(item);
             this.isPointerIco = true;
         },
         // // 移除 地图点击事件

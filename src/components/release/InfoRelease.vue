@@ -172,7 +172,7 @@ export default {
         },
        
         pubMsgClick(item){
-            this.$refs.refInfoMap.addMapClickEvent();
+            this.$refs.refInfoMap.addMapClickEvent(item);
         },
         clearPubMsgClick(e){            
             this.$refs.refInfoMap.setPointer(false);
@@ -303,11 +303,7 @@ export default {
         box-shadow: #F59307;
     }
     .image-bg{
-        /* top: 3px;
-        left: 0;
-        right: 0; */
         width: 44px;
-        /* position: absolute; */
         margin: 0 auto;
     }
     .image-box{
@@ -323,15 +319,10 @@ export default {
         background-size: 100% 100%;
     }
     .image{
-        /* margin-top: 3px;
-        width: 32px; */
-        /* left: 0;
-        right: 0;
-        top: 8px; */
-        /* position: absolute; */
+        max-width: 30px;
         margin: 0 auto;
         position: relative;
-        top: 50%; /*偏移*/
+        top: 50%; 
         transform: translateY(-50%);
     }
     /* #ykMap {

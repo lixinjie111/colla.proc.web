@@ -8,9 +8,9 @@
                     <el-option :key="index" :label="item.name" :value="item.key">{{item.name}}</el-option>
                 </template>
             </el-select> -->
-            <el-button size="mini" @click="handleSearch();">查询</el-button>
-            <el-button size="mini" @click="handleFlush();">刷新</el-button>
-            <el-button class="yk-right" size="mini" @click="handleAdd();">新增</el-button>
+            <el-button size="mini" @click="handleSearch">查询</el-button>
+            <el-button size="mini" @click="handleFlush">刷新</el-button>
+            <el-button class="yk-right" size="mini" @click="handleAdd">新增</el-button>
         </el-row>
         <el-table
                 :data="dataList"
@@ -89,23 +89,9 @@
             </el-pagination>
         </el-row>
 
-        <el-dialog
-            :title="popData.title"
-            :visible.sync="popData.visible"
-            width="30%"
-            :before-close="handleClose"
-            class="yk-left"
-            >
-
-            <span v-if="popData.type == 'info-type-delete'"> {{ popData.msg }} </span>
-            <info-type-pop ref="refInfoTypePop" v-if="popData.type == 'info-type-add' || popData.type == 'info-type-update'" :data="popData.data"></info-type-pop>
-            <info-type-detail v-if="popData.type == 'info-type-check'" :data="popData.data"></info-type-detail>
-
-            <span slot="footer" class="dialog-footer">
-                <el-button  size="mini" @click="handleCancel();">取 消</el-button>
-                <el-button  size="mini" type="primary" @click="handleOk();">确 定</el-button>
-            </span>
-        </el-dialog>
+        <info-type-pop :popData="popData" v-if="infoTypePopFlag" @closeDialog="closeDialog" @successBack="successBack"></info-type-pop>
+        <info-type-detail :popData="popData" v-if="infoTypeDetailFlag" @closeDialog="closeDialog" @successBack="successBack"></info-type-detail>
+        
     </div>
 </template>
 <script>
@@ -127,12 +113,13 @@ export default {
                 total: 0,
                 mini: true,
             },
+
+            infoTypePopFlag: false,
+            infoTypeDetailFlag: false,
             popData: {
                 title: '提示',
-                type: 'info-type-normal',
-                msg: '这是一段信息',
                 data: {},
-                visible: false,
+                visible: true
             },
             dataList: [],
             typeList: [],
@@ -143,6 +130,10 @@ export default {
         }
     },
     methods: {
+        closeDialog() {
+            this.infoTypePopFlag = false;
+            this.infoTypeDetailFlag = false;
+        },
         init(){
             this.search.type = '';
             this.initData();
@@ -161,6 +152,7 @@ export default {
                 infoType: '',       // 子类型代码
                 alertRadius: 1024,    // 默认影响范围
                 alertPath: '',      // 影响路径
+                alertCategory: ''
             }
         },
         initData(){
@@ -223,54 +215,25 @@ export default {
             this.search.name = '';
             this.initData();
         },
-        handleOk(){
-            this.popData.visible = false;  
-
-            if(this.popData.type == 'info-type-check') return;
-
-            let bool = this.$refs.refInfoTypePop.submitForm();
-            if(!bool) return;
-                      
-            this.successBack(this.popData.data);
-        },
-        handleCancel(){
-            this.popData.visible = false;
-            if(this.popData.type == 'info-type-check') return;
-            
-            this.$refs.refInfoTypePop.resetForm();
-        },
-        handleClose(done) {
-            // this.$confirm('确认关闭？')
-            // .then(_ => {
-            //     done();
-            // })
-            // .catch(_ => {});
-            done();
-        },
         handleAdd(index,item){
             this.popData.title = '新增';
             this.popData.type = 'info-type-add';
             this.popData.data = this.initVo();
-            this.popData.visible = true;
+            this.infoTypePopFlag = true;
         },
         handleUpdate(index,item){
             this.popData.title = '修改';
             this.popData.type = 'info-type-update';
             this.popData.data = JSON.parse(JSON.stringify(item));
-            this.popData.visible = true;
+            this.infoTypePopFlag = true;
         },
         handleDelete(index,item){
-            // this.popData.title = '删除';
-            // this.popData.type = 'info-type-delete';
-            // this.popData.data = {};
-            // this.popData.visible = true;
-            let that = this;
-            let msg = '确认删除 ' + item.name + ' 吗？';
-            this.$confirm(msg)
-            .then(_ => {
-               
-                //  done();
 
+            this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
                 let url = 'event/info/delete/ids';
                 let params = {
                     ids: [item.id]
@@ -278,97 +241,29 @@ export default {
                 this.$api.post( url,params,
                     response => {
                         if (response.status >= 200 && response.status < 300) {
-
                             this.initData();
-                            this.$message("删除信息类型成功  ！"); 
+                            this.$message.success("删除信息类型成功  ！"); 
                         } else {                     
-                            this.$message("删除信息类型失败  ！"); 
+                            this.$message.error("删除信息类型失败  ！"); 
                         }
                     }
                 ); 
-            })
-            .catch(_ => {});
+            });
         },
         handleCheck(index,item){
             this.popData.title = '查看';
             this.popData.type = 'info-type-check';
             this.popData.data = item;
-            this.popData.visible = true; 
+            this.infoTypeDetailFlag = true;
         },
-        successBack(data){
-            if(this.popData.type == 'info-type-add'){
-                this.addFn(data);
-            }else if(this.popData.type == 'info-type-update'){
-                this.updateFn(data);
-            }else if(this.popData.type == 'info-type-delete'){
-                this.deleteFn(data);
+        successBack(){
+            this.initData();
+            if(this.popData.type == 'info-type-add' || this.popData.type == 'info-type-update'){
+                this.infoTypePopFlag = false;
             }
-        },
-        addFn(data){
-            let url = 'event/info/save';
-            // let params = {
-            //     eventCategory: data.eventCategory,
-            //     name: data.name,
-
-            // };
-            let params = data;
-
-            this.$api.post( url,params,
-                response => {
-                    if (response.status >= 200 && response.status < 300) {
-
-                        this.initData();
-                        this.$message("新增信息类型成功 ！"); 
-                    } else {                     
-                        this.$message("新增信息类型失败 ！"); 
-                    }
-                }
-            );
-        },
-        updateFn(data){
-
-            let url = 'event/info/update';
-            let params = {
-                id: data.id,
-                code: data.code,
-                eventCategory: data.eventCategory,
-                name: data.name,
-                frequency: data.frequency,
-                frequencyUnit: data.frequencyUnit,
-                icon: data.icon,
-                content: data.content,
-                sendChannel: data.sendChannel,
-                infoType: data.infoType,
-                alertRadius: data.alertRadius,
-            };
-            this.$api.post( url,params,
-                response => {
-                    if (response.status >= 200 && response.status < 300) {
-
-                        this.initData();
-                        this.$message("修改信息类型成功 ！"); 
-                    } else {                     
-                        this.$message("修改信息类型失败 ！"); 
-                    }
-                }
-            );
-        },
-        deleteFn(data){
-           let url = 'event/info/delete/ids';
-            let params = {
-                ids: [data.id]
-            };
-            this.$api.post( url,params,
-                response => {
-                    if (response.status >= 200 && response.status < 300) {
-
-                        this.initData();
-                        this.$message("删除信息类型成功 ！"); 
-                    } else {                     
-                        this.$message("删除信息类型失败 ！"); 
-                    }
-                }
-            ); 
+            if(this.popData.type == 'info-type-check'){
+                this.infoTypeDetailFlag = false;
+            }
         },
         pagingChange(index){
             this.paging.index = index - 1;
@@ -431,7 +326,7 @@ export default {
     width: 20px;
     margin: 0 auto;
     position: relative;
-    top: 50%; /*偏移*/
+    top: 50%; 
     transform: translateY(-50%);
 }
 </style>

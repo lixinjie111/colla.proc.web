@@ -82,7 +82,7 @@ function apiAxios(method, url, params, response) {
         response(res);       
 
     }).catch(function(err) {
-        console.log(err.response);
+        // console.log(err.response);
         console.log('fail !!! --------------- ' + err);
         // if(res.response == undefined){
         //     this.$router.push({path:'login'})

@@ -1,10 +1,17 @@
 <template>
 
 <!-- :model="ruleForm" -->
-    <el-form :model="data" :rules="rules" ref="ruleForm" size="mini" label-width="120px" class="demo-ruleForm yk-left">
+  <el-dialog
+    :title="popData.title"
+    width="30%"
+    :before-close="handleCancel"
+    :visible.sync="popData.visible"
+    class="yk-left"
+    >
+    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" size="mini" label-width="120px" class="demo-ruleForm yk-left">
         
         <el-form-item label="信息所属分类" prop="eventCategory">
-            <el-select size="mini" v-model="data.eventCategory" placeholder="请选择">
+            <el-select v-model.trim="ruleForm.eventCategory" placeholder="请选择">
 
               <template v-for="(item,index) in typeList">
                 <el-option :key="index" :label="item.name" :value="item.key">{{item.name}}</el-option>
@@ -13,13 +20,17 @@
             </el-select>
         </el-form-item>
 
+        <el-form-item label="告警类别(国标)" v-if="ruleForm.eventCategory == 'TI02'">
+             <el-input v-model.trim="ruleForm.alertCategory"></el-input>
+        </el-form-item>
+
         <el-form-item label="信息类型名称" prop="name">
-            <el-input size="mini" v-model="data.name"></el-input>
+            <el-input v-model.trim="ruleForm.name"></el-input>
         </el-form-item>
 
         <el-form-item label="信息类型图标" prop="icon">
                        
-          <el-input size="mini" placeholder="请上传信息类型图标" v-model="data.icon">
+          <el-input placeholder="请上传信息类型图标" v-model.trim="ruleForm.icon">
             <template slot="append">
               <label class="yk_input_append" for="xFile">上传</label>
             </template>
@@ -32,10 +43,10 @@
         </el-form-item>
 
         <el-form-item label="默认广播频率" prop="frequency">
-            <el-input size="mini" v-model="data.frequency">             
+            <el-input v-model.trim="ruleForm.frequency">             
             
               <template slot="append">
-                <select class="yk-w-60 yk-border-left-none yk-input-select" v-model="data.frequencyUnit" placeholder="请选择">
+                <select class="yk-w-60 yk-border-left-none yk-input-select" v-model.trim="ruleForm.frequencyUnit" placeholder="请选择">
                     <option v-for="(item,index) in frequencyUnitList" :key="index" :value="item.key">{{item.name}}</option>
                 </select>
               </template>
@@ -44,15 +55,15 @@
         </el-form-item>
 
         <el-form-item label="默认信息内容" prop="content">
-            <el-input type="textarea" v-model="data.content"></el-input>
+            <el-input type="textarea" v-model.trim="ruleForm.content"></el-input>
         </el-form-item>
 
         <el-form-item label="默认影响范围" prop="alertRadius">
-            <el-input-number size="mini" v-model="data.alertRadius" controls-position="right" :min="1" ></el-input-number>
+            <el-input-number v-model.trim="ruleForm.alertRadius" controls-position="right" :min="1" ></el-input-number>
         </el-form-item>
 
         <el-form-item label="下发通道" prop="sendChannel">
-          <el-select size="mini" v-model="data.sendChannel" placeholder="请选择">
+          <el-select v-model.trim="ruleForm.sendChannel" placeholder="请选择">
               <template v-for="(item,index) in sendChannelList">
                 <el-option :key="index" :label="item.key" :value="item.key">{{item.key}}</el-option>
               </template>               
@@ -60,20 +71,32 @@
         </el-form-item>
 
         <el-form-item label="子类型代码" prop="infoType">
-            <el-input size="mini" v-model="data.infoType"></el-input>
+            <el-input v-model.trim="ruleForm.infoType"></el-input>
         </el-form-item>        
    
     </el-form>
+    <span slot="footer" class="dialog-footer">
+        <el-button size="mini" @click="handleCancel">取 消</el-button>
+        <el-button size="mini" type="primary" @click="handleOk" :loading="submitLoading">确 定</el-button>
+    </span>
+  </el-dialog>
 </template>
 
 <script>
   import axios from 'axios'
 
   export default {
-    props: ['data'],
+    props: {
+      popData: Object
+    },
+    computed: {
+      ruleForm() {
+        return this.popData.data
+      }
+    },
     data() {
       return {
-        
+        submitLoading: false,
         uploadPath: window.cfg.url + 'event/info/uploadPic',
         fileList: [],
         typeList: [
@@ -83,15 +106,15 @@
           // { id: 4 ,name: '天气信息',value: 4},
         ],
         frequencyUnitList: [],
-        ruleForm: {
-          name: '',
-          eventCategory: '',
-          frequency: '',
-          frequencyUnit: '',
-          delivery: false,
-          content: '',
-          infoType: '',
-        },
+        // ruleForm: {
+        //   name: '',
+        //   eventCategory: '',
+        //   frequency: '',
+        //   frequencyUnit: '',
+        //   delivery: false,
+        //   content: '',
+        //   infoType: '',
+        // },
         rules: {
           eventCategory: [
             { required: true, message: '请选择信息所属分类', trigger: 'change' }
@@ -118,24 +141,6 @@
           infoType: [
             { required: true, message: '请填写子类型代码', trigger: 'blur' },
           ]
-          // region: [
-          //   { required: true, message: '请选择活动区域', trigger: 'change' }
-          // ],
-          // date1: [
-          //   { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
-          // ],
-          // date2: [
-          //   { type: 'date', required: true, message: '请选择时间', trigger: 'change' }
-          // ],
-          // type: [
-          //   { type: 'array', required: true, message: '请至少选择一个活动性质', trigger: 'change' }
-          // ],
-          // resource: [
-          //   { required: true, message: '请选择活动资源', trigger: 'change' }
-          // ],
-          // desc: [
-          //   { required: true, message: '请填写活动形式', trigger: 'blur' }
-          // ]
         },
         select: {
           sendChannel: '',
@@ -147,6 +152,9 @@
           { id: 3, name: '公交专用车道' , key: 'DM0208'},
         ]
       };
+    },
+    created(){
+      this.init();
     },
     methods: {
       init(){        
@@ -191,9 +199,9 @@
         );
       },
       selectFile(e){
-
+        this.$refs.ruleForm.clearValidate('icon');
         let file = e.target.files[0];
-        this.data.icon = file.name;
+        this.ruleForm.icon = file.name;
         let param = new FormData(); //创建form对象
         param.append('upfile',file); //通过append向form对象添加数据
         //  console.log('upload --------------- ' + this.param.get('upfile')); //FormData私有类对象，访问不到，可以通过get判断值是否传进去
@@ -211,13 +219,13 @@
               console.log('文件上传结果 ： -------------- ' + JSON.stringify(response.data) );              
 
               if(response.data.status == '200'){
-                  this.data.icon = response.data.data;
+                  this.ruleForm.icon = response.data.data;
                     // 隐藏批量导入面板
-                  this.$message('上传成功！');
+                  this.$message.success('上传成功！');
               }
 
               if(response.data.status != '200'){              
-                  this.$message('上传失败！');
+                  this.$message.error('上传失败！');
                   console.log('error data --- ' + JSON.stringify(response.data.data))
               }
           }
@@ -232,25 +240,75 @@
       frequencyUnitChange(e){
         this.data.frequencyUnit = this.ruleForm.frequencyUnit.key;
       },
-
-      submitForm(formName='ruleForm') {
-        let bool = false;
-        this.$refs[formName].validate((valid) => {
+      handleCancel() {
+        this.$emit("closeDialog");
+      },
+      handleOk() {
+        // this.$refs.ruleForm.submitForm();
+        // console.log("确定-----");
+        this.$refs.ruleForm.validate((valid) => {
           if (valid) {           
-            bool = true;
-          } else {
-            console.log('error submit!!');
-            bool = false;
+            this.submitLoading = true;
+            if(this.popData.type == 'info-type-add'){
+                this.addFn();
+            }else if(this.popData.type == 'info-type-update'){
+                this.updateFn();
+            }
           }
         });
-        return bool;
       },
-      resetForm(formName='ruleForm') {
-        this.$refs[formName].resetFields();
+      addFn(){
+          let url = 'event/info/save';
+          // let params = {
+          //     eventCategory: data.eventCategory,
+          //     name: data.name,
+
+          // };
+          let params = this.ruleForm;
+          console.log(params);
+          this.$api.post( url,params,
+              response => {
+                  if (response.status >= 200 && response.status < 300) {
+
+                      this.$emit("successBack");
+                      this.$message.success("新增信息类型成功 ！"); 
+                      this.submitLoading = false;
+                  } else {                     
+                      this.$message.error("新增信息类型失败 ！"); 
+                  }
+              }
+          );
+      },
+      updateFn(){
+
+          let url = 'event/info/update';
+          let params = {
+              id: this.ruleForm.id,
+              code: this.ruleForm.code,
+              eventCategory: this.ruleForm.eventCategory,
+              name: this.ruleForm.name,
+              frequency: this.ruleForm.frequency,
+              frequencyUnit: this.ruleForm.frequencyUnit,
+              icon: this.ruleForm.icon,
+              content: this.ruleForm.content,
+              sendChannel: this.ruleForm.sendChannel,
+              infoType: this.ruleForm.infoType,
+              alertRadius: this.ruleForm.alertRadius,
+              alertCategory: this.ruleForm.alertCategory
+          };
+          this.$api.post( url,params,
+              response => {
+                  if (response.status == 200) {
+
+                      this.$emit("successBack");
+                      this.$message.success("修改信息类型成功 ！"); 
+                      this.submitLoading = false;
+                  } else {                     
+                      this.$message.error("修改信息类型失败 ！"); 
+                  }
+              }
+          );
       }
-    },
-    created(){
-      this.init();
     }
   }
 </script>

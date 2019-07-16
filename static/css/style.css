@@ -168,9 +168,9 @@
       padding: 0 18px 0 0!important;
   }
 
-  .yk-txt .el-form-item.is-required:not(.is-no-asterisk) .el-form-item__label-wrap>.el-form-item__label:before, .el-form-item.is-required:not(.is-no-asterisk)>.el-form-item__label:before{
+ /* .yk-txt .el-form-item.is-required:not(.is-no-asterisk) .el-form-item__label-wrap>.el-form-item__label:before, .el-form-item.is-required:not(.is-no-asterisk)>.el-form-item__label:before{
       content: ''!important;
-  }
+  }*/
   
   .yk-txt .el-slider__runway{
     height: 3px!important;

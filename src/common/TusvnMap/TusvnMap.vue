@@ -98,6 +98,10 @@
                                     </select>
                                 </el-form-item>
 
+                                <el-form-item label="告警类别" class="yk-bottom-12  yk-txt" v-if="false">                                    
+                                    <el-input size="mini" v-model="trafficInfo.alertCategory"></el-input>
+                                </el-form-item>
+
                                 <el-form-item style="text-align:right;margin-top: 10px;margin-top: 15px;margin-bottom: 10px;">
                                     <el-button class="yk-w-80 yk-border-normal" type="warning" v-show="!trafficInfo.isEdit" @click="publichInfo($event);">发布</el-button>
                                     <el-button class="yk-w-80 yk-border-normal" type="info" v-show="!trafficInfo.isEdit" @click="closeInforWindow($event);">取消</el-button>
@@ -177,6 +181,7 @@ export default {
                 frequencyUnit: '',
                 delivery: false,
                 content: '',
+                alertCategory: ''
             },
             rules: {                
                 content: [
@@ -216,6 +221,7 @@ export default {
                 alertRadius: 1000,
                 alertPath: '',              //格式 "[[12.333,23.333],[12.444,23,444]]"，转换显示为 12.333,23.333;12.444,23,444
                 icon: '',
+                alertCategory: ''
             },
             frequencyUnitList: [],
             datasourceList: [],
@@ -342,7 +348,6 @@ export default {
             const path = JSON.stringify(this.pathPoint.pointList);
             this.trafficInfo.alertPath = path;
             this.select.alertPath = path;
-
             this.clearTempLayer();
             this.pointData.trafficInfo.alertPath = JSON.stringify(this.pathPoint.pointList);
             // 重新打开窗口
@@ -504,7 +509,7 @@ export default {
         publichInfo(e){
             this.trafficInfo.datasource = this.select.datasource ? (this.select.datasource.key ? this.select.datasource.key : '') : '';
             this.trafficInfo.frequencyUnit = this.select.frequencyUnit ? (this.select.frequencyUnit.key ? this.select.frequencyUnit.key : '') : '';
-
+            // console.log(this.trafficInfo.alertCategory);
             if(!this.submitForm()) return; 
 
             this.$emit('PublishInfo',this.trafficInfo);
@@ -516,7 +521,7 @@ export default {
            
             this.trafficInfo.datasource = this.select.datasource ? (this.select.datasource.key ? this.select.datasource.key : '') : '';
             this.trafficInfo.frequencyUnit = this.select.frequencyUnit ? (this.select.frequencyUnit.key ? this.select.frequencyUnit.key : '') : '';
-
+            // console.log(this.trafficInfo.alertCategory);
            if(!this.submitForm()) return; 
 
             this.$emit('UpdateInfo',this.trafficInfo);
@@ -631,6 +636,7 @@ export default {
                         this.trafficInfo.sendChannel = response.data.sendChannel; 
                         this.trafficInfo.alertPath = response.data.alertPath;   
                         this.trafficInfo.alertRadius = response.data.alertRadius; 
+                        this.trafficInfo.alertCategory = response.data.alertCategory; 
 
                         const radius = response.data.alertRadius;   
 
@@ -681,7 +687,8 @@ export default {
                 datasource: '',
                 alertRadius: 1000,
                 alertPath: '',              //格式 "[[12.333,23.333],[12.444,23,444]]"，转换显示为 12.333,23.333;12.444,23,444
-                icon: ''
+                icon: '',
+                alertCategory: ''
             }
         },
         // ------------------------------------------------------------------------------
@@ -763,7 +770,10 @@ export default {
             // );
         },
 
-        addClickEvent(){
+        addClickEvent(item){
+            if(item) {
+                this.trafficInfo.alertCategory = item.alertCategory;
+            }
             this.clickEventKey = this.$data.map.on("click",this.mapClick);
         },
         removeClickEvent(){
@@ -817,7 +827,9 @@ export default {
 
                 obj.trafficInfo.longitude = this.toFixedLen(obj.trafficInfo.longitude);
                 obj.trafficInfo.latitude = this.toFixedLen(obj.trafficInfo.latitude);
+                let _alertCategory = this.trafficInfo.alertCategory;
                 this.trafficInfo = obj.trafficInfo;
+                this.trafficInfo.alertCategory = _alertCategory;
                 this.trafficInfo.isEdit = false;
 
                 this.initDatasourceList();
