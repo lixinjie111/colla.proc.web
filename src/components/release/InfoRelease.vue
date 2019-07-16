@@ -346,6 +346,7 @@ export default {
         left: 30px;
         top: 30px;
         bottom: 30px;
+        text-align: center;
     }
 
     .yk-right{
