@@ -406,7 +406,7 @@ export default {
     width: 150px;
     background: #666!important;
     .el-input__inner {
-        width: 100%;
+        width: 100% !important;
         background-color: #4D4D4D!important;
         border: 0px!important;
         border-radius: 0px!important;
