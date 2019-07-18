@@ -1606,3 +1606,29 @@ export default {
     }
 
 </style>
+<style lang="scss">
+.demo-ruleForm {
+    .el-form-item__content {
+        width: 220px;
+        .el-input__inner {
+            box-sizing: border-box;
+            width: 100%;
+        }
+        .el-date-editor.el-input, .el-date-editor.el-input__inner {
+            width: 100%;
+        }
+        &.el-form--inline {
+            .el-input__inner {
+                box-sizing: border-box;
+                width: 100%;
+            }
+            .el-date-editor.el-input, .el-date-editor.el-input__inner {
+                width: 100%;
+            }
+            // .el-date-editor--datetimerange.el-input, .el-date-editor--datetimerange.el-input__inner {
+            //  width: 350px;
+            // }
+        }
+    }
+}
+</style>

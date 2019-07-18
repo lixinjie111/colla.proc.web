@@ -21,6 +21,13 @@ Vue.use(ElementUI)
 
 Vue.prototype.$api = Api;
 
+// 全局静态资源
+import '@/assets/scss/reset.scss';
+import '@/assets/scss/public.scss';
+import '@/assets/scss/element-ui-reset.scss';
+import '@/assets/icon-font/iconfont.css';
+import '@/assets/icon-font/iconfont.js';
+
 // // 初始化vue-amap
 // AMap.initAMapApiLoader({
 //   // 申请的高德key

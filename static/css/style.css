@@ -167,10 +167,6 @@
       color: #C0C0C0;
       padding: 0 18px 0 0!important;
   }
-
- /* .yk-txt .el-form-item.is-required:not(.is-no-asterisk) .el-form-item__label-wrap>.el-form-item__label:before, .el-form-item.is-required:not(.is-no-asterisk)>.el-form-item__label:before{
-      content: ''!important;
-  }*/
   
   .yk-txt .el-slider__runway{
     height: 3px!important;
@@ -199,6 +195,7 @@
   }
 
   .yk-txt .el-input-group__append{
+    border: none;
     pointer-events: auto;
   }
  
@@ -227,14 +224,9 @@
 
   .yk-txt .el-input-group__append, .el-input-group__prepend{
     width: 50px;
-    /* display: inline-block; */
     text-align: center;
     color: #fff;
     background: rgb(102, 102, 102)!important;
-  }
-
-  .amap-info-content{
-    padding: 0px!important; 
   }
 
   .el-table--striped .el-table__body tr.el-table__row--striped td{
@@ -249,20 +241,11 @@
   .el-slider__button{
     width: 6px!important;
     background-color: #F9BE69!important;
-    /* border-top-left-radius: 100%!important;
-    border-top-right-radius: 100%!important; */
     border: 0px!important;
     border-radius: unset!important;
     border-bottom-left-radius: 40%!important;
     border-bottom-right-radius: 40%!important;
   }
-  /* .el-slider__bar{
-    background-color: #F9BE69!important;
-  } */
-  /* .el-slider__stop{
-    background-color: #F9BE69!important;
-    border-radius: unset!important;
-  } */
   .el-card__body{
     position: relative;
   }
@@ -307,40 +290,3 @@
     background-color: #666!important;
     color: #F59307!important;
   }
-
-  /* 自定义 滚动条样式 */
-/* ::-webkit-scrollbar{
-  width: 1px;
-  height: 16px;
-  background-color: rgb(47, 48, 48);  
-} */
-
-.yk-container{
-    padding: 20px;
-    overflow-y: auto;
-}
-
-.el-table td, .el-table th{
-    padding: 5px 0px!important;
-}
-
-.yk-paging{
-    padding: 5px 10px;
-    text-align: right;
-}
-
-.yk-search{
-    padding: 5px;
-    text-align: left;
-}
-
-.yk-w180{
-    width: 180px;
-}
-
-.yk-block{
-    display: inline-block;
-    vertical-align: top;
-    margin-bottom: 5px;
-}
-  

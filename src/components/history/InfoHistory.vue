@@ -1,6 +1,6 @@
 <template>
-    <div class="yk-container">
-        <el-form :inline="true" size="mini" class="yk-search">
+    <div class="c-wrapper-20">
+        <el-form :inline="true" size="mini">
             <el-form-item label="信息类型：">
                 <el-input v-model.trim="search.eventType"></el-input>
             </el-form-item>
@@ -39,13 +39,15 @@
             </el-form-item>
         </el-form>
         <el-table
+                class="c-mb-70"
+                max-height="620"
                 :data="dataList"
                 border
-                style="width: 100%;"
                 stripe
                 :header-cell-style="{background:'#E6E6E6',color:'#606266',border: '0px'}"
                 v-loading="isLoading">
             <el-table-column
+                fixed
                 label="序号"
                 type="index"
                 width="60">
@@ -123,7 +125,7 @@
             </el-table-column>
         </el-table>
 
-        <el-row class="yk-paging">
+        <el-row class="c-page">
             <el-pagination
                 background
                 layout="prev, pager, next"

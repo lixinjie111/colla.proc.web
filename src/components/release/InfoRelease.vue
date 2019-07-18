@@ -28,7 +28,7 @@
         <!-- 右侧信息 -->
         <div class="yk-right">
             <el-form size="mini">
-                <el-form-item class="yk-form-item yk-f-right">
+                <el-form-item class="yk-form-item c-pull-right">
                     <el-select id="pubMsgSelect" ref="refPubMsg" placeholder="发布信息" v-model="search.pubMsg" :clearable='clearPoiSelect' value-key="name" @clear="clearPubMsgClick($event);">                        
                         <el-option-group v-for="(group,groupIndex) in pubMsgGroup" label="发布信息" :key="groupIndex">
                             <template v-for="(item,index) in pubMsgList">
@@ -39,7 +39,7 @@
                         </el-option-group>
                     </el-select>                    
                 </el-form-item>
-                <el-form-item class="yk-form-item yk-f-right yk-border-r">                    
+                <el-form-item class="yk-form-item c-pull-right yk-border-r">                    
                     <el-select id="poiSelect" ref="refPoi" placeholder="POI" multiple v-model="search.poi" value-key="value" collapse-tags @remove-tag="removeTagClick($event);">                                    
                         <el-option-group v-for="(group,groupIndex) in poiGruop" label="POI" :key="groupIndex">            
                             <template v-for="(item,index) in poiList">
@@ -336,7 +336,7 @@ export default {
         position: absolute;
         left: 0;
         right: 0;
-        top: 60px;
+        top: 0px;
         bottom: 0;
         overflow: hidden;
     }
@@ -354,18 +354,26 @@ export default {
         top: 30px;
         position: absolute;
         z-index: 2;
-    }
+        .el-input__inner{
+            background-color: #4D4D4D!important;
+            border: 0px!important;
+            border-radius: 0px!important;
+            width: 100% !important;
+        } 
+        .el-tag.el-tag--info{
+            background-color: #666!important;
+            color: #F59307!important;
+        }
 
-    .yk-form-item{
-        width: 150px;
-        background: #666!important;
+        .el-popper[x-placement^=bottom] .popper__arrow {
+            border-bottom-color: #7d7c7c!important;
+        }
+        .el-popper[x-placement^=bottom] .popper__arrow::after{
+            border-bottom-color: #7d7c7c!important;
+        }
     }
     .yk-border-r{
         border-right: 1px solid rgb(145, 143, 143)!important;
-    }
-
-    .yk-f-right{
-        float: right;        
     }
 
     .yk-r-10{
@@ -390,6 +398,18 @@ export default {
         width: 135px;
         font-size: 14px;
     }
-
+ 
+</style>
+<style lang="scss">
+.yk-form-item{
+    width: 150px;
+    background: #666!important;
+    .el-input__inner {
+        width: 100%;
+        background-color: #4D4D4D!important;
+        border: 0px!important;
+        border-radius: 0px!important;
+    }
+}
 </style>
 
