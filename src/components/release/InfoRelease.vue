@@ -326,7 +326,8 @@ export default {
         background-size: 100% 100%;
     }
     .image{
-        max-width: 30px;
+        width: 28px;
+        border-radius: 50%;
         margin: 0 auto;
         position: relative;
         top: 50%; 

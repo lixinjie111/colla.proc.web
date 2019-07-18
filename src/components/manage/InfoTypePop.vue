@@ -75,8 +75,8 @@
         </el-form-item>        
    
         <el-form-item style="text-align: right;">
-            <el-button @click="handleCancel">取 消</el-button>
-            <el-button type="primary" @click="handleOk" :loading="submitLoading">确 定</el-button>
+            <el-button type="warning" plain @click="handleCancel">取 消</el-button>
+            <el-button type="warning" @click="handleOk" :loading="submitLoading">确 定</el-button>
         </el-form-item>
     </el-form>
   </el-dialog>

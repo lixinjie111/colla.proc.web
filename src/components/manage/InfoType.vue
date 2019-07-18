@@ -5,16 +5,16 @@
                 <el-input v-model.trim="search.name"></el-input>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" @click="handleSearch">查询</el-button>
-                <el-button type="primary" @click="handleFlush">刷新</el-button>
+                <el-button type="warning" @click="handleSearch">查询</el-button>
+                <el-button type="warning" plain @click="handleFlush">刷新</el-button>
             </el-form-item>
             <el-form-item class="yk-right">
-                <el-button type="primary" @click="handleAdd">新增</el-button>
+                <el-button type="warning" @click="handleAdd">新增</el-button>
             </el-form-item>
         </el-form>
         <el-table
                 class="c-mb-70"
-                max-height="620"
+                max-height="499"
                 :data="dataList"
                 border
                 stripe
@@ -73,9 +73,9 @@
                 width="260">
 
                 <template slot-scope="scope">
-                    <el-button size="mini" @click="handleCheck(scope.$index, scope.row);">查看</el-button>
-                    <el-button size="mini" @click="handleUpdate(scope.$index, scope.row);">编辑</el-button>
-                    <el-button size="mini" @click="handleDelete(scope.$index, scope.row);">删除</el-button>
+                    <el-button type="warning" plain size="mini" @click="handleCheck(scope.$index, scope.row);">查看</el-button>
+                    <el-button type="warning" plain size="mini" @click="handleUpdate(scope.$index, scope.row);">编辑</el-button>
+                    <el-button type="warning" plain size="mini" @click="handleDelete(scope.$index, scope.row);">删除</el-button>
                 </template>                
                 
             </el-table-column>

@@ -72,7 +72,8 @@ export default {
             //     pass: 123456
             // }
             // SessionUtils.setItem('login',temp);
-            if(!this.user || !this.user.name || !this.user.pass) return;
+            // if(!this.user || !this.user.name || !this.user.pass) return;
+            if(!this.user.name || !this.user.pass) return;
             this.$api.post('sys/user/login',{
                 "userNo": this.user.name,
                 "password":this.user.pass,
@@ -83,7 +84,7 @@ export default {
                         this.$message(response.data.message);
                         return;
                     }else if(response.status == 200){
-                        let temp = response.data.body;                            
+                        let temp = response.data.data;                            
                         temp = JSON.parse(temp);
                         this.$store.dispatch('login',temp);
                         LocalStorageUtil.setItem('login',temp);

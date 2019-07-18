@@ -34,13 +34,13 @@
                 </el-select>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" @click="handleSearch">查询</el-button>
-                <el-button type="primary" @click="handleFlush">刷新</el-button>    
+                <el-button type="warning" @click="handleSearch">查询</el-button>
+                <el-button type="warning" plain @click="handleFlush">刷新</el-button>    
             </el-form-item>
         </el-form>
         <el-table
                 class="c-mb-70"
-                max-height="620"
+                max-height="499"
                 :data="dataList"
                 border
                 stripe
