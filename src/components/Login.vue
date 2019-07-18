@@ -86,6 +86,7 @@ export default {
                     }else if(response.status == 200){
                         let temp = response.data.data;                            
                         temp = JSON.parse(temp);
+                        // console.log(temp);
                         this.$store.dispatch('login',temp);
                         LocalStorageUtil.setItem('login',temp);
                         LocalStorageUtil.setItem('currentMenu','/infoRelease');

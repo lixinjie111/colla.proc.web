@@ -476,7 +476,7 @@ export function removeAllFeature(layer) {
 * @param {Array.<number>} anchor Anchor. Default value is the icon center.
 */
 export function generateIcon(src, size, rotation, rotateWithView, opacity, offset, scale,anchor) {
-    console.log(src);
+    // console.log(src);
     let icon = new Icon({
     src: src || "@/assets/images/geolocation_marker.png",
     size: size || [22, 22],

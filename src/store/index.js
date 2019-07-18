@@ -46,8 +46,13 @@ const store = new VueX.Store({
     mutations: {
         login(state,data){
             state.login = data.bool;
-            state.userName = data.data.loginName;
+            state.userName = data ? data.data.loginName : '';
             state.user = data.data;
+        },
+        logout(state){
+            state.login = false;
+            state.userName = '';
+            state.user = null;
         },
         initMenus(state,url){
             state.menus = Utils.setMenuByPath(url);
@@ -85,12 +90,13 @@ const store = new VueX.Store({
             context.commit('login',temp);
         },
         logout(context){
-            let temp = {
-                type: 'login',
-                bool: false,
-                data: null
-            }
-            context.commit('login',temp);
+            // let temp = {
+            //     type: 'login',
+            //     bool: false,
+            //     data: null
+            // }
+            // context.commit('login',temp);
+            context.commit('logout');
         },
         initMenus(context,url){
             context.commit('initMenus',url);
