@@ -198,7 +198,7 @@ export default {
                     // { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
                 ],               
                 alertPath: [
-                    { required: true, message: '请输入影响路径', trigger: 'change' },
+                    { required: true, message: '请输入影响路径', trigger: 'blur' },
                     // { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
                 ],
                 frequency: [
