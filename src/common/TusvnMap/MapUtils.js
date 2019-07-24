@@ -317,8 +317,8 @@ export function addLineString(coordinates, id, style, layer) {
     lineStringFeature.setId(id);
     lineStringFeature.setStyle(style);
     //判断是否已经存在，如果存在先剔除
-    console.log("==============================");
-    console.log(layer.getSource());
+    // console.log("==============================");
+    // console.log(layer.getSource());
     let f = layer.getSource().getFeatureById(id);
     if (f != null) {
         layer.getSource().removeFeature(f);

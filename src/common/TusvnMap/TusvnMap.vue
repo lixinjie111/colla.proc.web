@@ -1,6 +1,6 @@
 <template>
     <div style="height:100%">
-        <div :id="targetId"  style="height:100%"></div>
+        <div :id="targetId"  style="height:100%" v-loading="isLoading"></div>
         <div :id="overlayContainerId" style="display: none;">
             <!-- <div id="marker" title="Marker">
                 <img src="../../static/assets/images/loading.gif"/>
@@ -48,16 +48,23 @@
                                     <!-- placeholder="格式：1.1,2.2;3.3,4.4" -->
                                     <el-input size="mini" v-model="select.alertPath" class="yk-readonly">
                                         <template slot="append">
-                                            <el-button class="yk-btn-append" type="primary" @click="addEffectPath();">添加</el-button>
+                                            <el-button class="yk-btn-append" type="primary" @click="addEffectPath();">
+                                                <template v-if="!select.alertPath">添加</template>
+                                                <template v-else>更新</template>
+                                            </el-button>
                                         </template>
                                     </el-input>
 
                                 </el-form-item>
 
-                                <el-form-item label="影响范围" prop="alertRadius" class="yk-bottom-12 yk-txt">
+                                <!-- <el-form-item label="影响范围" prop="alertRadius" class="yk-bottom-12 yk-txt">
                                     <el-input size="mini" v-model="trafficInfo.alertRadius">
                                         <span slot="append" class="yk-unit">米</span>
                                     </el-input>
+                                </el-form-item> -->
+                                <!-- <el-input-number v-model.trim="ruleForm.alertRadius" controls-position="right" :min="1" :max="1024"></el-input-number> -->
+                                <el-form-item label="影响范围" prop="alertRadius" class="yk-bottom-12 yk-txt">
+                                    <el-input-number v-model.trim="trafficInfo.alertRadius" controls-position="right" :min="1" :max="1024"></el-input-number>
                                 </el-form-item>
 
                                 <el-form-item label="信息内容" prop="content" class="yk-bottom-16 yk-textarea">
@@ -155,6 +162,7 @@ export default {
     props:["targetId","overlayContainerId",], //'trafficInfo'
     data(){
         return {
+            isLoading: false,
              orderStatus: -1
             ,map: null
             ,project:"EPSG:4326"//地图投影
@@ -187,6 +195,10 @@ export default {
             rules: {                
                 content: [
                     { required: true, message: '请输入默认信息内容', trigger: 'blur' },
+                    // { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+                ],               
+                alertPath: [
+                    { required: true, message: '请输入影响路径', trigger: 'change' },
                     // { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
                 ],
                 frequency: [
@@ -348,12 +360,16 @@ export default {
 
         // 提交数据
         okClick(e){
-            
-            const path = JSON.stringify(this.pathPoint.pointList);
-            this.trafficInfo.alertPath = path;
-            this.select.alertPath = path;
+            if(this.pathPoint.pointList.length > 0) {
+                const path = JSON.stringify(this.pathPoint.pointList);
+                this.trafficInfo.alertPath = path;
+                this.select.alertPath = path;
+                this.pointData.trafficInfo.alertPath = JSON.stringify(this.pathPoint.pointList);
+            }else {
+                this.trafficInfo.alertPath = '';
+                this.select.alertPath = '';
+            }
             this.clearTempLayer();
-            this.pointData.trafficInfo.alertPath = JSON.stringify(this.pathPoint.pointList);
             // 重新打开窗口
             this.addMyInfoWindow(this.pointData);
 
@@ -451,37 +467,58 @@ export default {
                     'Content-Type': 'application/x-www-form-urlencoded'
                 }
             }; //添加请求头
-
+            this.isLoading = true;
             axios.post(url, formData, config)
                 .then(response => {
-                    let pointList = response.data.data ? response.data.data : [];
-                        
-                    let points = [];
-                    for(let i=0;i<pointList.length;i++){
-                        let temp = pointList[i];
-                        points.push([temp.x,temp.y]);
-                    }
+                    if(response.data.data) {
+                        // 画按钮
+                        this.addPathIcoBtn(startLon,startLat);
 
-                    if(points){
-                        this.pathPoint.pointList = this.pathPoint.pointList.concat(points);                       
-                    }
-                    
-                    let coordinates = points;
-                    let id = 'TempLine_' + (new Date()).getTime();
-                    let color = 'red';
-                    let lineGap = 'round';
-                    let lineJoin = 'round';
-                    let lineDash = [0,5];
-                    let lineDashOffset = 0;
-                    let miterLimit = 10;
-                    let width = 5;
-                    let layerId = this.TempIcoLayer;
+                        let pointList = response.data.data ? response.data.data : '';
+                        if(pointList.length < 2) {
+                            this.$message.error("选择的影响路线太短，请重新选择！");
+                            // this.addPathIcoBtn(startLon,startLat);
+                            // this.$emit('TemporaryClearPubMsg',{bool:false});
+                            return;
+                        }
+                        if(pointList.length > 32) {
+                            this.$message.error("选择的影响路线太长，请重新选择！");
+                            // this.addPathIcoBtn(startLon,startLat);
+                            // this.$emit('TemporaryClearPubMsg',{bool:false});
+                            return;
+                        }
 
-                    // coordinates, id, color, lineCap, lineJoin, lineDash, lineDashOffset, miterLimit, width, layerId
-                    this.addLineString(coordinates, id, "red", "round", "round", [5,0], [-14,0], 10, 5, layerId);          
 
+                        let points = [];
+                        for(let i=0;i<pointList.length;i++){
+                            let temp = pointList[i];
+                            points.push([temp.x,temp.y]);
+                        }
+                        // if(points){
+                            this.pathPoint.pointList = this.pathPoint.pointList.concat(points);    
+                        // }
+                        // console.log(points);
+                        let coordinates = points;
+                        let id = 'TempLine_' + (new Date()).getTime();
+                        let color = 'red';
+                        let lineGap = 'round';
+                        let lineJoin = 'round';
+                        let lineDash = [0,5];
+                        let lineDashOffset = 0;
+                        let miterLimit = 10;
+                        let width = 5;
+                        let layerId = this.TempIcoLayer;
+
+                        // coordinates, id, color, lineCap, lineJoin, lineDash, lineDashOffset, miterLimit, width, layerId
+                        this.addLineString(coordinates, id, "red", "round", "round", [5,0], [-14,0], 10, 5, layerId);  
+                    }else {
+                        this.$message.error("未获取到数据，请重新选择！");
+                        this.addPathIcoBtn(startLon,startLat);
+                    }   
+                    this.isLoading = false;
                 }).catch((error) => {
-
+                    this.addPathIcoBtn(startLon,startLat);
+                    this.isLoading = false;
                 }
             );
             
@@ -570,7 +607,7 @@ export default {
                         }
                     
                     } else {                     
-                        this.$message("获取单位失败 ！"); 
+                        this.$message.error("获取单位失败 ！"); 
                     }
                 }
             );
@@ -600,7 +637,7 @@ export default {
                         }                        
                     
                     } else {                     
-                        this.$message("获取单位失败 ！"); 
+                        this.$message.error("获取单位失败 ！"); 
                     }
                 }
             );
@@ -639,6 +676,7 @@ export default {
                         this.trafficInfo.infoType = response.data.infoType;
                         this.trafficInfo.sendChannel = response.data.sendChannel; 
                         this.trafficInfo.alertPath = response.data.alertPath;   
+                        this.select.alertPath = response.data.alertPath;   
                         this.trafficInfo.alertRadius = response.data.alertRadius; 
                         this.trafficInfo.alertCategory = response.data.alertCategory; 
 
@@ -650,13 +688,13 @@ export default {
                         this.drawBgCircle(response.data.longitude,response.data.latitude,radius);                                            
 
                         if(response.data.status == 200){                            
-                            this.$message('获取详情成功！');
+                            this.$message.error('获取详情成功！');
                         }
                         this.initUnintList(true,this.trafficInfo.frequencyUnit);
                         this.initDatasourceList(true,this.trafficInfo.datasource);
                         
                     } else {                     
-                        this.$message("获取详情失败 ！"); 
+                        this.$message.error("获取详情失败 ！"); 
                     }
                 }
             );
@@ -847,6 +885,7 @@ export default {
             }            
 
             this.showTrafficInfoPop = true;
+            this.$refs.ruleFormMap.clearValidate();
             this.$nextTick(function(){
                 let container = document.getElementById('traffic-info-release-popup');
                 let overlay = new Overlay({
@@ -897,6 +936,7 @@ export default {
         },
         // 移除 发布信息图标
         clearPubMsgIcon(){
+            // console.log(this.pubMsgIconID);
             if(!this.pubMsgIconID) return;
 
             let pubMsgBgIcoID = 'bg_' + this.pubMsgIconID;
@@ -971,7 +1011,7 @@ export default {
                     // 打点 
                     this.addPathIco(this.pathPoint.newVal.lon,this.pathPoint.newVal.lat,'new');
                     // 画按钮
-                    this.addPathIcoBtn(this.pathPoint.newVal.lon,this.pathPoint.newVal.lat);
+                    // this.addPathIcoBtn(this.pathPoint.newVal.lon,this.pathPoint.newVal.lat);
                     
                     // 暂时无法区分覆盖物点击事件和地图点击事件，支持选一个点
                     this.removeClickEvent();
@@ -1628,6 +1668,11 @@ export default {
             // .el-date-editor--datetimerange.el-input, .el-date-editor--datetimerange.el-input__inner {
             //  width: 350px;
             // }
+        }
+    }
+    .el-input-number {
+        .el-input-number__increase, .el-input-number__decrease {
+            border-radius: 0!important;
         }
     }
 }

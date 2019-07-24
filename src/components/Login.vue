@@ -81,8 +81,7 @@ export default {
             },response => {
                 if(response.status >= 200 && response.status < 300){
                     if(response.data.status == 1){
-                        this.$message(response.data.message);
-                        return;
+                        this.$message.error(response.data.message);
                     }else if(response.status == 200){
                         let temp = response.data.data;                            
                         temp = JSON.parse(temp);
@@ -98,7 +97,7 @@ export default {
                         // LocalStorageUtil.login(tUser);
                         this.$router.push({ path: '/infoRelease' ,params: {key:'登录成功!'}});
 
-                        this.$message('登录成功！');
+                        this.$message.success('登录成功！');
                     }
                     
                     

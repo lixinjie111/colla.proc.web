@@ -121,7 +121,7 @@ export default {
                         // }
 
                     } else {                     
-                        this.$message("获取信息列表失败 ！"); 
+                        this.$message.error("获取信息列表失败 ！"); 
                     }
                 }
             );
@@ -220,14 +220,14 @@ export default {
                         if(response.data.status == 200){
                             this.initPubMsgList();
                             this.$emit('PubMsgChange');
-                            this.$message('发布成功！');
+                            this.$message.success('发布成功！');
                         }else if(response.data.status == 500){
                             let msg = response.data.message ? response.data.message : '发布失败 !';
-                            this.$message(msg)
+                            this.$message.error(msg)
                         }
                         
                     } else {                     
-                        this.$message("发布失败 ！"); 
+                        this.$message.error("发布失败 ！"); 
                     }
                 }
             );
@@ -348,7 +348,7 @@ export default {
                         // }                                             
                         
                     } else {                     
-                        this.$message("获取设备列表失败 ！"); 
+                        this.$message.error("获取设备列表失败 ！"); 
                     }
                 }
             );
@@ -385,7 +385,7 @@ export default {
                         // }                        
                         
                     } else {                     
-                        this.$message("获取路侧单元失败 ！"); 
+                        this.$message.error("获取路侧单元失败 ！"); 
                     }
                 }
             );
@@ -422,7 +422,7 @@ export default {
                         // }
                         
                     } else {                     
-                        this.$message("获取红绿灯失败 ！"); 
+                        this.$message.error("获取红绿灯失败 ！"); 
                     }
                 }
             );
@@ -457,6 +457,12 @@ export default {
         addMapClickEvent(item){
             this.$refs.refTusvnMap.addClickEvent(item);
             this.isPointerIco = true;
+
+            this.$refs.refTusvnMap.closeMyInfoWindow();
+            this.$refs.refTusvnMap.initSelect();
+            this.$refs.refTusvnMap.initTrafficInof();
+            this.$refs.refTusvnMap.clearTempLayer();
+            this.temporaryClearPubMsg({bool: false});
         },
         // // 移除 地图点击事件
         removeMapClickEvent(){
@@ -467,7 +473,7 @@ export default {
             this.isPointerIco = false;
 
             if(!this.msgTypeInfo){
-                this.$message('请选择信息类型 ！');
+                this.$message.warning('请选择信息类型 ！');
                 return;
             }
            

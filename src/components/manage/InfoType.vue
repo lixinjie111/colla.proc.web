@@ -177,7 +177,7 @@ export default {
                         this.paging.total = response.data.totalCount;
                         
                     } else {                     
-                        this.$message("获取信息类型列表失败  ！"); 
+                        this.$message.error("获取信息类型列表失败  ！"); 
                     }
 
                     this.isLoading = false;
@@ -197,7 +197,7 @@ export default {
                         this.typeList = response.data ? response.data : [];
                         
                     } else {                     
-                        this.$message("获取类型失败  ！"); 
+                        this.$message.error("获取类型失败  ！"); 
                     }
                 }
             );

@@ -59,7 +59,7 @@
         </el-form-item>
 
         <el-form-item label="默认影响范围" prop="alertRadius">
-            <el-input-number v-model.trim="ruleForm.alertRadius" controls-position="right" :min="1" ></el-input-number>
+            <el-input-number v-model.trim="ruleForm.alertRadius" controls-position="right" :min="1" :max="1024"></el-input-number>
         </el-form-item>
 
         <el-form-item label="下发通道" prop="sendChannel">
@@ -75,8 +75,8 @@
         </el-form-item>        
    
         <el-form-item style="text-align: right;">
-            <el-button type="warning" plain @click="handleCancel">取 消</el-button>
             <el-button type="warning" @click="handleOk" :loading="submitLoading">确 定</el-button>
+            <el-button type="warning" plain @click="handleCancel">取 消</el-button>
         </el-form-item>
     </el-form>
   </el-dialog>
@@ -173,7 +173,7 @@
                     this.typeList = response.data ? response.data : [];
                     
                 } else {                     
-                    this.$message( "获取类型失败 ！"); 
+                    this.$message.error( "获取类型失败 ！"); 
                 }
             }
         );
@@ -193,7 +193,7 @@
                     }
                    
                 } else {                     
-                    this.$message("获取单位失败 ！"); 
+                    this.$message.error("获取单位失败 ！"); 
                 }
             }
         );

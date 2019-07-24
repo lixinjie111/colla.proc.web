@@ -1,6 +1,6 @@
 <template>
   <div id="app">  
-    <template v-if="$route.path != '/login'">
+    <template v-if="$route.path != '/login' && $route.path != '/Login'">
         <div id="header">
               <div class="logo">
                   <img src="static/images/logo.png" class="logo-img c-vertical-middle"/>

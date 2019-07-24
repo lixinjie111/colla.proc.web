@@ -218,7 +218,7 @@ export default {
                         this.paging.total = response.data.totalCount;
                         
                     } else {                     
-                        this.$message("showPrompt", "获取设备列表失败  ！"); 
+                        this.$message.error("showPrompt", "获取设备列表失败  ！"); 
                     }
 
                     this.isLoading = false;
@@ -239,7 +239,7 @@ export default {
                         
                     
                     } else {                     
-                        this.$message("获取单位失败 ！"); 
+                        this.$message.error("获取单位失败 ！"); 
                     }
                 }
             );

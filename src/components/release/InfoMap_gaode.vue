@@ -231,7 +231,7 @@ export default {
                         }
                         
                     } else {                     
-                        this.$message("获取信息列表失败 ！"); 
+                        this.$message.error("获取信息列表失败 ！"); 
                     }
                 }
             );
@@ -304,7 +304,7 @@ export default {
                         // this.mapMarker.rsuList.push(marker);
                         
                     } else {                     
-                        this.$message("获取设备列表失败 ！"); 
+                        this.$message.error("获取设备列表失败 ！"); 
                     }
                 }
             );
@@ -370,7 +370,7 @@ export default {
                         // this.mapMarker.trafficSignalList.push(marker);
                         
                     } else {                     
-                        this.$message("获取红绿灯失败 ！"); 
+                        this.$message.error("获取红绿灯失败 ！"); 
                     }
                 }
             );
@@ -435,7 +435,7 @@ export default {
                         // this.mapMarker.roadsideUnitList.push(marker);
                         
                     } else {                     
-                        this.$message("获取路侧单元失败 ！"); 
+                        this.$message.error("获取路侧单元失败 ！"); 
                     }
                 }
             );
@@ -679,11 +679,11 @@ export default {
 
                                     if(response.data.status == 200){
                                         
-                                        this.$message('获取详情成功！');
+                                        this.$message.success('获取详情成功！');
                                     }
                                     
                                 } else {                     
-                                    this.$message("获取详情失败 ！"); 
+                                    this.$message.error("获取详情失败 ！"); 
                                 }
                             }
                         );
@@ -736,11 +736,11 @@ export default {
                                     
                                     if(response.data.status == 200){
                                         _this.initMsgList();
-                                        this.$message('发布成功！');
+                                        this.$message.success('发布成功！');
                                     }
                                     
                                 } else {                     
-                                    this.$message("发布失败 ！"); 
+                                    this.$message.error("发布失败 ！"); 
                                 }
                             }
                         );
@@ -768,11 +768,11 @@ export default {
                                    
                                     if(response.data.status == 200){
                                         _this.initMsgList();
-                                        this.$message('更新成功！');
+                                        this.$message.success('更新成功！');
                                     }
                                     
                                 } else {                     
-                                    this.$message("更新失败 ！"); 
+                                    this.$message.error("更新失败 ！"); 
                                 }
                             }
                         );
@@ -799,11 +799,11 @@ export default {
                                     
                                     if(response.data.status == 200){
                                         _this.initMsgList();
-                                        this.$message('手动失效成功！');
+                                        this.$message.success('手动失效成功！');
                                     }
                                     
                                 } else {                     
-                                    this.$message("手动失效失败 ！"); 
+                                    this.$message.error("手动失效失败 ！"); 
                                 }
                             }
                         );
@@ -825,7 +825,7 @@ export default {
                                     }
                                 
                                 } else {                     
-                                    this.$message("获取单位失败 ！"); 
+                                    this.$message.error("获取单位失败 ！"); 
                                 }
                             }
                         );
@@ -847,7 +847,7 @@ export default {
                                     }
                                 
                                 } else {                     
-                                    this.$message("获取单位失败 ！"); 
+                                    this.$message.error("获取单位失败 ！"); 
                                 }
                             }
                         );

@@ -136,8 +136,7 @@ export default {
             this.$api.post( url,params,
                 response => {
                     if (response.status >= 200 && response.status < 300) {
-
-                        this.pubMsgList = response.data ? response.data : [];                      
+                        this.pubMsgList = response.data ? response.data : []; 
                         
                     } else {                     
                         this.$message("获取信息类型列表失败  ！"); 
@@ -154,6 +153,7 @@ export default {
             this.olMarker[type] = !this.olMarker[type];
 
             this.$refs.refInfoMap.showMarker(type,this.olMarker[type]);
+            // this.$refs.ruleFormMap.resetFields();
         },
 
         removeTagClick(e){
@@ -273,8 +273,7 @@ export default {
 
 }
 </script>
-<style scoped>
-
+<style scoped lang="scss">
     .el-select-group__wrap{
         background: #666!important;        
     }
@@ -411,6 +410,9 @@ export default {
         border: 0px!important;
         border-radius: 0px!important;
     }
+}
+.el-select-group__title{
+    display: none;
 }
 </style>
 
