@@ -328,13 +328,12 @@ export default {
                     if (response.status >= 200 && response.status < 300) {
 
                         let rsuList = response.data ? response.data : []; 
-                        
                         for(let i=0;i<rsuList.length;i++){
                             
                             let item = rsuList[i];
                             let lon = item.longitude;
                             let lat = item.latitude;
-                            let id = this.generataIcoName('rsu');
+                            let id = this.generataIcoName('rsu',i);
                             let icon = "static/images/poi_2.png";
                             let size = [30,30];
                             this.$refs.refTusvnMap.addImg(lon,lat,id,this.mapLayer.rsu,icon,size);
@@ -367,12 +366,12 @@ export default {
                 response => {
                     if (response.status >= 200 && response.status < 300) {
 
-                        let roadsideUnitList = response.data ? response.data : [];    
+                        let roadsideUnitList = response.data ? response.data : []; 
                         for(let i=0;i<roadsideUnitList.length;i++){
                             let item = roadsideUnitList[i];
                             let lon = item.longitude;
                             let lat = item.latitude;
-                            let id = this.generataIcoName('roadsideUnit');
+                            let id = this.generataIcoName('roadsideUnit',i);
                             let icon = "static/images/poi_1.png";
                             let size = [30,30];
                             this.$refs.refTusvnMap.addImg(lon,lat,id,this.mapLayer.roadsideUnit,icon,size);
@@ -404,12 +403,12 @@ export default {
                 response => {
                     if (response.status >= 200 && response.status < 300) {
 
-                        let trafficSignalList = response.data ? response.data : [];    
+                        let trafficSignalList = response.data ? response.data : []; 
                         for(let i=0;i<trafficSignalList.length;i++){
                             let item = trafficSignalList[i];
                             let lon = item.longitude;
                             let lat = item.latitude;
-                            let id = this.generataIcoName('trafficSignal');
+                            let id = this.generataIcoName('trafficSignal',i);
                             let icon = "static/images/poi_3.png";
                             let size = [30,30];
                             this.$refs.refTusvnMap.addImg(lon,lat,id,this.mapLayer.trafficSignal,icon,size);
@@ -433,8 +432,8 @@ export default {
         },
 
         // 生成 类型+随机数 格式的图标名称
-        generataIcoName(value){
-            return value + (new Date()).getTime();
+        generataIcoName(value,index){
+            return value + (new Date()).getTime()+index;
         },
         
         // shaking
