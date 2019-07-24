@@ -517,6 +517,7 @@ export default {
                     }   
                     this.isLoading = false;
                 }).catch((error) => {
+                    this.$message.error("取到数据失败，请重试！");
                     this.addPathIcoBtn(startLon,startLat);
                     this.isLoading = false;
                 }
