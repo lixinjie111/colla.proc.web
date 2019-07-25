@@ -55,6 +55,9 @@
                                         </template>
                                     </el-input>
 
+                                    <el-tooltip class="yk-btn-tooltip" effect="light" :content="select.alertPath" placement="top-end" popper-class="path-view-popover" v-if="select.alertPath">
+                                       <el-button class="yk-btn-append" type="primary">查看</el-button>
+                                    </el-tooltip>
                                 </el-form-item>
 
                                 <!-- <el-form-item label="影响范围" prop="alertRadius" class="yk-bottom-12 yk-txt">
@@ -333,6 +336,9 @@ export default {
             this.addPathIco( this.trafficInfo.longitude, this.trafficInfo.latitude );
 
             this.$emit('TemporaryClearPubMsg',{bool:true});
+
+
+            this.$emit("setPointer",{bool: true, flag: true}); 
             
         },
 
@@ -370,15 +376,19 @@ export default {
                 this.select.alertPath = '';
             }
             this.clearTempLayer();
+            // console.log(this.pointData);
             // 重新打开窗口
-            this.addMyInfoWindow(this.pointData);
+            this.addMyInfoWindow(this.pointData, true);
 
             this.$emit('TemporaryClearPubMsg',{bool:false});
+
+            this.$emit("setPointer",{bool: false, flag: true}); 
 
         },
         // 关闭窗口
         closeClick(e){
 
+            this.$emit("setPointer",{bool: true, flag: true}); 
             this.deleteTempMarker();
             this.addClickEvent();            
             // e.preventDefault();
@@ -470,10 +480,8 @@ export default {
             this.isLoading = true;
             axios.post(url, formData, config)
                 .then(response => {
+                    this.isLoading = false;
                     if(response.data.data) {
-                        // 画按钮
-                        this.addPathIcoBtn(startLon,startLat);
-
                         let pointList = response.data.data ? response.data.data : '';
                         if(pointList.length < 2) {
                             this.$message.error("选择的影响路线太短，请重新选择！");
@@ -498,6 +506,9 @@ export default {
                             this.pathPoint.pointList = this.pathPoint.pointList.concat(points);    
                         // }
                         // console.log(points);
+
+                        // console.log(response.data.data);
+                        // console.log(this.pathPoint.pointList);
                         let coordinates = points;
                         let id = 'TempLine_' + (new Date()).getTime();
                         let color = 'red';
@@ -512,14 +523,17 @@ export default {
                         // coordinates, id, color, lineCap, lineJoin, lineDash, lineDashOffset, miterLimit, width, layerId
                         this.addLineString(coordinates, id, "red", "round", "round", [5,0], [-14,0], 10, 5, layerId);  
                     }else {
-                        this.$message.error("未获取到数据，请重新选择！");
-                        this.addPathIcoBtn(startLon,startLat);
-                    }   
-                    this.isLoading = false;
+                        this.$message.error(response.data.message || "未获取到数据，请重新选择！");
+                    }  
+
+                    // 画按钮
+                    this.addPathIcoBtn(startLon,startLat);
+                    this.$emit("setPointer",{bool: false, flag: true}); 
                 }).catch((error) => {
+                    this.isLoading = false;
                     this.$message.error("取到数据失败，请重试！");
                     this.addPathIcoBtn(startLon,startLat);
-                    this.isLoading = false;
+                    this.$emit("setPointer",{bool: false, flag: true});
                 }
             );
             
@@ -652,7 +666,7 @@ export default {
             }    
             return num.toFixed(length);
         },
-        initDetail(marker) {
+        initDetail(marker,flag) {
             let url = 'event/task/findDetail';
             let params = {
                 id: marker.id,
@@ -660,7 +674,8 @@ export default {
             this.$api.post( url,params,
                 response => {
                     if (response.status >= 200 && response.status < 300) {
-                        
+                        // console.log("----------------------------");
+                        // console.log(response.data);
                         this.trafficInfo.id = response.data.id;
                         this.trafficInfo.taskCode = response.data.taskCode;
                         this.trafficInfo.eventName = response.data.eventName;
@@ -676,10 +691,14 @@ export default {
                         this.trafficInfo.datasource = response.data.datasource;     
                         this.trafficInfo.infoType = response.data.infoType;
                         this.trafficInfo.sendChannel = response.data.sendChannel; 
-                        this.trafficInfo.alertPath = response.data.alertPath;   
-                        this.select.alertPath = response.data.alertPath;   
-                        this.trafficInfo.alertRadius = response.data.alertRadius; 
+                        if(!flag) {
+                            this.trafficInfo.alertPath = response.data.alertPath;   
+                            this.select.alertPath = response.data.alertPath;    
+                        }
+                        this.trafficInfo.alertRadius = response.data.alertRadius;
                         this.trafficInfo.alertCategory = response.data.alertCategory; 
+                        // console.log(response.data.alertPath);
+                        // console.log(this.trafficInfo.alertPath);
 
                         // const radius = response.data.alertRadius;   
                         const radius = response.data.affectRange;   
@@ -856,7 +875,7 @@ export default {
             });
         },
 
-        addMyInfoWindow: function(obj){
+        addMyInfoWindow: function(obj, flag){
 
             this.pointData = obj;
 
@@ -867,7 +886,7 @@ export default {
             this.circleLat = obj.lat;
             
             if(obj.isEdit){
-                this.initDetail(obj);
+                this.initDetail(obj, flag);
                 this.trafficInfo.isEdit = true;
             }else{
 
@@ -983,7 +1002,6 @@ export default {
         mapClick:function(mevent){
 
             if(this.mapStatus == 'normal'){
-
                 this.$emit("MapClick",this,mevent);
                 this.removeClickEvent();        // 移除点击事件
 
@@ -1646,8 +1664,21 @@ export default {
         line-height: 28px!important;
     }
 
+    .yk-btn-tooltip {
+        position: absolute;
+        left: 100%;
+        top: 0;
+    }
+
 </style>
 <style lang="scss">
+.path-view-popover {
+    max-width: 256px;
+    border: none;
+    color: #999;
+    // max-height: 200px;
+    // overflow-y: auto;
+}
 .demo-ruleForm {
     .el-form-item__content {
         width: 220px;

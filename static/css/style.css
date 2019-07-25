@@ -197,6 +197,8 @@
   .yk-txt .el-input-group__append{
     border: none;
     pointer-events: auto;
+    border-radius: 0;
+    overflow: hidden;
   }
  
   .yk-textarea .el-form-item__label {

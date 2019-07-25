@@ -17,6 +17,7 @@
             @ExtentChange="extentChange"
             @ViewLevelChange="viewLevelChange"
             @MapInitComplete='mapInitComplete'
+            @setPointer='setPointer'
 
             @PublishInfo = 'publishInfo' 
             @UpdateInfo = 'updateInfo'
@@ -95,9 +96,11 @@ export default {
     methods: {
 
         // ----------------------------信息发布-------------------------------
-        setPointer(bool){
-            this.isPointerIco = bool;
-            this.removeMapClickEvent();
+        setPointer(e){
+            this.isPointerIco = e.bool;
+            if(!e.flag) {
+                this.removeMapClickEvent();
+            }
         },
         initPubMsgList(){
 
@@ -469,7 +472,7 @@ export default {
         },
         mapClick: function(map,evt){
             
-            this.isPointerIco = false;
+            // this.isPointerIco = false;
 
             if(!this.msgTypeInfo){
                 this.$message.warning('请选择信息类型 ！');

@@ -179,7 +179,7 @@ export default {
             this.$refs.refInfoMap.addMapClickEvent(item);
         },
         clearPubMsgClick(e){            
-            this.$refs.refInfoMap.setPointer(false);
+            this.$refs.refInfoMap.setPointer({bool: false});
         },
 
         mapBoxClick(){
