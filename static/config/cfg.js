@@ -12,6 +12,7 @@ window.cfg = {
     iconPath:'http://120.133.21.14:9090/file/pic/trafficType/',       // 图片服务器地址
     mapApiUrl: 'http://113.208.118.62:8085/',                        // 地图api
     // mapApiUrl: 'http://120.133.21.14:8085/',                        // 地图api
+    // mapApiUrl: 'http://192.168.0.1:8085/', 
 
     version: 1.0,       // 版本号
 }
