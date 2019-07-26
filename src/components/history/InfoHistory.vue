@@ -47,10 +47,8 @@
                 :header-cell-style="{background:'#E6E6E6',color:'#606266',border: '0px'}"
                 v-loading="isLoading">
             <el-table-column
-                fixed
                 label="序号"
-                type="index"
-                width="60">
+                type="index">
                 <template slot-scope="scope">
                     <span>
                         {{scope.$index + paging.index * paging.size + 1}}
@@ -61,18 +59,20 @@
             <el-table-column
                 prop="taskCode"
                 label="信息编号"
+                min-width="15%"
                 >
             </el-table-column>
 
             <el-table-column
                 prop="eventName"
                 label="信息类型"
-                width="120">
+                min-width="8%">
             </el-table-column>
 
             <el-table-column
                 prop="status"
-                label="信息状态" width="80">
+                label="信息状态"
+                min-width="6%">
                 <template slot-scope="scope">
                     <!-- {{scope.row.status}} -->
                     <span v-show="scope.row.status == 1">有效</span>
@@ -83,7 +83,8 @@
 
             <el-table-column
                 prop="longitude,latitude "
-                label="中心位置">
+                label="中心位置"
+                min-width="15%">
                 <template slot-scope="scope">
                     {{scope.row.longitude}} , {{scope.row.latitude}}
                 </template>
@@ -91,33 +92,38 @@
 
             <el-table-column
                 prop="beginTime"
-                label="发布时间">
+                label="发布时间"
+                min-width="12%">
             </el-table-column>
 
             <el-table-column
                 prop="endTime"
-                label="失效时间">
+                label="失效时间"
+                min-width="12%">
             </el-table-column>
 
             <el-table-column
                 prop="expirationTime"
-                label="实际结束时间">
+                label="实际结束时间"
+                min-width="12%">
             </el-table-column>
 
             <el-table-column
                 prop="content"
-                label="信息内容">
+                label="信息内容"
+                min-width="5%">
             </el-table-column>
 
             <el-table-column
                 prop="sendNumber"
-                label="下发次数" 
-                width="80">
+                label="下发次数"
+                min-width="5%">
             </el-table-column>
 
             <el-table-column
                 prop="datasource"
-                label="信息来源">
+                label="信息来源"
+                min-width="10%">
                 <template slot-scope="scope">
                     <span v-if="scope.row.datasource == 1">平台运营人员</span>
                     <span v-else>{{scope.row.datasource}}</span>

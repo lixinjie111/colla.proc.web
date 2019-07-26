@@ -21,10 +21,8 @@
                 :header-cell-style="{background:'#E6E6E6',color:'#606266',border: '0px'}"
                 v-loading="isLoading">
             <el-table-column
-                fixed
                 label="序号"
-                type="index"
-                width="60">
+                type="index">
                 <template slot-scope="scope">
                     <span>
                         {{scope.$index + paging.index * paging.size + 1}}
@@ -34,12 +32,12 @@
             <el-table-column
                 prop="name"
                 label="信息类型名称"
-                width="160"
-                >
+                min-width="15%">
             </el-table-column>
             <el-table-column
                 prop="eventCategory"
-                label="信息分类" width="160">
+                label="信息分类"
+                min-width="15%">
                 <template slot-scope="scope">
                     <span v-if="scope.row.eventCategory == 'TI01'">车辆异常信息</span>
                     <span v-if="scope.row.eventCategory == 'TI02'">道路异常信息</span>
@@ -50,8 +48,8 @@
             </el-table-column>
             <el-table-column
                 prop="icon"
-                label="图标" 
-                width="80">
+                label="图标"
+                min-width="15%">
                 <template slot-scope="scope">
                     <!-- <img :src="iconPath + scope.row.icon" class="image"> -->
                     <div class="image-box">
@@ -61,16 +59,17 @@
             </el-table-column>
             <el-table-column
                 prop="content"
-                label="默认信息内容">
+                label="默认信息内容"
+                min-width="20%">
             </el-table-column>
             <el-table-column
                 prop="frequency"
                 label="默认广播频率(ms)"
-                width="120">
+                min-width="15%">
             </el-table-column>
             <el-table-column
                 label="管理"
-                width="260">
+                min-width="20%">
 
                 <template slot-scope="scope">
                     <el-button type="warning" plain size="mini" @click="handleCheck(scope.$index, scope.row);">查看</el-button>
