@@ -28,8 +28,8 @@
         <!-- 右侧信息 -->
         <div class="yk-right">
             <el-form size="mini">
-                <el-form-item class="yk-form-item c-pull-right">
-                    <el-select id="pubMsgSelect" ref="refPubMsg" placeholder="发布信息" v-model="search.pubMsg" :clearable='clearPoiSelect' value-key="name" @clear="clearPubMsgClick($event);">                        
+                <el-form-item class="yk-form-item c-pull-right" style="width: 150px;">
+                    <el-select ref="refPubMsg" placeholder="发布信息" v-model="search.pubMsg" :clearable='clearPoiSelect' value-key="name" @clear="clearPubMsgClick($event);">                        
                         <el-option-group v-for="(group,groupIndex) in pubMsgGroup" label="发布信息" :key="groupIndex">
                             <template v-for="(item,index) in pubMsgList">
                                 <el-option :key="index" :value="item" @click.native="pubMsgClick(item);">                                        
@@ -39,8 +39,8 @@
                         </el-option-group>
                     </el-select>                    
                 </el-form-item>
-                <el-form-item class="yk-form-item c-pull-right yk-border-r">                    
-                    <el-select id="poiSelect" ref="refPoi" placeholder="POI" multiple v-model="search.poi" value-key="value" collapse-tags @remove-tag="removeTagClick($event);">                                    
+                <el-form-item class="yk-form-item c-pull-right yk-border-r" style="width: 240px;">                    
+                    <el-select ref="refPoi" placeholder="POI" multiple v-model="search.poi" @remove-tag="removeTagClick($event);">                                    
                         <el-option-group v-for="(group,groupIndex) in poiGruop" label="POI" :key="groupIndex">            
                             <template v-for="(item,index) in poiList">
                                 <el-option :key="index" :value="item.name" @click.native="poiClick(item);">                                                           
@@ -402,7 +402,6 @@ export default {
 </style>
 <style lang="scss">
 .yk-form-item{
-    width: 150px;
     background: #666!important;
     .el-input__inner {
         width: 100% !important;

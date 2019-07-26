@@ -14,7 +14,7 @@
         </el-form>
         <el-table
                 class="c-mb-70"
-                max-height="499"
+                max-height="724"
                 :data="dataList"
                 border
                 stripe

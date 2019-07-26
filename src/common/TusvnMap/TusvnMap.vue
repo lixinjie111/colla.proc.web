@@ -27,7 +27,7 @@
                         <el-row class="yk-pad-10 yk-bottom-border">
                             <label class="yk-info-window-title">交通信息发布</label>                        
                         </el-row>
-                        <el-row class="yk-pad-1060">
+                        <el-row class="yk-pad-1020">
                             
                             <el-form ref="ruleFormMap" :rules="rules" :model="trafficInfo" size="mini" label-width="108px" class="demo-ruleForm yk-left" style="margin-right: 10px;">
 
@@ -46,7 +46,7 @@
                                 <el-form-item label="影响路径" prop="alertPath" class="yk-bottom-12 yk-txt">
 
                                     <!-- placeholder="格式：1.1,2.2;3.3,4.4" -->
-                                    <el-input size="mini" v-model="select.alertPath" class="yk-readonly">
+                                    <el-input size="mini" v-model="select.alertPath" class="yk-readonly" style="margin-right: 50px;">
                                         <template slot="append">
                                             <el-button class="yk-btn-append" type="primary" @click="addEffectPath();">
                                                 <template v-if="!select.alertPath">添加</template>
@@ -102,7 +102,7 @@
                                     </el-date-picker>
                                 </el-form-item>
 
-                                <el-form-item v-show="trafficInfo.isEdit" prop="datasource" label="信息来源" class="yk-bottom-12  yk-txt">                                    
+                                <el-form-item v-if="trafficInfo.isEdit" prop="datasource" label="信息来源" class="yk-bottom-12  yk-txt">                                    
                                     <select class="yk-select" v-model="select.datasource">
                                         <option v-for="(item,index) in datasourceList" :key="index" :value="item">{{item.name}}</option>                                        
                                     </select>
@@ -595,6 +595,7 @@ export default {
             this.closeMyInfoWindow();
             this.initSelect();
              this.initTrafficInof();
+             this.$emit("setPointer",{bool: false, flag: true}); 
         },
         initDatasourceList(isEdit=false,datasource){
             let url = 'common/queryDictionary';
@@ -963,6 +964,8 @@ export default {
 
             this.removeFeature(pubMsgBgIcoID,this.MessageTempLayer);
             this.removeFeature(this.pubMsgIconID,this.MessageTempLayer);
+
+            // this.$emit("setPointer",{bool: false, flag: true}); 
         },
 
         /**
@@ -1666,8 +1669,11 @@ export default {
 
     .yk-btn-tooltip {
         position: absolute;
-        left: 100%;
+        right: 50px;
         top: 0;
+        &:hover {
+            opacity: 1 !important;
+        }
     }
 
 </style>
@@ -1681,7 +1687,7 @@ export default {
 }
 .demo-ruleForm {
     .el-form-item__content {
-        width: 220px;
+        width: 240px;
         .el-input__inner {
             box-sizing: border-box;
             width: 100%;

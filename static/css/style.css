@@ -34,6 +34,9 @@
   .yk-pad-10{
     padding: 10px!important;
   }
+  .yk-pad-1020{
+    padding: 10px 20px!important;
+  }
   .yk-pad-1060{
     padding: 10px 60px!important;
   }
@@ -109,7 +112,7 @@
     padding: 0px 15px;
     height: 28px;
     line-height: 28px;
-    width: 220px;
+    width: 100%;
     background: #666;
     color: #fff;
     border: 0px;
