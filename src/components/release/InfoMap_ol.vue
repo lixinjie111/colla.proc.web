@@ -535,6 +535,10 @@ export default {
             this.$refs.refTusvnMap.addVectorLayer(this.mapLayer.messageBg);
 
             this.mapInitOk = true;   
+
+            // 设置地图中心点及级别
+            this.$refs.refTusvnMap.centerAt(121.17265957261286,31.284096076877844);
+            this.$refs.refTusvnMap.zoomTo(11);
             
             // this.showRsu();
             // this.showRoadsideUnit();
