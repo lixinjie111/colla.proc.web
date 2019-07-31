@@ -378,6 +378,8 @@ export default {
             this.clearTempLayer();
             // console.log(this.pointData);
             // 重新打开窗口
+            // console.log("11111111111111111111");
+            // console.log(this.pointData);
             this.addMyInfoWindow(this.pointData, true);
 
             this.$emit('TemporaryClearPubMsg',{bool:false});
@@ -888,17 +890,20 @@ export default {
             this.circleLat = obj.lat;
             
             if(obj.isEdit){
+                console.log("??????????????");
                 this.initDetail(obj, flag);
                 this.trafficInfo.isEdit = true;
             }else{
-
+                console.log("----------------");
+                // console.log(obj);
+                // console.log(this.trafficInfo);
                 obj.trafficInfo.longitude = this.toFixedLen(obj.trafficInfo.longitude);
                 obj.trafficInfo.latitude = this.toFixedLen(obj.trafficInfo.latitude);
                 let _alertCategory = this.trafficInfo.alertCategory;
                 this.trafficInfo = obj.trafficInfo;
                 this.trafficInfo.alertCategory = _alertCategory;
+                console.log(_alertCategory);
                 this.trafficInfo.isEdit = false;
-
                 this.initDatasourceList();
 
                 // let radius = obj.trafficInfo.alertRadius;                
