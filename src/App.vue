@@ -3,8 +3,8 @@
     <template v-if="$route.path != '/login' && $route.path != '/Login'">
         <div id="header">
               <div class="logo">
-                  <img src="static/images/logo.png" class="logo-img c-vertical-middle"/>
-                  <em class="name c-vertical-middle">交通信息发布平台</em>
+                  <img src="static/images/logo.png" class="logo-img"/>
+                  <!-- <em class="name">交通信息发布平台</em> -->
               </div>
 
               <div class="userinfo">
@@ -173,9 +173,9 @@ export default {
         }
     }
     .logo {
-        overflow: hidden;
+        @include layoutMode(align);
         .logo-img {
-            height: 25px;
+            height: 26px;
             margin-right: 10px;
         }
         .name {
