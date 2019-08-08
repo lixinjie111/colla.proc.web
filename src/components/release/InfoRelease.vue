@@ -75,7 +75,7 @@ export default {
                 { id: 1, name: 'RSU', value: 'rsu', isCheck: false,icon:'el-icon-edit'},
                 { id: 2, name: '路侧单元', value: 'roadsideUnit', isCheck: false,icon:'el-icon-plus'},
                 { id: 3, name: '红绿灯', value: 'trafficSignal', isCheck: false,icon:'el-icon-edit'},
-                
+                { id: 4, name: '路网', value: 'roadNet', isCheck: true,icon:'el-icon-edit'},
             ],
             pubMsgList: [
                 
@@ -96,6 +96,7 @@ export default {
                 rsu: false,     // rsu
                 roadsideUnit: false,    // 路侧单元
                 trafficSignal: false,   // 交通信号灯
+                roadNet:true
             },
             clearPoiSelect: true,
             collapseTags: true,
@@ -241,11 +242,10 @@ export default {
         
     },
     mounted(){
-        document.addEventListener("mousedown",function (e) {
-            if(e.which==3){
-                alert(1)
-            }
-        })
+        // setTimeout(()=>{
+        //     this.$refs.refInfoMap.showMarker('roadNet',true);
+        // },500)
+        
         // const that = this
         // window.onload = () => {
         //     return (() => {

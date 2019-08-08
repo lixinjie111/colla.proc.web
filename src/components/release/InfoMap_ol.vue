@@ -309,6 +309,7 @@ export default {
 
         // -----------------------------poi----------------------------
         showMarker(type,bool){
+            
             switch(type){
                 case 'rsu':
                     bool ? this.showRsu() : this.clearRsu();
@@ -319,6 +320,9 @@ export default {
                 case 'trafficSignal':
                     bool ? this.showTrafficSignal() : this.clearTrafficSignal();
                     break;
+                case 'roadNet':
+                     bool ? this.$refs.refTusvnMap.showRoadNet() : this.$refs.refTusvnMap.clearRoadNet();
+                break;
             }
         },
         // 显示rsu
@@ -536,6 +540,7 @@ export default {
             this.$refs.refTusvnMap.addVectorLayer(this.mapLayer.trafficSignal);
             this.$refs.refTusvnMap.addVectorLayer(this.mapLayer.message);
             this.$refs.refTusvnMap.addVectorLayer(this.mapLayer.messageBg);
+            
 
             this.mapInitOk = true;   
 
@@ -548,6 +553,7 @@ export default {
             // this.showTrafficSignal();
 
             this.initPubMsgList();
+            //this.$refs.refTusvnMap.showRoadNet(this.mapLayer.messageBg);
 
         },
         viewLevelChange:function(tusvnmap,mevent)

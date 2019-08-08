@@ -844,6 +844,12 @@ export default {
             //     "vectorLayer_01"
             // );
         },
+        showRoadNet(){
+           alert("显示")
+        },
+        clearRoadNet(){
+            alert("隐藏")
+        },
 
         addClickEvent(item){
             if(item) {
