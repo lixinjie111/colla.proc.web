@@ -43,7 +43,7 @@
                     <el-select ref="refPoi" placeholder="POI" multiple v-model="search.poi" @remove-tag="removeTagClick($event);">                                    
                         <el-option-group v-for="(group,groupIndex) in poiGruop" label="POI" :key="groupIndex">            
                             <template v-for="(item,index) in poiList">
-                                <el-option :key="index" :value="item.name" @click.native="poiClick(item);">                                                           
+                                <el-option :key="index" :value="item.name" @click.native="poiClick(item);">
                                     {{item.name}}                                
                                 </el-option>
                             </template>

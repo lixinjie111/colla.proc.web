@@ -85,7 +85,8 @@ export default {
                 infoType: '',
                 sendChannel: '',
                 alertRadius: 1024,
-                // alertPath: '',              //格式 "[[12.333,23.333],[12.444,23,444]]"，转换显示为 12.333,23.333;12.444,23,444
+                alertPath: '',              //格式 "[[12.333,23.333],[12.444,23,444]]"，转换显示为 12.333,23.333;12.444,23,444
+                alertCategory: ''       //告警类型
             },
             isPointerIco: false,    // 是否修改鼠标的图标
             pubMsgList: [],
@@ -457,12 +458,13 @@ export default {
         //------------------------------- 地图回调函数------------------------------
         // 添加 地图点击事件
         addMapClickEvent(item){
+            this.$refs.refTusvnMap.initSelect();
+            this.$refs.refTusvnMap.initTrafficInof();
+            
             this.$refs.refTusvnMap.addClickEvent(item);
             this.isPointerIco = true;
 
             this.$refs.refTusvnMap.closeMyInfoWindow();
-            this.$refs.refTusvnMap.initSelect();
-            this.$refs.refTusvnMap.initTrafficInof();
             this.$refs.refTusvnMap.clearTempLayer();
             this.temporaryClearPubMsg({bool: false});
         },
@@ -507,6 +509,7 @@ export default {
                 sendChannel: this.msgTypeInfo.sendChannel,
                 alertRadius: 1024,
                 alertPath: '',              //格式 "[[12.333,23.333],[12.444,23,444]]"，转换显示为 12.333,23.333;12.444,23,444
+                alertCategory: ''       //告警类型
             };
             let marker = {
                 id: 'marker' + (new Date()).getTime(),
