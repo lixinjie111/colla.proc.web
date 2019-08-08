@@ -1212,6 +1212,18 @@ export default {
                this.$data.map.removeLayer(layer);
            }
         },
+        /**
+         * 设置图层的显示和隐藏
+         * @param {string} layerid 图层id
+         * @param {boolean} visible 图层是否显示  true,false
+         */
+        setVisible:function(layerid,visible){
+            let layer = this.getLayerById(layerid);
+            if(layer!=undefined)
+            {
+               layer.boolsetVisible(visible);
+            }
+        },
         // /**
         //  * 向地图中添加图片
         //  * 
