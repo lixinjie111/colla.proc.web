@@ -1226,7 +1226,7 @@ export default {
             let layer = this.getLayerById(layerid);
             if(layer!=undefined)
             {
-               layer.boolsetVisible(visible);
+               layer.setVisible(visible);
             }
         },
         // /**
