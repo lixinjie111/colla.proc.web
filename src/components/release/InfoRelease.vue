@@ -27,30 +27,31 @@
 
         <!-- 右侧信息 -->
         <div class="yk-right">
-            <el-form size="mini">
-                <el-form-item class="yk-form-item c-pull-right" style="width: 150px;">
-                    <el-select ref="refPubMsg" placeholder="发布信息" v-model="search.pubMsg" :clearable='clearPoiSelect' value-key="name" @clear="clearPubMsgClick($event);">                        
-                        <el-option-group v-for="(group,groupIndex) in pubMsgGroup" label="发布信息" :key="groupIndex">
-                            <template v-for="(item,index) in pubMsgList">
-                                <el-option :key="index" :value="item" @click.native="pubMsgClick(item);">                                        
-                                    {{item.name}}
-                                </el-option>
-                            </template>
-                        </el-option-group>
-                    </el-select>                    
-                </el-form-item>
-                <el-form-item class="yk-form-item c-pull-right yk-border-r" style="width: 240px;">                    
-                    <el-select ref="refPoi" placeholder="POI" multiple v-model="search.poi" @remove-tag="removeTagClick($event);">                                    
-                        <el-option-group v-for="(group,groupIndex) in poiGruop" label="POI" :key="groupIndex">            
-                            <template v-for="(item,index) in poiList">
-                                <el-option :key="index" :value="item.name" @click.native="poiClick(item);">
-                                    {{item.name}}                                
-                                </el-option>
-                            </template>
-                        </el-option-group>
-                    </el-select>
-                </el-form-item>                
-            </el-form>
+                <div class="yk-form-item  yk-border-r yrButton">
+                    <div class="add">
+                        <i class="icon el-icon-plus"></i>
+                        <div class="addContent">
+                            <el-form> 
+                                <el-form-item  class="ic-form-item">
+                                    <el-select ref="refPubMsg" placeholder="发布信息" v-model="search.pubMsg"  value-key="name" >                        
+                                        <el-option-group v-for="(group,groupIndex) in pubMsgGroup" label="发布信息" :key="groupIndex">
+                                            <template v-for="(item,index) in pubMsgList">
+                                                <el-option :key="index" :value="item" @click.native="pubMsgClick(item);">                                        
+                                                    {{item.name}}
+                                                </el-option>
+                                            </template>
+                                        </el-option-group>
+                                    </el-select>                    
+                                </el-form-item> 
+                            </el-form> 
+                        </div>
+                    </div>
+                </div>              
+            
+                <div class="yk-form-item  yk-border-r yrButton1">
+                    <div v-for="item in poiList"  class="yrSwitch" :class="{isActive:item.isCheck}"  :key="item.value" :value="item.name" @click="poiClick(item);"><i :class="item.icon" class="icon" style="margin-right:15px"></i> {{item.name}}</div> 
+                </div>                
+         
         </div>
     </div>
 </template>
@@ -71,9 +72,10 @@ export default {
                 pubMsg: '',
             },            
             poiList: [                
-                { id: 1, name: 'RSU', value: 'rsu', isCheck: false},
-                { id: 2, name: '路侧单元', value: 'roadsideUnit', isCheck: false},
-                { id: 3, name: '红绿灯', value: 'trafficSignal', isCheck: false},
+                { id: 1, name: 'RSU', value: 'rsu', isCheck: false,icon:'el-icon-edit'},
+                { id: 2, name: '路侧单元', value: 'roadsideUnit', isCheck: false,icon:'el-icon-plus'},
+                { id: 3, name: '红绿灯', value: 'trafficSignal', isCheck: false,icon:'el-icon-edit'},
+                
             ],
             pubMsgList: [
                 
@@ -148,7 +150,7 @@ export default {
         poiClick(item){
             
             if(!item) return;
-            // item.isCheck = !item.isCheck;
+            item.isCheck = !item.isCheck;
             let type = item.value;
             this.olMarker[type] = !this.olMarker[type];
 
@@ -176,6 +178,7 @@ export default {
         },
        
         pubMsgClick(item){
+            this.search.pubMsg=item;
             this.$refs.refInfoMap.addMapClickEvent(item);
         },
         clearPubMsgClick(e){            
@@ -183,9 +186,8 @@ export default {
         },
 
         mapBoxClick(){
-            
-            this.$refs.refPubMsg.handleClose()
-            this.$refs.refPoi.handleClose()
+            //this.$refs.refPubMsg.handleClose()
+            //this.$refs.refPoi.handleClose()
         },
 
         // winResize(){
@@ -239,6 +241,11 @@ export default {
         
     },
     mounted(){
+        document.addEventListener("mousedown",function (e) {
+            if(e.which==3){
+                alert(1)
+            }
+        })
         // const that = this
         // window.onload = () => {
         //     return (() => {
@@ -274,6 +281,8 @@ export default {
 }
 </script>
 <style scoped lang="scss">
+@import '@/assets/scss/theme.scss';
+    
     .el-select-group__wrap{
         background: #666!important;        
     }
@@ -354,23 +363,69 @@ export default {
         top: 30px;
         position: absolute;
         z-index: 2;
-        .el-input__inner{
-            background-color: #4D4D4D!important;
-            border: 0px!important;
-            border-radius: 0px!important;
-            width: 100% !important;
-        } 
+        height: 45px;
+        color:#fff;
+        cursor: pointer;
+        .yrButton{
+            position: absolute;
+            right:0;
+            top:0;
+            z-index:2;
+            display: flex;
+            height: 100%;
+            .add{
+                width:45px;
+                height: 45px;
+                position: absolute;
+                right:0;
+                top:0;
+                z-index:3;
+                background: #666!important;
+                @include layoutMode();
+                .icon{
+                    color:#fff;
+                    font-size: 27px;
+                }
+                .addContent{
+                    width:130px;
+                    height: 100%;
+                    position: absolute;
+                    right:0;
+                    top:0;
+                    z-index: 10;
+                    .ic-form-item{
+                        width:100%;
+                        height: 100%;
+                        opacity: 0;
+                    }
+                }
+            }
+            
+        }
+        .yrButton1{
+            position: absolute;
+            right:65px;
+            top:0;
+            z-index:5;
+            display: flex;
+            height: 100%;
+            .yrSwitch{
+                flex:1;
+                width:120px;
+                height: 100%;
+                font-size: 16px;
+                border-right: 1px solid #4d4d4d;
+                @include layoutMode();
+                .icon{
+                    margin-right: 20px;
+                }
+            }
+        }
         .el-tag.el-tag--info{
             background-color: #666!important;
             color: #F59307!important;
         }
-
-        .el-popper[x-placement^=bottom] .popper__arrow {
-            border-bottom-color: #7d7c7c!important;
-        }
-        .el-popper[x-placement^=bottom] .popper__arrow::after{
-            border-bottom-color: #7d7c7c!important;
-        }
+        
     }
     .yk-border-r{
         border-right: 1px solid rgb(145, 143, 143)!important;
@@ -398,20 +453,40 @@ export default {
         width: 135px;
         font-size: 14px;
     }
- 
-</style>
-<style lang="scss">
-.yk-form-item{
-    background: #666!important;
-    .el-input__inner {
-        width: 100% !important;
-        background-color: #4D4D4D!important;
-        border: 0px!important;
-        border-radius: 0px!important;
+        
+    .isActive{
+        color:#f59307;
     }
-}
-.el-select-group__title{
-    display: none;
-}
+    .el-select-dropdown{
+        right:0;
+    }
+   
+
+</style>
+
+
+<style lang="scss">
+    .yk-form-item{
+        background: #666!important;
+        .el-input__inner {
+            width: 100% !important;
+            background-color: #4D4D4D!important;
+            border: 0px!important;
+            border-radius: 0px!important;
+        }
+    }
+    .el-select-group__title{
+        display: none;
+    }
+    .el-popper[x-placement^=bottom] .popper__arrow {
+        left:100px !important;
+        border-bottom-color: #7d7c7c!important;
+    }
+    .el-popper[x-placement^=bottom] .popper__arrow::after{
+        border-bottom-color: #7d7c7c!important;
+    }
+
+
+
 </style>
 

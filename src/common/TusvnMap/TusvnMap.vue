@@ -19,7 +19,7 @@
         <template>
             <div v-show="showTrafficInfoPop" id="traffic-info-release-popup" class="ol-popup yk-pointer-normal" >
 
-                <img class="yk-close-btn" src="static/images/close.png" @click="closeMyInfoWindow($event)">
+                <img class="yk-close-btn" src="static/images/close.png" @click="closeMyInfoWindow('self')">
 
                 <div id="traffic-info-release-popup-content">                   
 
@@ -808,6 +808,12 @@ export default {
             // this.clickEventKey = this.$data.map.on("click",this.mapClick);
             this.$data.map.getView().on("change:resolution",this.viewLevelChange);
             this.$data.map.on("moveend",this.moveEnd);
+            this.$data.map.on("contextmenu", e=>{
+                e.preventDefault();
+                this.$emit("setPointer",{bool: false}); 
+            });
+    // 书写事件触发后的函数
+
             
             this.removeClickEvent();
             // unByKey(this.clickEventKey);
@@ -978,7 +984,8 @@ export default {
          *关闭信息框
          */
         closeMyInfoWindow:function(e){
-
+           
+           
            this.clearCircle();
            this.clearPubMsgIcon();           
            
@@ -992,7 +999,11 @@ export default {
             // e.target.blur();
 
             this.showTrafficInfoPop = false;
-
+            if(e=='self'){
+                this.$emit("setPointer",{bool: false}); 
+            }
+            //this.removeClickEvent(); 
+           
             return false;
         },
         

@@ -278,12 +278,12 @@
 
   
 
-  .el-popper[x-placement^=bottom] .popper__arrow {
+  /* .el-popper[x-placement^=bottom] .popper__arrow {
     border-bottom-color: #7d7c7c!important;
   }
   .el-popper[x-placement^=bottom] .popper__arrow::after{
     border-bottom-color: #7d7c7c!important;
-  }
+  } */
  
 
   .yk-f-right .el-input__inner{
