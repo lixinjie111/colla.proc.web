@@ -103,7 +103,7 @@ export default {
     },
 }
 </script>
-<<style lang="scss" scoped>
+<style lang="scss" scoped>
 #login-warpper {
     height: 100%;
     height: 100%;
