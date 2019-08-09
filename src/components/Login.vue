@@ -8,11 +8,11 @@
             </div>
             <div class="login-item-box">
                 <el-form :model="loginForm" :rules="loginRules" ref="loginForm" label-position="right" label-width="76px" class="login-form">
-                    <el-form-item prop="userNo" label="用户名：" class="login-item">
+                    <el-form-item prop="name" label="用户名：" class="login-item">
                         <el-input type="text" v-model.trim="loginForm.name" :maxlength="40" placeholder="请输入用户名"></el-input>
                     </el-form-item>
-                    <el-form-item prop="password" label="密码：" class="login-item">
-                        <el-input type="password" v-model.trim="loginForm.pass" :maxlength="20" placeholder="请输入密码" @keyup.enter="loginClick();"></el-input>
+                    <el-form-item prop="pass" label="密码：" class="login-item">
+                        <el-input type="password" v-model.trim="loginForm.pass" :maxlength="20" placeholder="请输入密码" @keyup.enter="handleLogin"></el-input>
                     </el-form-item>
                 </el-form>
             </div>
@@ -68,6 +68,7 @@ export default {
                         "password":this.loginForm.pass,
                         'platform':'40000'
                     },response => {
+                        this.loading = false;
                         if(response.status >= 200 && response.status < 300){
                             if(response.data.status == 1){
                                 this.$message.error(response.data.message);
