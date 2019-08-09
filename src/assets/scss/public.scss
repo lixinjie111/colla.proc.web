@@ -80,6 +80,45 @@
 .c-text-center {
 	text-align: center;
 }
+
+.c-text-all {
+	@include layoutMode(all);
+}
+.c-text-between {
+	@include layoutMode(between);
+}
+.c-text-pack {
+	@include layoutMode(pack);
+}
+.c-text-align {
+	@include layoutMode(align);
+}
+
+//等高布局 fill-available、fit-content、max-content、min-content
+// height: -webkit-fill-available; 利用fill-available可以轻松地实现等高布局
+// width: -webkit-fit-content表示将元素宽度收缩为内容宽度
+// width: -webkit-fit-content可以实现元素收缩效果的同时，保持原本的block水平状态，于是，就可以直接使用margin:auto实现元素向内自适应同时的居中效果了
+// width: -webkit-min-content表示采用内部元素最小宽度值最大的那个元素的宽度作为最终容器的宽度
+// .c-height-fill {
+// 	height: -webkit-fill-available;
+// }
+// .c-height-fit-content {
+// 	height: -webkit-fit-content;
+// }
+// .c-height-max-content {
+// 	height: -webkit-max-content;
+// }
+// .c-height-min-content {
+// 	height: -webkit-min-content;
+// }
+
+.c-block {
+	display: block;
+}
+.c-inline-block {
+	display: inline-block;
+}
+
 .c-pull-right {
 	float: right;
 }
@@ -98,7 +137,27 @@
 	display: inline-block;
 	vertical-align: bottom;
 }
+
+.c-font-14 {
+	font-size: 14px !important;
+}
+.c-font-16 {
+	font-size: 16px !important;
+}
 //间距
+.c-ml-10 {
+	margin-left: 10px;
+}
+.c-mt-10 {
+	margin-top: 10px;
+}
+.c-mr-10 {
+	margin-right: 10px;
+}
+.c-mb-10 {
+	margin-bottom: 10px;
+}
+
 .c-ml-20 {
 	margin-left: 20px;
 }
@@ -111,6 +170,33 @@
 .c-mb-20 {
 	margin-bottom: 20px;
 }
+
+.c-pdl-10 {
+	padding-left: 10px;
+}
+.c-pdt-10 {
+	padding-top: 10px;
+}
+.c-pdr-10 {
+	padding-right: 10px;
+}
+.c-pdb-10 {
+	padding-bottom: 10px;
+}
+
+.c-pdl-20 {
+	padding-left: 20px;
+}
+.c-pdt-20 {
+	padding-top: 20px;
+}
+.c-pdr-20 {
+	padding-right: 20px;
+}
+.c-pdb-20 {
+	padding-bottom: 20px;
+}
+
 .c-mb-70  {
 	margin-bottom: 70px;
 }
@@ -119,10 +205,26 @@
 }
 //外壳 间距统
 .c-wrapper-10 {
-	padding: 10px;
+	margin: 10px;
 }
 .c-wrapper-20 {
-	margin: 20px 20px 0 20px;
+	margin: 20px;
+}
+.c-padding-10 {
+	padding: 10px;
+}
+.c-padding-20 {
+	padding: 20px;
+}
+
+.c-width-precent-30 {
+	width: 30%;
+}
+.c-width-precent-40 {
+	width: 40%;
+}
+.c-width-precent-50 {
+	width: 50%;
 }
 //面包屑&&通用标题
 .c-title {
@@ -143,6 +245,18 @@
 		background-color: $yellow;
 		margin-top: -10px;
 	}
+	&.el-breadcrumb {
+		padding-left: 20px;
+		&:after {
+			background-color: transparent;
+		}
+	}
+}
+h3.c-title {
+	padding-left: 20px;
+	&:after {
+		background-color: transparent;
+	}
 }
 .c-page {
 	position: absolute;
@@ -151,7 +265,7 @@
 	bottom: 0;
 	z-index: 9;
 	height: 70px;
-	background-color: #f7f7f7;
+	background-color: $bgColor;
 	@include layoutMode(both);
 }
 
@@ -181,6 +295,12 @@
 .c-detail-box {
 	background: #fff;
 }
+.c-black-box {
+	background-color: $black;
+}
+.c-gray-box {
+	background-color: $mapBgColor;
+}
 .c-add-box {
 	padding: 30px;
 }
@@ -189,13 +309,127 @@
 	height: 62px;
 }
 
-.c-width-200 {
-	width: 200px;
+.c-flex {
+	flex: 1;
 }
 
+.c-red {
+	color: $red !important;
+}
 .c-yellow {
 	color: $yellow !important;
 }
+.c-green {
+	color: $green !important;
+}
 .c-blue {
 	color: $blue !important;
+}
+.c-hover-underline {
+	&:hover {
+		cursor: pointer;
+		text-decoration: underline;
+	}
+}
+.c-pos-relative {
+	position: relative;
+}
+.c-pos-absolute {
+	position: absolute;
+}
+
+// 实体弹窗蒙层
+
+.c-view-dialog-54 {
+	position: absolute;
+	left: 0;
+	top: -54px;
+	right: 0;
+	bottom: 0;
+	z-index: 10;
+	background-color: #f7f7f7;
+}
+.c-view-dialog {
+	position: absolute;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 10;
+	background-color: #f7f7f7;
+}
+
+// c-detail-lable-box
+.c-detail-lable-list {
+	position: relative;
+	// font-size: 16px;
+	font-size: 14px;
+	line-height: 28px;
+	.c-detail-lable {
+		float: left;
+		padding: 10px 20px 10px 0;
+		min-width: 20%;
+		box-sizing: border-box;
+		.name {
+			color: $fontGrayColor;
+		}
+		.value {
+			color: $black;
+		}
+	}
+	.c-pos-btn {
+		position: absolute;
+		right: 0;
+		bottom: 10px;
+	}
+	&.c-padding-20 {
+		.c-pos-btn {
+			right: 20px;
+			bottom: 30px;
+		}
+	}
+	&.el-form {
+		// font-size: 16px;
+		.el-form-item {
+			float: none;
+			margin-bottom: 0;
+			margin-right: 50px;
+			min-width: 0;
+		}
+		.el-form-item__label {
+			// font-size: 16px;
+		}
+		.c-pos-btn {
+			right: 0;
+			bottom: 30px;
+			margin-right: 0;
+		}
+	}
+}
+
+// 表格里的单元格里的内容超出四行显示省略号
+.c-table-popover-text {
+	@include lineClamp(4);
+}
+// 单元格里的popover提示框
+.c-table-popover {
+	box-shadow: 0 2px 12px 0 rgba(0,0,0,.5);
+    .el-popover__title {
+        font-size: 14px;
+        line-height: 18px;
+    }
+    .c-table-popover-content {
+        padding-right: 5px;
+        max-height: 200px;
+        overflow-y: auto;
+    }
+
+}
+
+// 盒模型1：4
+.c-flex {
+    @include layoutMode(between);
+}
+.c-flex-1 {
+    flex: 1;
 }
