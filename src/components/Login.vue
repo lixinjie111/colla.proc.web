@@ -79,10 +79,8 @@ export default {
                 "password":this.user.pass,
                 'platform':'40000'
             },response => {
-                if(response.status >= 200 && response.status < 300){
-                    if(response.data.status == 1){
-                        this.$message.error(response.data.message);
-                    }else if(response.status == 200){
+                
+                  if(response.status == 200){
                         let temp = response.data.data;                            
                         temp = JSON.parse(temp);
                         // console.log(temp);
@@ -98,13 +96,9 @@ export default {
                         this.$router.push({ path: '/infoRelease' ,params: {key:'登录成功!'}});
 
                         this.$message.success('登录成功！');
-                    }
-                    
-                    
+                    }else{
+                        this.$message.error(response.message);
                 }
-                // else{
-                //     this.$store.dispatch('showPrompt',response.message);
-                // }
             });          
         },
     },
