@@ -3,11 +3,10 @@ import axios from 'axios'
 // import router from '../router'
 // import queryString from 'querystring';
 
-// import cfg from '@/common/cfg.js'
 import store from '@/store/index.js'
 
 let http = axios.create({
-    baseURL: window.cfg.url,
+    baseURL: window.config.url,
     withCredentials: true,
     headers: {
         'Content-Type': 'application/json;charset=UTF-8',
@@ -108,7 +107,7 @@ function requestOverTime(){
 }
 
 function downloadFile(url,params){
-    axios.post(cfg.url + url, params, {
+    axios.post(window.config.url + url, params, {
         responseType: 'blob'
       }).then(res => {
 

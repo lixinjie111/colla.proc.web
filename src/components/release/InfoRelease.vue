@@ -67,7 +67,7 @@ export default {
     },
     data(){
         return {
-            iconPath: window.cfg.iconPath,            
+            iconPath: window.config.iconPath,            
             search: {
                 poi: '',
                 pubMsg: '',

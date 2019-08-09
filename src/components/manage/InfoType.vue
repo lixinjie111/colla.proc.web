@@ -107,7 +107,7 @@ export default {
     },
     data(){
         return {
-            iconPath: window.cfg.iconPath,
+            iconPath: window.config.iconPath,
             paging: {
                 index: 0,
                 size: 10,

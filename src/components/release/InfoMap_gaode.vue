@@ -17,7 +17,7 @@ import TDate from '@/common/date.js'
 export default {
     data(){
         return {
-            iconPath: window.cfg.iconPath,
+            iconPath: window.config.iconPath,
             map: null,
             mapStyle: 'amap://styles/macaron',
             mapMarker: {
@@ -86,7 +86,7 @@ export default {
             var text = '您在 [ '+e.lnglat.getLng()+','+e.lnglat.getLat()+' ] 的位置单击了地图！';
             
             // 动态读取图标
-            let icon = window.cfg.iconPath + this.search.pubMsg.icon;
+            let icon = window.config.iconPath + this.search.pubMsg.icon;
 
             this.tempMarker.lon = e.lnglat.getLng();
             this.tempMarker.lat = e.lnglat.getLat();

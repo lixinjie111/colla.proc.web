@@ -455,7 +455,7 @@ export default {
             // // ===============================================
 
             // 请求后台接口 
-            let url = window.cfg.mapApiUrl + 'route/getRoadCoornatesByCoordinate.do';
+            let url = window.config.dlUrl + 'route/getRoadCoornatesByCoordinate.do';
             let params = {
                 edgeTableName: 'dl_shcsq_wgs84_rc_withoutz',
                 vertexTableName: 'dl_shcsq_wgs84_rc_withoutz_vertices_pgr',
@@ -780,7 +780,7 @@ export default {
                             wrapX: false,
                             // url:"https://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                             // url:"http://113.208.118.62:8086/mapserver/getMapTile?protocol=https&cache=true&server={a-c}&xyz={z}/{x}/{y}&type=vector&format=png&baseUrl=tile.openstreetmap.org"
-                            url:"http://120.133.21.14:8086/mapserver/getMapTile?protocol=https&cache=true&server={a-c}&xyz={z}/{x}/{y}&type=vector&format=png&baseUrl=tile.openstreetmap.org"
+                            url:window.config.mapWaPianPath+"mapserver/getMapTile?protocol=https&cache=true&server={a-c}&xyz={z}/{x}/{y}&type=vector&format=png&baseUrl=tile.openstreetmap.org"
                             // url:"http://10.0.1.22:8086/mapserver/getMapTile?protocol=https&cache=true&server={a-c}&xyz={z}/{x}/{y}&type=vector&format=png&baseUrl=tile.openstreetmap.org"
                             // url:"https://api.chinavehiclenet.cn:8769/mapproxy/mapserver/getMapTile?protocol=https&cache=true&server={a-c}&xyz={z}/{x}/{y}&type=vector&format=png&baseUrl=tile.openstreetmap.org"
                         })
@@ -802,8 +802,8 @@ export default {
                 })
             });
             //dl_shcsq_wgs84_zc_0708
-            // this.addWms("shanghai_qcc:dl_shcsq_wgs84","http://113.208.118.62:8080/geoserver/shanghai_qcc/wms","shanghai_qcc:dl_shcsq_wgs84","",1,true,null); // 上海汽车城
-            this.addWms("shanghai_qcc:dl_shcsq_wgs84_zc_0708","http://113.208.118.62:8080/geoserver/shanghai_qcc/wms","shanghai_qcc:dl_shcsq_wgs84_zc_0708","",1,true,null); // 上海汽车城
+            // this.addWms("shanghai_qcc:dl_shcsq_wgs84",window.config.dlWmsUrl+"geoserver/shanghai_qcc/wms","shanghai_qcc:dl_shcsq_wgs84","",1,true,null); // 上海汽车城
+            this.addWms("shanghai_qcc:dl_shcsq_wgs84_zc_0708",window.config.dlWmsUrl+"geoserver/shanghai_qcc/wms","shanghai_qcc:dl_shcsq_wgs84_zc_0708","",1,true,null); // 上海汽车城
 
             // this.clickEventKey = this.$data.map.on("click",this.mapClick);
             this.$data.map.getView().on("change:resolution",this.viewLevelChange);

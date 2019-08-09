@@ -69,7 +69,7 @@ export default {
             mapLevel: {
                 value: 10,
             },
-            iconPath: window.cfg.iconPath,
+            iconPath: window.config.iconPath,
             trafficInfo: {
                 id: '',
                 title: '信息发布',

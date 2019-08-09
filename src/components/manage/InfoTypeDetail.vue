@@ -69,7 +69,7 @@ export default {
     watch:{
         'ruleForm.icon': {
             handler(newVal,oldVal){                
-                this.iconPath = window.cfg.iconPath + newVal;
+                this.iconPath = window.config.iconPath + newVal;
             },
             deep: true,
             immediate: true,

@@ -97,7 +97,7 @@
     data() {
       return {
         submitLoading: false,
-        uploadPath: window.cfg.url + 'event/info/uploadPic',
+        uploadPath: window.config.url + 'event/info/uploadPic',
         fileList: [],
         typeList: [
           // { id: 1 ,name: '车辆异常',value: 1},
