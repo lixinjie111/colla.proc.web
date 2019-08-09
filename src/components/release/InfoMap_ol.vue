@@ -40,9 +40,13 @@ export default {
         return {
             mapInitOk: false,
             mapLayer: {
-                rsu: 'RsuLayer',                        // rsu 图层
-                roadsideUnit: 'roadsideUnitLayer',      // 路侧单元 图层
-                trafficSignal: 'trafficSignalLayer',    // 红绿灯 图层
+                tabLayer: "TabLayer",
+                rsuIds: [],
+                roadsideUniIds: [],
+                trafficSignalIds: [],
+                // rsu: 'RsuLayer',                        // rsu 图层
+                // roadsideUnit: 'roadsideUnitLayer',      // 路侧单元 图层
+                // trafficSignal: 'trafficSignalLayer',    // 红绿灯 图层
                 message: 'MessageLayer',                // 发布信息 图层
                 messageBg: 'MessageBgLayer',            // 信息的背景图片 图层
             },
@@ -336,6 +340,7 @@ export default {
                     if (response.status >= 200 && response.status < 300) {
 
                         let rsuList = response.data ? response.data : []; 
+                        this.mapLayer.rsuIds = [];
                         for(let i=0;i<rsuList.length;i++){
                             
                             let item = rsuList[i];
@@ -344,7 +349,8 @@ export default {
                             let id = this.generataIcoName('rsu',i);
                             let icon = "static/images/poi_2.png";
                             let size = [30,30];
-                            this.$refs.refTusvnMap.addImg(lon,lat,id,this.mapLayer.rsu,icon,size);
+                            this.mapLayer.rsuIds.push(id);
+                            this.$refs.refTusvnMap.addImg(lon,lat,id,this.mapLayer.tabLayer,icon,size);
 
                         }
 
@@ -362,7 +368,10 @@ export default {
         },
         // 清除rsu
         clearRsu(){
-            this.$refs.refTusvnMap.removeAllFeature(this.mapLayer.rsu);
+            // this.$refs.refTusvnMap.removeAllFeature(this.mapLayer.tabLayer);
+            this.mapLayer.rsuIds.forEach(item => {
+                this.$refs.refTusvnMap.removeFeature(item, this.mapLayer.tabLayer);
+            });
         },
         // 显示路侧单元
         showRoadsideUnit(){            
@@ -375,6 +384,8 @@ export default {
                     if (response.status >= 200 && response.status < 300) {
 
                         let roadsideUnitList = response.data ? response.data : []; 
+                        
+                        this.mapLayer.roadsideUniIds = [];
                         for(let i=0;i<roadsideUnitList.length;i++){
                             let item = roadsideUnitList[i];
                             let lon = item.longitude;
@@ -382,7 +393,8 @@ export default {
                             let id = this.generataIcoName('roadsideUnit',i);
                             let icon = "static/images/poi_1.png";
                             let size = [30,30];
-                            this.$refs.refTusvnMap.addImg(lon,lat,id,this.mapLayer.roadsideUnit,icon,size);
+                            this.mapLayer.roadsideUniIds.push(id);
+                            this.$refs.refTusvnMap.addImg(lon,lat,id,this.mapLayer.tabLayer,icon,size);
                         }
 
                         // if(roadsideUnitList.length){
@@ -399,7 +411,10 @@ export default {
         },
         // 清除路侧单元
         clearRoadsideUnit(){
-            this.$refs.refTusvnMap.removeAllFeature(this.mapLayer.roadsideUnit);
+            // this.$refs.refTusvnMap.removeAllFeature(this.mapLayer.tabLayer);
+            this.mapLayer.roadsideUniIds.forEach(item => {
+                this.$refs.refTusvnMap.removeFeature(item, this.mapLayer.tabLayer);
+            });
         },
         // 显示红绿灯
         showTrafficSignal(){
@@ -412,6 +427,7 @@ export default {
                     if (response.status >= 200 && response.status < 300) {
 
                         let trafficSignalList = response.data ? response.data : []; 
+                        this.mapLayer.trafficSignalIds = [];
                         for(let i=0;i<trafficSignalList.length;i++){
                             let item = trafficSignalList[i];
                             let lon = item.longitude;
@@ -419,7 +435,8 @@ export default {
                             let id = this.generataIcoName('trafficSignal',i);
                             let icon = "static/images/poi_3.png";
                             let size = [30,30];
-                            this.$refs.refTusvnMap.addImg(lon,lat,id,this.mapLayer.trafficSignal,icon,size);
+                            this.mapLayer.trafficSignalIds.push(id);
+                            this.$refs.refTusvnMap.addImg(lon,lat,id,this.mapLayer.tabLayer,icon,size);
                         }
 
                         // if(trafficSignalList.length){
@@ -436,7 +453,10 @@ export default {
         },
         // 清除红绿灯
         clearTrafficSignal(){
-            this.$refs.refTusvnMap.removeAllFeature(this.mapLayer.trafficSignal);
+            // this.$refs.refTusvnMap.removeAllFeature(this.mapLayer.tabLayer);
+            this.mapLayer.trafficSignalIds.forEach(item => {
+                this.$refs.refTusvnMap.removeFeature(item, this.mapLayer.tabLayer);
+            });
         },
 
         // 生成 类型+随机数 格式的图标名称
@@ -535,9 +555,11 @@ export default {
             // console.log("============================mapInitComplete=============================");
 
             //创建图层
-            this.$refs.refTusvnMap.addVectorLayer(this.mapLayer.rsu);
-            this.$refs.refTusvnMap.addVectorLayer(this.mapLayer.roadsideUnit);
-            this.$refs.refTusvnMap.addVectorLayer(this.mapLayer.trafficSignal);
+
+            this.$refs.refTusvnMap.addVectorLayer(this.mapLayer.tabLayer);
+            // this.$refs.refTusvnMap.addVectorLayer(this.mapLayer.rsu);
+            // this.$refs.refTusvnMap.addVectorLayer(this.mapLayer.roadsideUnit);
+            // this.$refs.refTusvnMap.addVectorLayer(this.mapLayer.trafficSignal);
             this.$refs.refTusvnMap.addVectorLayer(this.mapLayer.message);
             this.$refs.refTusvnMap.addVectorLayer(this.mapLayer.messageBg);
             

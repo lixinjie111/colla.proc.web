@@ -844,11 +844,12 @@ export default {
             //     "vectorLayer_01"
             // );
         },
+        
         showRoadNet(){
-           alert("显示")
+            this.setVisible('shanghai_qcc:dl_shcsq_wgs84_zc_0708',true)
         },
         clearRoadNet(){
-            alert("隐藏")
+            this.setVisible('shanghai_qcc:dl_shcsq_wgs84_zc_0708',false)
         },
 
         addClickEvent(item){
@@ -1233,6 +1234,18 @@ export default {
            {
                this.$data.map.removeLayer(layer);
            }
+        },
+        /**
+         * 设置图层的显示和隐藏
+         * @param {string} layerid 图层id
+         * @param {boolean} visible 图层是否显示  true,false
+         */
+        setVisible:function(layerid,visible){
+            let layer = this.getLayerById(layerid);
+            if(layer!=undefined)
+            {
+               layer.setVisible(visible);
+            }
         },
         // /**
         //  * 向地图中添加图片

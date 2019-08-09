@@ -49,7 +49,8 @@
                 </div>              
             
                 <div class="yk-form-item  yk-border-r yrButton1">
-                    <div v-for="item in poiList"  class="yrSwitch" :class="{isActive:item.isCheck}"  :key="item.value" :value="item.name" @click="poiClick(item);"><i :class="item.icon" class="icon" style="margin-right:15px"></i> {{item.name}}</div> 
+                    <!-- <div v-for="item in poiList"  class="yrSwitch" :class="{isActive:item.isCheck}"  :key="item.value" :value="item.name" @click="poiClick(item);"><i :class="item.icon" class="icon" style="margin-right:15px"></i> {{item.name}}</div>  -->
+                    <div v-for="item in poiList"  class="yrSwitch" :class="{isActive:item.isCheck}"  :key="item.value" :value="item.name" @click="poiClick(item);">{{item.name}}</div> 
                 </div>                
          
         </div>
