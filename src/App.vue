@@ -68,6 +68,7 @@ import { Utils } from '@/common/utils/utils.js'
 
 export default {
   name: 'App',
+ 
   data(){
     return {
       openedItems: ['0','1','2'],
@@ -123,8 +124,6 @@ export default {
       user = JSON.parse(user);
       this.$store.state.userName = user.loginName ? user.loginName : '';
     },
-
-    
   },
   created(){
     
