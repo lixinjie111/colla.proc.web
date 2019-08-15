@@ -50,7 +50,7 @@
             
                 <div class="yk-form-item  yk-border-r yrButton1">
                     <!-- <div v-for="item in poiList"  class="yrSwitch" :class="{isActive:item.isCheck}"  :key="item.value" :value="item.name" @click="poiClick(item);"><i :class="item.icon" class="icon" style="margin-right:15px"></i> {{item.name}}</div>  -->
-                    <div v-for="item in poiList"  class="yrSwitch" :class="{isActive:item.isCheck}"  :key="item.value" :value="item.name" @click="poiClick(item);">{{item.name}}</div> 
+                    <div v-for="item in poiList"  class="yrSwitch" :class="{isActive:item.isCheck}"  :key="item.value" :value="item.name" @click="poiClick(item);"><i :class="item.icon" class="icon"></i> {{item.name}}</div> 
                 </div>                
          
         </div>
@@ -73,10 +73,10 @@ export default {
                 pubMsg: '',
             },            
             poiList: [                
-                { id: 1, name: 'RSU', value: 'rsu', isCheck: false,icon:'el-icon-edit'},
-                { id: 2, name: '路侧单元', value: 'roadsideUnit', isCheck: false,icon:'el-icon-plus'},
-                { id: 3, name: '红绿灯', value: 'trafficSignal', isCheck: false,icon:'el-icon-edit'},
-                { id: 4, name: '路网', value: 'roadNet', isCheck: true,icon:'el-icon-edit'},
+                { id: 1, name: 'RSU', value: 'rsu', isCheck: false,icon:"icon-rsu"},
+                { id: 2, name: '路侧点', value: 'roadsideUnit', isCheck: false,icon:'icon-roadside'},
+                { id: 3, name: '红绿灯', value: 'trafficSignal', isCheck: false,icon:'icon-light'},
+                { id: 4, name: '路网', value: 'roadNet', isCheck: true,icon:'icon-roadnet'},
             ],
             pubMsgList: [
                 
@@ -413,12 +413,47 @@ export default {
             .yrSwitch{
                 flex:1;
                 width:120px;
+                padding-right: 10px;
+                box-sizing: border-box;
                 height: 100%;
                 font-size: 16px;
                 border-right: 1px solid #4d4d4d;
                 @include layoutMode();
                 .icon{
-                    margin-right: 20px;
+                    display: inline-block;
+                    width: 45px;
+                    height: 45px;
+                    background-repeat: no-repeat;
+                    background-position: center center;
+                    margin-right: 5px;
+                    &.icon-rsu {
+                        background-image: url("../../assets/images/icon/rsu.png");
+                    }
+                    &.icon-roadside {
+                        background-image: url("../../assets/images/icon/roadside.png");
+                    }
+                    &.icon-light {
+                        background-image: url("../../assets/images/icon/light.png");
+                    }
+                    &.icon-roadnet {
+                        background-image: url("../../assets/images/icon/roadnet.png");
+                    }
+                }
+                &.isActive {
+                    .icon{
+                        &.icon-rsu {
+                            background-image: url("../../assets/images/icon/rsu-active.png");
+                        }
+                        &.icon-roadside {
+                            background-image: url("../../assets/images/icon/roadside-active.png");
+                        }
+                        &.icon-light {
+                            background-image: url("../../assets/images/icon/light-active.png");
+                        }
+                        &.icon-roadnet {
+                            background-image: url("../../assets/images/icon/roadnet-active.png");
+                        }
+                    }
                 }
             }
         }
