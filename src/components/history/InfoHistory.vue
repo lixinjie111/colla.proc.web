@@ -59,20 +59,20 @@
             <el-table-column
                 prop="taskCode"
                 label="信息编号"
-                min-width="15%"
+                min-width="13%"
                 >
             </el-table-column>
 
             <el-table-column
                 prop="eventName"
                 label="信息类型"
-                min-width="8%">
+                min-width="5%">
             </el-table-column>
 
             <el-table-column
                 prop="status"
                 label="信息状态"
-                min-width="6%">
+                min-width="5%">
                 <template slot-scope="scope">
                     <!-- {{scope.row.status}} -->
                     <span v-show="scope.row.status == 1">有效</span>
@@ -84,7 +84,7 @@
             <el-table-column
                 prop="longitude,latitude "
                 label="中心位置"
-                min-width="15%">
+                min-width="20%">
                 <template slot-scope="scope">
                     {{scope.row.longitude}} , {{scope.row.latitude}}
                 </template>
@@ -93,25 +93,25 @@
             <el-table-column
                 prop="beginTime"
                 label="发布时间"
-                min-width="12%">
+                min-width="10%">
             </el-table-column>
 
             <el-table-column
                 prop="endTime"
                 label="失效时间"
-                min-width="12%">
+                min-width="10%">
             </el-table-column>
 
             <el-table-column
                 prop="expirationTime"
                 label="实际结束时间"
-                min-width="12%">
+                min-width="10%">
             </el-table-column>
 
             <el-table-column
                 prop="content"
                 label="信息内容"
-                min-width="5%">
+                min-width="15%">
             </el-table-column>
 
             <el-table-column
@@ -123,7 +123,7 @@
             <el-table-column
                 prop="datasource"
                 label="信息来源"
-                min-width="10%">
+                min-width="7%">
                 <template slot-scope="scope">
                     <span v-if="scope.row.datasource == 1">平台运营人员</span>
                     <span v-else>{{scope.row.datasource}}</span>
