@@ -109,7 +109,7 @@
         @current-change="pagingChange"
       ></el-pagination>
     </el-row>
-    <info-history-detail v-if="isShow" :detailData="detailData" :infoData="infoData" @infoHistoryBack="infoHistoryBack"></info-history-detail>
+    <info-history-detail v-if="isShow" :videoData="videoData" :detailData="detailData" :infoData="infoData" @infoHistoryBack="infoHistoryBack"></info-history-detail>
   </div>
 </template>
 <script>
@@ -146,8 +146,30 @@ export default {
       isLoading: false,
       detailData: [],
       isShow: false,
-      infoData: [],
-      detailData: []
+      infoData: '',
+      detailData: [],
+      videoData: [
+        {
+          url: '.....',
+          name: '路测点1',
+          status: 0
+        },
+        {
+          url: '.....',
+          name: '路测点2',
+          status: 1
+        },
+        {
+          url: '.....',
+          name: '路测点3',
+          status:2
+        },
+        {
+          url: '.....',
+          name: '路测点4',
+          status: 3
+        }
+      ]
     };
   },
 
@@ -258,7 +280,7 @@ export default {
       let longlat = newArr.map(x =>(Number(x.longitude).toFixed(8)) + ',' + (Number(x.latitude).toFixed(8)));
 
       let arr = [];
-      this.infoData = [];
+      this.infoData = info.content;
       Object.keys(info).forEach(x => {
         arr.push({
           'name': (_ => {
@@ -290,21 +312,7 @@ export default {
             }
           })()
         })
-        this.infoData.push({
-          'name': (_ => {
-              if (x === 'content') {
-                return '信息内容详情';
-              }
-          })(),
-          'value': (_ => {
-            if (x === 'content') {
-               return info[x]
-            }
-          })() 
-        })
       });
-      console.log('this.infoData', this.infoData);
-      this.infoData = this.infoData.filter(x => x.name !== undefined);
       arr = arr.filter(x => x.name !== undefined);
       this.isShow = true;
       this.splitArr(arr);

@@ -14,7 +14,7 @@
         <!-- 内容详情 -->
           <history-content title="内容详情" :infoData="infoData"></history-content>
         <!-- 视频内容 -->
-          <history-video title="历史视频"></history-video>
+          <history-video :videoData="videoData" title="历史视频"></history-video>
       </div>
        
     </div>
@@ -27,7 +27,8 @@ import HistoryVideo from './components/historyVideo';
 export default {
   props: {
     detailData: Array,
-    infoData: Array
+    infoData: String,
+    videoData: Array
   },
   components: {
     HistoryBasicInfo,

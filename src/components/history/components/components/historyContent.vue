@@ -1,12 +1,13 @@
 <template>
     <div class="c-wrapper-20 c-detail-box">
         <p class="c-title c-border-bottom" v-if="title">{{title}}</p>
-        <div class="c-padding-10 veh-operation-info" v-if="infoData.length">
-            <ul class="veh-operation-info-bottom clearfix">
+        <div class="c-padding-20 veh-operation-info" v-if="infoData.length">
+            <!-- <ul class="veh-operation-info-bottom clearfix">
                 <li v-for="(item,index) in infoData" :key="index" class="veh-operation-info-list" style="width:100%;text-align:left">
                     <p class="text">{{item.value || '--'}}</p>
                 </li>
-            </ul>  
+            </ul>   -->
+            {{infoData}}
         </div>
         <div class="c-empty-box" v-else>暂无数据</div>
     </div>
@@ -16,7 +17,7 @@ export default {
     name: "vehicleStat",
     props: {
         title: String,
-        infoData: Array
+        infoData: String
     },
     data() {
         return {}
