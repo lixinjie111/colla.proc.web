@@ -27,6 +27,7 @@ import '@/assets/scss/public.scss';
 import '@/assets/scss/element-ui-reset.scss';
 import '@/assets/icon-font/iconfont.css';
 import '@/assets/icon-font/iconfont.js';
+import '@/assets/scss/map.scss';
 
 // // 初始化vue-amap
 // AMap.initAMapApiLoader({

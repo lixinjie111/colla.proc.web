@@ -31,8 +31,14 @@
 		width: 100%;
 	}
 	&.el-form--inline {
+		.el-input-inner {
+			width: 200px;
+		}
 		.el-input__inner {
 			box-sizing: border-box;
+			width: 200px;
+		}
+		.el-textarea {
 			width: 200px;
 		}
 		.el-date-editor.el-input, .el-date-editor.el-input__inner {
@@ -166,5 +172,27 @@
 	&:after {
 		width: 0;
 		overflow: hidden;
+	}
+}
+
+// 上传图片
+.c-upload-wrapper {
+	.el-upload {
+		width: auto !important;
+		text-align: left;
+		.el-icon-plus {
+			width: 32px !important;
+			height: 32px !important;
+			line-height: 30px !important;
+			vertical-align: middle !important;
+			text-align: center !important;
+			border: 1px dashed $borderColor !important;
+			box-sizing: border-box !important;
+		}
+		img {
+			&.el-icon-plus {
+				object-fit: contain;
+			}
+		}
 	}
 }

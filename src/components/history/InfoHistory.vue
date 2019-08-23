@@ -109,7 +109,7 @@
         @current-change="pagingChange"
       ></el-pagination>
     </el-row>
-    <info-history-detail v-if="isShow" :detailData="detailData" @infoHistoryBack="infoHistoryBack"></info-history-detail>
+    <info-history-detail v-if="isShow" :detailData="detailData" :infoData="infoData" @infoHistoryBack="infoHistoryBack"></info-history-detail>
   </div>
 </template>
 <script>
@@ -144,8 +144,10 @@ export default {
       oldTime: null,
       timeInterval: 400,
       isLoading: false,
-      detailData: {},
-      isShow: false
+      detailData: [],
+      isShow: false,
+      infoData: [],
+      detailData: []
     };
   },
 
@@ -251,8 +253,83 @@ export default {
     // 查看详情
     checkDetail(scope) {
       console.log("scope", scope);
-      this.detailData = scope;
+      let info = scope;
+      let newArr = [info];
+      let longlat = newArr.map(x =>(Number(x.longitude).toFixed(8)) + ',' + (Number(x.latitude).toFixed(8)));
+
+      let arr = [];
+      this.infoData = [];
+      Object.keys(info).forEach(x => {
+        arr.push({
+          'name': (_ => {
+              if (x === 'taskCode') {
+                return '信息编号';
+              } else if (x === 'eventName') {
+                return '信息类型';
+              } else if (x === 'eventCode') {
+                return '事件编号';
+              } else if (x === 'beginTime') {
+                return '事件发生时间';
+              } else if (x === 'endTime') {
+                return '事件结束时间';
+              } else if (x === 'longitude') {
+                return '事件发生位置';
+              } else if (x === 'createTime') {
+                return '发布开始时间';
+              } else if (x === 'updateTime') {
+                return '发布结束时间';
+              } else if (x === 'sendNumber') {
+                return '累计发送次数';
+              }
+          })(),
+          'value': (_ => {
+            if (x === 'longitude') {
+               return info[x] = longlat[0];
+            } else {
+                return info[x]
+            }
+          })()
+        })
+        this.infoData.push({
+          'name': (_ => {
+              if (x === 'content') {
+                return '信息内容详情';
+              }
+          })(),
+          'value': (_ => {
+            if (x === 'content') {
+               return info[x]
+            }
+          })() 
+        })
+      });
+      console.log('this.infoData', this.infoData);
+      this.infoData = this.infoData.filter(x => x.name !== undefined);
+      arr = arr.filter(x => x.name !== undefined);
       this.isShow = true;
+      this.splitArr(arr);
+    },
+    splitArr(data) {
+        let proportion = 3;
+        let num = 0;
+        this.detailData = [];
+        for (let i = 0; i < data.length; i ++) {
+          if (i % proportion === 0 && i !== 0) {
+             this.detailData.push({
+                'title': '',
+                'list': data.slice(num, i)
+            });
+            num = i;
+          }
+          if (i + 1 === data.length) {
+            this.detailData.push({
+                'title': '',
+                'list': data.slice(num, (i+1))
+            });
+          }
+        }
+        console.log(' this.detailData ',  this.detailData );
+        return this.detailData;
     },
     infoHistoryBack() {
       this.isShow = false;
