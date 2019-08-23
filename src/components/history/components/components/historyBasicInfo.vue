@@ -64,6 +64,7 @@ export default {
       .desc {
         float: left;
         box-sizing: border-box;
+        word-break: break-all;
         width: 50%;
         height: 100%;
         border-top: 1px solid $borderColor;

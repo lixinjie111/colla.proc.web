@@ -115,11 +115,10 @@
                                 </el-form-item>
 
                                 <el-form-item style="text-align:right;margin-top: 10px;margin-top: 15px;margin-bottom: 10px;">
-                                    <el-button class="yk-w-80 yk-border-normal" type="warning" v-show="!trafficInfo.isEdit" @click="publichInfo($event);">发布</el-button>
+                                    <el-button class="yk-w-80 yk-border-normal" type="warning" :loading="publishLoading" v-show="!trafficInfo.isEdit" @click="publichInfo($event);">发布</el-button>
                                     <el-button class="yk-w-80 yk-border-normal" type="info" v-show="!trafficInfo.isEdit" @click="closeInforWindow($event);">取消</el-button>
-
-                                    <el-button class="yk-w-80 yk-border-normal" type="warning" v-show="trafficInfo.isEdit" @click="updateInfo($event);">更新</el-button>
-                                    <el-button class="yk-border-normal" type="info" v-show="trafficInfo.isEdit" @click="destroyInfo($event);">手动失效</el-button>                                    
+                                    <el-button class="yk-w-80 yk-border-normal" type="warning" :loading="updateLoading" v-show="trafficInfo.isEdit" @click="updateInfo($event);">更新</el-button>
+                                    <el-button class="yk-border-normal" type="info" :loading="invalidLoading" v-show="trafficInfo.isEdit" @click="destroyInfo($event);">手动失效</el-button>                                    
                                 </el-form-item>
 
                             </el-form>
@@ -167,7 +166,7 @@ export default {
     data(){
         return {
             isLoading: false,
-             orderStatus: -1
+            orderStatus: -1
             ,map: null
             ,project:"EPSG:4326"//地图投影
             // 120.80224989415075-----latitude:31.28000259048651
@@ -196,6 +195,9 @@ export default {
                 content: '',
                 alertCategory: ''
             },
+            updateLoading: false, // 更新loading
+            publishLoading: false, // 发布loading
+            invalidLoading: false, //　失效loading
             rules: {                
                 // content: [
                 //     { required: true, message: '请输入默认信息内容', trigger: 'blur' },
@@ -317,7 +319,6 @@ export default {
         sliderChange(value){
             this.select.sliderVal = value;
             this.trafficInfo.affectRange = value;
-            // this.trafficInfo.alertRadius = value;
 
             this.drawBgCircle(this.circleLon,this.circleLat,value);
         },
@@ -377,10 +378,7 @@ export default {
                 this.select.alertPath = '';
             }
             this.clearTempLayer();
-            // console.log(this.pointData);
             // 重新打开窗口
-            // console.log("11111111111111111111");
-            // console.log(this.pointData);
             this.addMyInfoWindow(this.pointData, true);
 
             this.$emit('TemporaryClearPubMsg',{bool:false});
@@ -427,13 +425,12 @@ export default {
         addPathIco(lon,lat,type="normal"){            
             
             // id, imgUrl, courseAngle, lon, lat, bdata, offset, callback
-            let id = this.tempElement.markerId;//'temp_' + (new Date()).getTime();
+            let id = this.tempElement.markerId; //'temp_' + (new Date()).getTime();
             let imgUrl = 'static/images/circle112.png';    // 红色
             let imgUrl2 = 'static/images/circle222.png';    // 绿色
             let courseAngle = null;
             let bdata = null;
             let offset = [-32,-32];
-            // let callback = this.tempClick();
             let layerId = type == 'normal' ? this.TempLayer : this.TempIcoLayer;;
             let size = [18,18];
             let rotation = null;
@@ -541,12 +538,10 @@ export default {
             );
             
         },
-        tempClick(){
-
-        },
-        hidePopWin(){
-
-        },        
+        // tempClick() {
+        // },
+        // hidePopWin() {
+        // },        
 
         // 转换影响路径
         converAlertPath(){
@@ -565,40 +560,134 @@ export default {
             }
             return '';
         },
+        // 更新发布接口封装
+        UpdateAndPub(url, data, type) {
+            this.$api.post( url,data,
+                response => {
+                    if (response.status >= 200 && response.status < 300) {
+                        if(response.data.status == 200){
+                            if (type === 1) {
+                                this.$message.success('更新成功！');
+                                this.updateLoading = false;
+                            } else if (type === 2) {
+                                this.$message.success('发布成功！');
+                                this.publishLoading = false;
+                                this.initTrafficInof();
+                            } else if (type === 3) {
+                                this.$message.success('手动失效成功！');
+                                this.invalidLoading = false;
+                            }
+                            this.closeMyInfoWindow();
+                            this.initSelect();
+                            this.$parent.initPubMsgList();
+                            this.showTrafficInfoPop = false;
+                        } else if (response.data.status == 500){
+                            let msg;
+                            if (type === 1) {
+                                msg = response.data.message ? response.data.message : '更新失败 !';
+                                this.updateLoading = false;
+                            } else if (type === 2){
+                                msg = response.data.message ? response.data.message : '发布失败 !';
+                                this.publishLoading = false;
+                            } else if (type === 3) {
+                                msg = response.data.message ? response.data.message : '手动失效失败 !';
+                                this.invalidLoading = false;
+                            }
+                            this.$message.error(msg);
+                        }
+                    } else {
+                        if (type === 1) {
+                            this.$message.error('更新失败');
+                            this.updateLoading = false;
+                        } else if (type === 2) {
+                            this.$message.error('发布失败');
+                            this.publishLoading = false;
+                        } else if (type === 3) {
+                            this.$message.error('手动失效失败');
+                            this.invalidLoading = false;
+                        }
+                    }
+                }
+            );
+        },
         publichInfo(e){
             this.trafficInfo.datasource = this.select.datasource ? (this.select.datasource.key ? this.select.datasource.key : '') : '';
             this.trafficInfo.frequencyUnit = this.select.frequencyUnit ? (this.select.frequencyUnit.key ? this.select.frequencyUnit.key : '') : '';
-            // console.log(this.trafficInfo.alertCategory);
             if(!this.submitForm()) return; 
-
-            this.$emit('PublishInfo',this.trafficInfo);
-            this.closeMyInfoWindow();
-            this.initSelect();
-            this.initTrafficInof();
+            // 发布接口
+            this.publishLoading = true;
+            let url = 'event/task/save';
+            let params = {
+                status: 1,
+                eventType: e.eventType,      //信息类型
+                longitude: e.longitude,      // 经度
+                latitude: e.latitude,       // 纬度
+                affectRange: e.affectRange,    // 广播范围
+                content: e.content,        // 信息内容
+                frequency: e.frequency,      // 广播频率
+                frequencyUnit: e.frequencyUnit,      // 频率单位
+                beginTime: TDate.formatTime(e.beginTime),      // 生效时间
+                endTime: TDate.formatTime(e.endTime),     // 失效时间
+                datasource: e.datasource,     // 信息来源
+                sendChannel: e.sendChannel,         //  4G下发通道
+                infoType: e.infoType,       // 子类型代码
+                alertRadius: e.alertRadius,                      
+                alertPath: e.alertPath,
+                alertCategory: e.alertCategory,
+            };
+            this.UpdateAndPub(url, params, 2);
         },        
         updateInfo(e){
            
             this.trafficInfo.datasource = this.select.datasource ? (this.select.datasource.key ? this.select.datasource.key : '') : '';
             this.trafficInfo.frequencyUnit = this.select.frequencyUnit ? (this.select.frequencyUnit.key ? this.select.frequencyUnit.key : '') : '';
-            // console.log(this.trafficInfo.alertCategory);
-           if(!this.submitForm()) return; 
+            if(!this.submitForm()) return;
+            this.updateLoading = true;
+            this.showTrafficInfoPop = true;
+            // this.$emit('UpdateInfo',this.trafficInfo);
 
-            this.$emit('UpdateInfo',this.trafficInfo);
-            this.closeMyInfoWindow();
-            this.initSelect();
-             this.initTrafficInof();
+            // 更新接口
+            let url = 'event/task/update';
+            let params = {
+                id: this.trafficInfo.id,
+                "taskCode": this.trafficInfo.taskCode,
+                eventType: this.trafficInfo.eventType,      //信息类型
+                longitude: this.trafficInfo.longitude,      // 经度
+                latitude: this.trafficInfo.latitude,       // 纬度
+                affectRange: this.trafficInfo.affectRange,    // 广播范围
+                content: this.trafficInfo.content,        // 信息内容
+                frequency: this.trafficInfo.frequency,      // 广播频率
+                frequencyUnit: this.trafficInfo.frequencyUnit,      // 频率单位
+                beginTime: TDate.formatTime(e.beginTime),      // 生效时间
+                endTime: TDate.formatTime(e.endTime),     // 失效时间
+                datasource: this.trafficInfo.datasource,     // 信息来源
+                sendChannel: this.trafficInfo.sendChannel,         //  4G下发通道
+                infoType: this.trafficInfo.infoType,       // 子类型代码
+                alertRadius: this.trafficInfo.alertRadius,                      
+                alertPath: this.trafficInfo.alertPath,
+                alertCategory: this.trafficInfo.alertCategory,
+            };
+            this.UpdateAndPub(url, params, 1);
+           
         },
         destroyInfo(e){           
             this.$emit('DestroyInfo',this.trafficInfo);
-            this.closeMyInfoWindow(e);
-            this.initSelect();
-             this.initTrafficInof();
+            this.invalidLoading = true;
+            // this.closeMyInfoWindow(e);
+            let url = 'event/task/cancel';
+            let params = {
+                id: e.id,
+                "taskCode":e.taskCode,
+                "expirationTime": TDate.formatTime(), 
+                "status": 2                
+            };
+            this.UpdateAndPub(url, params, 3);
         },
         closeInforWindow(e){            
             this.closeMyInfoWindow();
             this.initSelect();
-             this.initTrafficInof();
-             this.$emit("setPointer",{bool: false, flag: true}); 
+            this.initTrafficInof();
+            this.$emit("setPointer",{bool: false, flag: true}); 
         },
         initDatasourceList(isEdit=false,datasource){
             let url = 'common/queryDictionary';
@@ -680,6 +769,7 @@ export default {
                     if (response.status >= 200 && response.status < 300) {
                         // console.log("----------------------------");
                         // console.log(response.data);
+                        console.log('responseData ---', response.data);
                         this.trafficInfo.id = response.data.id;
                         this.trafficInfo.taskCode = response.data.taskCode;
                         this.trafficInfo.eventName = response.data.eventName;
@@ -904,11 +994,9 @@ export default {
             this.circleLat = obj.lat;
             
             if(obj.isEdit){
-                console.log("??????????????");
                 this.initDetail(obj, flag);
                 this.trafficInfo.isEdit = true;
             }else{
-                console.log("----------------");
                 // console.log(obj);
                 // console.log(this.trafficInfo);
                 obj.trafficInfo.longitude = this.toFixedLen(obj.trafficInfo.longitude);
@@ -993,7 +1081,7 @@ export default {
          */
         closeMyInfoWindow:function(e){
            
-           
+           console.log('ssds', e);
            this.clearCircle();
            this.clearPubMsgIcon();           
            
@@ -1014,7 +1102,6 @@ export default {
            
             return false;
         },
-        
 
         /**
          *关闭信息框
@@ -1028,12 +1115,12 @@ export default {
         },
        
         mapClick:function(mevent){
-
+            console.log('mevent', mevent);
             if(this.mapStatus == 'normal'){
                 this.$emit("MapClick",this,mevent);
                 this.removeClickEvent();        // 移除点击事件
 
-            }else if(this.mapStatus == 'TempLayerInteraction'){
+            }else if(this.mapStatus == ' '){
                 
                 let lon = mevent.coordinate[0];
                 let lat = mevent.coordinate[1];

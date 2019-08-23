@@ -102,6 +102,7 @@ export default {
 
         // ----------------------------信息发布-------------------------------
         setPointer(e){
+            console.log('e', e);
             this.isPointerIco = e.bool;
             if(!e.flag) {
                 this.removeMapClickEvent();
@@ -119,8 +120,8 @@ export default {
                 response => {
                     if (response.status >= 200 && response.status < 300) {
 
-                        this.pubMsgList = response.data ? response.data : [];                        
-                        let t = this.pubMsgList;
+                        this.pubMsgList = response.data ? response.data : [];             
+                        // let t = this.pubMsgList;
 
                         this.addPubMsg();
                         
@@ -156,7 +157,7 @@ export default {
 
                 let imgOffset = [0,-34];
                 this.$refs.refTusvnMap.addImgOverlay( id, icon, null, lon, lat, id, imgOffset, (e) => {
-                    
+                    // 阻止默认行为
                     e.preventDefault();
                     e.stopPropagation();
 
@@ -201,114 +202,117 @@ export default {
 
         publishInfo(e){
                     
-            let url = 'event/task/save';
-            let params = {
-                status: 1,
-                eventType: e.eventType,      //信息类型
-                longitude: e.longitude,      // 经度
-                latitude: e.latitude,       // 纬度
-                affectRange: e.affectRange,    // 广播范围
-                content: e.content,        // 信息内容
-                frequency: e.frequency,      // 广播频率
-                frequencyUnit: e.frequencyUnit,      // 频率单位
-                beginTime: TDate.formatTime(e.beginTime),      // 生效时间
-                endTime: TDate.formatTime(e.endTime),     // 失效时间
-                datasource: e.datasource,     // 信息来源
-                sendChannel: e.sendChannel,         //  4G下发通道
-                infoType: e.infoType,       // 子类型代码
-                alertRadius: e.alertRadius,                      
-                alertPath: e.alertPath,
-                alertCategory: e.alertCategory,
-            };
+            // let url = 'event/task/save';
+            // let params = {
+            //     status: 1,
+            //     eventType: e.eventType,      //信息类型
+            //     longitude: e.longitude,      // 经度
+            //     latitude: e.latitude,       // 纬度
+            //     affectRange: e.affectRange,    // 广播范围
+            //     content: e.content,        // 信息内容
+            //     frequency: e.frequency,      // 广播频率
+            //     frequencyUnit: e.frequencyUnit,      // 频率单位
+            //     beginTime: TDate.formatTime(e.beginTime),      // 生效时间
+            //     endTime: TDate.formatTime(e.endTime),     // 失效时间
+            //     datasource: e.datasource,     // 信息来源
+            //     sendChannel: e.sendChannel,         //  4G下发通道
+            //     infoType: e.infoType,       // 子类型代码
+            //     alertRadius: e.alertRadius,                      
+            //     alertPath: e.alertPath,
+            //     alertCategory: e.alertCategory,
+            // };
 
-            this.$api.post( url,params,
-                response => {
-                    if (response.status >= 200 && response.status < 300) {
+            // this.$api.post( url,params,
+            //     response => {
+            //         if (response.status >= 200 && response.status < 300) {
                         
-                        if(response.data.status == 200){
-                            this.initPubMsgList();
+            //             if(response.data.status == 200){
+            //                 this.initPubMsgList();
                             this.$emit('PubMsgChange');
-                            this.$message.success('发布成功！');
-                        }else if(response.data.status == 500){
-                            let msg = response.data.message ? response.data.message : '发布失败 !';
-                            this.$message.error(msg)
-                        }
+            //                 this.$message.success('发布成功！');
+            //             }else if(response.data.status == 500){
+            //                 let msg = response.data.message ? response.data.message : '发布失败 !';
+            //                 this.$message.error(msg)
+            //             }
                         
-                    } else {                     
-                        this.$message.error("发布失败 ！"); 
-                    }
-                }
-            );
+            //         } else {                     
+            //             this.$message.error("发布失败 ！"); 
+            //         }
+            //     }
+            // );
         },
-        updateInfo(e){
-            
-            let url = 'event/task/update';
-            let params = {
-                id: e.id,
-                "taskCode": e.taskCode,
-                eventType: e.eventType,      //信息类型
-                longitude: e.longitude,      // 经度
-                latitude: e.latitude,       // 纬度
-                affectRange: e.affectRange,    // 广播范围
-                content: e.content,        // 信息内容
-                frequency: e.frequency,      // 广播频率
-                frequencyUnit: e.frequencyUnit,      // 频率单位
-                beginTime: TDate.formatTime(e.beginTime),      // 生效时间
-                endTime: TDate.formatTime(e.endTime),     // 失效时间
-                datasource: e.datasource,     // 信息来源
-                sendChannel: e.sendChannel,         //  4G下发通道
-                infoType: e.infoType,       // 子类型代码
-                alertRadius: e.alertRadius,                      
-                alertPath: e.alertPath,
-                alertCategory: e.alertCategory,
-            };
-
-            this.$api.post( url,params,
-                response => {
-                    if (response.status >= 200 && response.status < 300) {                    
+        updateInfo(){
+            // this.initPubMsgList();
+            // let url = 'event/task/update';
+            // let params = {
+            //     id: e.id,
+            //     "taskCode": e.taskCode,
+            //     eventType: e.eventType,      //信息类型
+            //     longitude: e.longitude,      // 经度
+            //     latitude: e.latitude,       // 纬度
+            //     affectRange: e.affectRange,    // 广播范围
+            //     content: e.content,        // 信息内容
+            //     frequency: e.frequency,      // 广播频率
+            //     frequencyUnit: e.frequencyUnit,      // 频率单位
+            //     beginTime: TDate.formatTime(e.beginTime),      // 生效时间
+            //     endTime: TDate.formatTime(e.endTime),     // 失效时间
+            //     datasource: e.datasource,     // 信息来源
+            //     sendChannel: e.sendChannel,         //  4G下发通道
+            //     infoType: e.infoType,       // 子类型代码
+            //     alertRadius: e.alertRadius,                      
+            //     alertPath: e.alertPath,
+            //     alertCategory: e.alertCategory,
+            // };
+            // console.log('asdfasdf', this.$refs.refTusvnMap.$data);
+            // this.$api.post( url,params,
+            //     response => {
+            //         if (response.status >= 200 && response.status < 300) {                    
                         
-                        if(response.data.status == 200){
-                            this.initPubMsgList();
-                            this.$message.success('更新成功！');
-                        }else if(response.data.status == 500){
-                            let msg = response.data.message ? response.data.message : '更新失败 !';
-                            this.$message.error(msg)
-                        }
+            //             if(response.data.status == 200){
+            //                 this.initPubMsgList();
+            //                 this.$message.success('更新成功！');
+                            
+            //                 this.$refs.refTusvnMap.$data.showTrafficInfoPop = false;
+            //             }else if(response.data.status == 500){
+            //                 let msg = response.data.message ? response.data.message : '更新失败 !';
+            //                 this.$message.error(msg)
+            //             }
                         
-                    } else {                     
-                        this.$message.error("更新失败 ！"); 
-                    }
-                }
-            );
+            //             this.$refs.refTusvnMap.$data.updateLoading = false;
+            //         } else {
+            //             this.$refs.refTusvnMap.$data.updateLoading = false;              
+            //             this.$message.error("更新失败 ！"); 
+            //         }
+            //     }
+            // );
         },
         destroyInfo(e){
-           
-            let url = 'event/task/cancel';
-            let params = {
-                id: e.id,
-                "taskCode":e.taskCode,
-                "expirationTime": TDate.formatTime(), 
-                "status": 2                
-            };
+            // let url = 'event/task/cancel';
+            // let params = {
+            //     id: e.id,
+            //     "taskCode":e.taskCode,
+            //     "expirationTime": TDate.formatTime(), 
+            //     "status": 2                
+            // };
 
-            this.$api.post( url,params,
-                response => {
-                    if (response.status >= 200 && response.status < 300) {
+            // this.$api.post( url,params,
+            //     response => {
+            //         if (response.status >= 200 && response.status < 300) {
                         
-                        if(response.data.status == 200){
-                            this.initPubMsgList();
+            //             if(response.data.status == 200){
+            //                 this.initPubMsgList();
                             this.$emit('PubMsgChange');
-                            this.$message.success('手动失效成功！');
-                        }else if(response.data.status == 500){
-                            let msg = response.data.message ? response.data.message : '手动失效失败 !';
-                            this.$message.error(msg)
-                        }                         
+            //                 this.$message.success('手动失效成功！');
+            //             }else if(response.data.status == 500){
+            //                 let msg = response.data.message ? response.data.message : '手动失效失败 !';
+            //                 this.$message.error(msg)
+            //             }                         
                         
-                    } else {                     
-                        this.$message.error("手动失效失败 ！"); 
-                    }
-                }
-            );
+            //         } else {                     
+            //             this.$message.error("手动失效失败 ！"); 
+            //         }
+            //     }
+            // );
         },
 
         // -----------------------------poi----------------------------
@@ -325,7 +329,7 @@ export default {
                     bool ? this.showTrafficSignal() : this.clearTrafficSignal();
                     break;
                 case 'roadNet':
-                     bool ? this.$refs.refTusvnMap.showRoadNet() : this.$refs.refTusvnMap.clearRoadNet();
+                    bool ? this.$refs.refTusvnMap.showRoadNet() : this.$refs.refTusvnMap.clearRoadNet();
                 break;
             }
         },
@@ -338,8 +342,7 @@ export default {
             this.$api.post( url,params,
                 response => {
                     if (response.status >= 200 && response.status < 300) {
-
-                        let rsuList = response.data ? response.data : []; 
+                        let rsuList = response.data ? response.data : [];
                         this.mapLayer.rsuIds = [];
                         for(let i=0;i<rsuList.length;i++){
                             
@@ -492,7 +495,7 @@ export default {
             this.$refs.refTusvnMap.clearTempLayer();
             this.temporaryClearPubMsg({bool: false});
         },
-        // // 移除 地图点击事件
+        // 移除 地图点击事件
         removeMapClickEvent(){
             this.$refs.refTusvnMap.removeClickEvent(); 
         },
@@ -578,8 +581,7 @@ export default {
             //this.$refs.refTusvnMap.showRoadNet(this.mapLayer.messageBg);
 
         },
-        viewLevelChange:function(tusvnmap,mevent)
-        {
+        viewLevelChange:function(tusvnmap,mevent) {
             // console.log("============================viewLevelChange=============================");
             // console.log(tusvnmap);
             // console.log(mevent);
@@ -587,7 +589,7 @@ export default {
             this.mapLevel.value = mevent;            
 
         },
-        extentChange:function(tusvnmap,newextent){
+        extentChange:function(tusvnmap,newextent) {
             // console.log("============================extentChange=============================");
             // console.log(tusvnmap);
             // console.log(newextent);
@@ -595,27 +597,27 @@ export default {
     },
     mounted(){
         const that = this
-        window.onresize = () => {
-            return (() => {
-                window.screenWidth = document.body.clientWidth;
-                that.screenWidth = window.screenWidth;
-                window.screenHeight = document.body.clientHeight;
-                that.screenHeight = window.screenHeight;
+        // window.onresize = () => {
+        //     return (() => {
+        //         window.screenWidth = document.body.clientWidth;
+        //         that.screenWidth = window.screenWidth;
+        //         window.screenHeight = document.body.clientHeight;
+        //         that.screenHeight = window.screenHeight;
 
-                const borwserHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+        //         const borwserHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
 
-                // console.log('-------- screenHeight = ' + screenHeight + ' --- borwserHeight : ' + borwserHeight);
+        //         // console.log('-------- screenHeight = ' + screenHeight + ' --- borwserHeight : ' + borwserHeight);
 
                 
-            })()
-        }
+        //     })()
+        // }
     },
 }
 </script>
 
 <style scoped>
 .yk-pointer-ico{
-    cursor: url('position3.png') 8 24 , url('position3.png') , auto;
+    cursor: url('position3.png') 8 24, auto;
 }
 .yk-pointer-normal{
     cursor: default;
