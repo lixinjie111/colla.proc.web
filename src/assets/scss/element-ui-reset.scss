@@ -42,6 +42,9 @@
 			width: 350px;
 		}
 	}
+	.el-input-number--mini {
+		width: calc(100% - 80px);
+	}
 }
 .el-dialog {
 	.el-form {

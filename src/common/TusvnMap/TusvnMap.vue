@@ -68,6 +68,7 @@
                                 <!-- <el-input-number v-model.trim="ruleForm.alertRadius" controls-position="right" :min="1" :max="1024"></el-input-number> -->
                                 <el-form-item label="影响范围" prop="alertRadius" class="yk-bottom-12 yk-txt">
                                     <el-input-number v-model.trim="trafficInfo.alertRadius" controls-position="right" :min="1" :max="1024"></el-input-number>
+                                    <span class="c-ml-10">单位:10cm</span>
                                 </el-form-item>
 
                                 <el-form-item label="信息内容" prop="content" class="yk-bottom-16 yk-textarea">
@@ -78,7 +79,7 @@
                                     <el-input size="mini" v-model="trafficInfo.frequency">
 
                                         <template slot="append">
-                                            <select class="yk-w-51 yk-input-select-2" v-model="select.frequencyUnit">
+                                            <select class="yk-input-select-2" v-model="select.frequencyUnit">
                                                 <option v-for="(item,index) in frequencyUnitList" :key="index" :value="item">{{item.name}}</option>
                                             </select>
                                         </template>
@@ -196,10 +197,10 @@ export default {
                 alertCategory: ''
             },
             rules: {                
-                content: [
-                    { required: true, message: '请输入默认信息内容', trigger: 'blur' },
-                    // { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
-                ],               
+                // content: [
+                //     { required: true, message: '请输入默认信息内容', trigger: 'blur' },
+                //     // { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+                // ],               
                 alertPath: [
                     { required: true, message: '请输入影响路径', trigger: 'blur' },
                     // { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
