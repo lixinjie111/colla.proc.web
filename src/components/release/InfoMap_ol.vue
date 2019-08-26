@@ -141,6 +141,7 @@ export default {
                 // let icon = 'https://webapi.amap.com/theme/v1.3/markers/n/mark_b.png';
                 if(item.icon){
                     icon = this.iconPath + item.icon;
+                    console.log('icon', icon);
                 }              
                 
                 let lon = item.longitude;

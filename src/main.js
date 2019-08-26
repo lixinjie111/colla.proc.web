@@ -21,6 +21,12 @@ Vue.use(ElementUI)
 
 Vue.prototype.$api = Api;
 
+// video视频播放器
+import VideoPlayer  from 'vue-video-player'
+import 'video.js/dist/video-js.css'
+import 'vue-video-player/src/custom-theme.css'
+import 'videojs-flash'
+Vue.use(VideoPlayer);
 // 全局静态资源
 import '@/assets/scss/reset.scss';
 import '@/assets/scss/public.scss';

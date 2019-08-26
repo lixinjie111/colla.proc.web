@@ -34,13 +34,13 @@ const store = new VueX.Store({
                 lon: 121.250333,
                 lat: 31.383524
             }
-        },
+        }
         
     },
     getters: {
         menuList: state => {
             return state.menus;
-        },
+        }
         
     },
     mutations: {

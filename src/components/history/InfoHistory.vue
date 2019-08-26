@@ -148,28 +148,7 @@ export default {
       isShow: false,
       infoData: '',
       detailData: [],
-      videoData: [
-        {
-          url: '.....',
-          name: '路测点1',
-          status: 0
-        },
-        {
-          url: '.....',
-          name: '路测点2',
-          status: 1
-        },
-        {
-          url: '.....',
-          name: '路测点3',
-          status:2
-        },
-        {
-          url: '.....',
-          name: '路测点4',
-          status: 3
-        }
-      ]
+      videoData: []
     };
   },
 
@@ -275,47 +254,59 @@ export default {
     // 查看详情
     checkDetail(scope) {
       console.log("scope", scope);
-      let info = scope;
-      let newArr = [info];
-      let longlat = newArr.map(x =>(Number(x.longitude).toFixed(8)) + ',' + (Number(x.latitude).toFixed(8)));
-
-      let arr = [];
-      this.infoData = info.content;
-      Object.keys(info).forEach(x => {
-        arr.push({
-          'name': (_ => {
-              if (x === 'taskCode') {
-                return '信息编号';
-              } else if (x === 'eventName') {
-                return '信息类型';
-              } else if (x === 'eventCode') {
-                return '事件编号';
-              } else if (x === 'beginTime') {
-                return '事件发生时间';
-              } else if (x === 'endTime') {
-                return '事件结束时间';
-              } else if (x === 'longitude') {
-                return '事件发生位置';
-              } else if (x === 'createTime') {
-                return '发布开始时间';
-              } else if (x === 'updateTime') {
-                return '发布结束时间';
-              } else if (x === 'sendNumber') {
-                return '累计发送次数';
-              }
-          })(),
-          'value': (_ => {
-            if (x === 'longitude') {
-               return info[x] = longlat[0];
-            } else {
-                return info[x]
-            }
-          })()
-        })
+      let info = {};
+      let params = {
+        'taskCode': scope.taskCode
+      };
+      let url = 'event/task/getEventDetail';
+      this.$api.post(url, params, res => {
+        if (res.data.status === 200) {
+           info = res.data.data.eventTask;
+           this.videoData = res.data.data.videoList;
+            let newArr = [info];
+            let longlat = newArr.map(x =>(Number(x.longitude).toFixed(8)) + ',' + (Number(x.latitude).toFixed(8)));
+            this.isShow = true;
+            let arr = [];
+            this.infoData = info.content;
+            Object.keys(info).forEach(x => {
+              arr.push({
+                'name': (_ => {
+                    if (x === 'taskCode') {
+                      return '信息编号';
+                    } else if (x === 'eventName') {
+                      return '信息类型';
+                    } else if (x === 'eventCode') {
+                      return '事件编号';
+                    } else if (x === 'beginTime') {
+                      return '事件发生时间';
+                    } else if (x === 'endTime') {
+                      return '事件结束时间';
+                    } else if (x === 'longitude') {
+                      return '事件发生位置';
+                    } else if (x === 'createTime') {
+                      return '发布开始时间';
+                    } else if (x === 'updateTime') {
+                      return '发布结束时间';
+                    } else if (x === 'sendNumber') {
+                      return '累计发送次数';
+                    }
+                })(),
+                'value': (_ => {
+                  if (x === 'longitude') {
+                    return info[x] = longlat[0];
+                  } else {
+                      return info[x]
+                  }
+                })()
+              })
+            });
+            arr = arr.filter(x => x.name !== undefined);
+            this.splitArr(arr);
+            console.log('info', info);
+        } else {
+            this.$message.error(res.data.message);
+        }
       });
-      arr = arr.filter(x => x.name !== undefined);
-      this.isShow = true;
-      this.splitArr(arr);
     },
     splitArr(data) {
         let proportion = 3;

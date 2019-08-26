@@ -166,7 +166,7 @@ export default {
     data(){
         return {
             isLoading: false,
-             orderStatus: -1
+            orderStatus: -1
             ,map: null
             ,project:"EPSG:4326"//地图投影
             // 120.80224989415075-----latitude:31.28000259048651
@@ -719,6 +719,7 @@ export default {
                     if (response.status >= 200 && response.status < 300) {
 
                         this.datasourceList = response.data ? response.data : [];
+                        console.log('this.datasourceList', this.datasourceList);
                         if(this.datasourceList.length){
                             
                             if (!isEdit) {
@@ -834,10 +835,11 @@ export default {
         initSelect(){
             this.select.sliderVal = 1000;
             this.select.alertPath = '';
+            console.log('this.frequencyUnitList', this.frequencyUnitList);
             if(Array.isArray(this.frequencyUnitList) && this.frequencyUnitList.length){
                 this.select.frequencyUnit = this.frequencyUnitList[0];
             }
-            
+            console.log('this.datasourceList', this.datasourceList);
             if(Array.isArray(this.datasourceList) && this.datasourceList.length){
                 this.select.datasource = this.datasourceList[0];
             }
@@ -1001,7 +1003,7 @@ export default {
         },
 
         addMyInfoWindow: function(obj, flag){
-
+            console.log('obj', obj);
             this.pointData = obj;
 
             this.trafficInfo.id = obj.id;
@@ -1010,14 +1012,12 @@ export default {
             this.circleLon = obj.lon;
             this.circleLat = obj.lat;
             
-            if(obj.isEdit){
+            if (obj.isEdit) {
                 console.log("??????????????");
                 this.initDetail(obj, flag);
                 this.trafficInfo.isEdit = true;
-            }else{
+            } else {
                 console.log("----------------");
-                // console.log(obj);
-                // console.log(this.trafficInfo);
                 obj.trafficInfo.longitude = this.toFixedLen(obj.trafficInfo.longitude);
                 obj.trafficInfo.latitude = this.toFixedLen(obj.trafficInfo.latitude);
                 let _alertCategory = this.trafficInfo.alertCategory;
@@ -1036,6 +1036,7 @@ export default {
             this.$refs.ruleFormMap.clearValidate();
             this.$nextTick(function(){
                 let container = document.getElementById('traffic-info-release-popup');
+                console.log('container', container);
                 let overlay = new Overlay({
                     element: container,
                     autoPan: true,
@@ -1044,6 +1045,7 @@ export default {
                     }
                 });
                 this.$data.overlays[obj.id]=overlay;
+                console.log('overlay', overlay);
                 this.$data.map.addOverlay(overlay);
                 overlay.setPosition([obj.lon,obj.lat]);
 
@@ -1077,10 +1079,10 @@ export default {
             let pubMsgBgIcoID = 'bg_' + this.pubMsgIconID;
 
             // [44,58]
-            this.addImg(lon,lat,pubMsgBgIcoID,this.MessageTempLayer,pubMsgBgIco,[44,87],null,null,null,[0,15]);
+            this.addImg(lon,lat,pubMsgBgIcoID,this.MessageTempLayer,pubMsgBgIco,[44,87],null,null,null,[0,5]);
 
             // [22,37]
-            this.addImg(lon,lat,this.pubMsgIconID,this.MessageTempLayer,icon,[22,66],null,null,null,[0,15]);
+            this.addImg(lon,lat,this.pubMsgIconID,this.MessageTempLayer,icon,[22,66],null,null,null,[0,5]);
         },
         // 移除 发布信息图标
         clearPubMsgIcon(){

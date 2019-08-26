@@ -16,7 +16,6 @@
         <!-- 视频内容 -->
           <history-video :videoData="videoData" title="历史视频"></history-video>
       </div>
-       
     </div>
   </div>
 </template>
