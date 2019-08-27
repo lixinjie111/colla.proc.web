@@ -141,7 +141,6 @@ export default {
                 // let icon = 'https://webapi.amap.com/theme/v1.3/markers/n/mark_b.png';
                 if(item.icon){
                     icon = this.iconPath + item.icon;
-                    console.log('icon', icon);
                 }              
                 
                 let lon = item.longitude;
@@ -538,13 +537,14 @@ export default {
                 alertPath: '',              //格式 "[[12.333,23.333],[12.444,23,444]]"，转换显示为 12.333,23.333;12.444,23,444
                 alertCategory: ''       //告警类型
             };
+            console.log('this.msgTypeInfo.icon', this.iconPath + this.msgTypeInfo.icon);
             let marker = {
                 id: 'marker' + (new Date()).getTime(),
                 lon: lon,
                 lat: lat,
                 trafficInfo: this.trafficInfo,
                 isEdit: false,
-                icon: this.iconPath + this.msgTypeInfo.icon,     
+                icon: this.iconPath + this.msgTypeInfo.icon,
             };
             
             this.$refs.refTusvnMap.addMyInfoWindow(marker);
@@ -558,7 +558,6 @@ export default {
             // console.log("============================mapInitComplete=============================");
 
             //创建图层
-
             this.$refs.refTusvnMap.addVectorLayer(this.mapLayer.tabLayer);
             // this.$refs.refTusvnMap.addVectorLayer(this.mapLayer.rsu);
             // this.$refs.refTusvnMap.addVectorLayer(this.mapLayer.roadsideUnit);
@@ -597,21 +596,21 @@ export default {
         },
     },
     mounted(){
-        const that = this
-        window.onresize = () => {
-            return (() => {
-                window.screenWidth = document.body.clientWidth;
-                that.screenWidth = window.screenWidth;
-                window.screenHeight = document.body.clientHeight;
-                that.screenHeight = window.screenHeight;
+        // const that = this
+        // window.onresize = () => {
+        //     return (() => {
+        //         window.screenWidth = document.body.clientWidth;
+        //         that.screenWidth = window.screenWidth;
+        //         window.screenHeight = document.body.clientHeight;
+        //         that.screenHeight = window.screenHeight;
 
-                const borwserHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+        //         const borwserHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
 
-                // console.log('-------- screenHeight = ' + screenHeight + ' --- borwserHeight : ' + borwserHeight);
+        //         // console.log('-------- screenHeight = ' + screenHeight + ' --- borwserHeight : ' + borwserHeight);
 
                 
-            })()
-        }
+        //     })()
+        // }
     },
 }
 </script>

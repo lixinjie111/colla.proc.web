@@ -717,9 +717,7 @@ export default {
             this.$api.post( url,params,
                 response => {
                     if (response.status >= 200 && response.status < 300) {
-
                         this.datasourceList = response.data ? response.data : [];
-                        console.log('this.datasourceList', this.datasourceList);
                         if(this.datasourceList.length){
                             
                             if (!isEdit) {
@@ -873,7 +871,6 @@ export default {
 
         //初始化地图
         initMap:function(){
-
             this.$data.map = new Map({
                 controls: defaultControls({attribution: false,zoom: false,}).extend([
                     // overviewMapControl
@@ -1013,11 +1010,9 @@ export default {
             this.circleLat = obj.lat;
             
             if (obj.isEdit) {
-                console.log("??????????????");
                 this.initDetail(obj, flag);
                 this.trafficInfo.isEdit = true;
             } else {
-                console.log("----------------");
                 obj.trafficInfo.longitude = this.toFixedLen(obj.trafficInfo.longitude);
                 obj.trafficInfo.latitude = this.toFixedLen(obj.trafficInfo.latitude);
                 let _alertCategory = this.trafficInfo.alertCategory;
@@ -1036,7 +1031,6 @@ export default {
             this.$refs.ruleFormMap.clearValidate();
             this.$nextTick(function(){
                 let container = document.getElementById('traffic-info-release-popup');
-                console.log('container', container);
                 let overlay = new Overlay({
                     element: container,
                     autoPan: true,
@@ -1045,7 +1039,6 @@ export default {
                     }
                 });
                 this.$data.overlays[obj.id]=overlay;
-                console.log('overlay', overlay);
                 this.$data.map.addOverlay(overlay);
                 overlay.setPosition([obj.lon,obj.lat]);
 
@@ -1077,12 +1070,11 @@ export default {
             // lon,lat,id,layerId,carImgUrl,size,rotation,rotateWithView,opacity,offset,scale
             let pubMsgBgIco = 'static/images/ico-bg2.png';
             let pubMsgBgIcoID = 'bg_' + this.pubMsgIconID;
-
             // [44,58]
-            this.addImg(lon,lat,pubMsgBgIcoID,this.MessageTempLayer,pubMsgBgIco,[44,87],null,null,null,[0,5]);
+            this.addImg(lon,lat,pubMsgBgIcoID,this.MessageTempLayer,pubMsgBgIco,[44,87],null,null,null,[0,10]);
 
             // [22,37]
-            this.addImg(lon,lat,this.pubMsgIconID,this.MessageTempLayer,icon,[22,66],null,null,null,[0,5]);
+            this.addImg(lon,lat,this.pubMsgIconID,this.MessageTempLayer,icon,[28,66],null,null,null,[0,8]);
         },
         // 移除 发布信息图标
         clearPubMsgIcon(){
@@ -1655,10 +1647,9 @@ export default {
         },
         pageResize(){
             const borwserHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
-            this.pageHeight = borwserHeight - 64;         
+            this.pageHeight = borwserHeight - 64;        
         },
-        resize:function(size)
-        {
+        resize:function(size) {
             this.$data.map.setSize(size);
         }
     },
@@ -1668,16 +1659,18 @@ export default {
     },
     mounted(){
         this.pageResize();
-        window.onresize = () => {
-            // this.pageResize();
-        }
+        // window.onresize = () => {
+        //     // this.pageResize();
+        // }
+        this.initMap();
+        this.$emit("MapInitComplete",this);
         //初始化地图
-        setTimeout(() => {
-            this.initMap();
-            this.$emit("MapInitComplete",this);
+        // setTimeout(() => {
+        //     this.initMap();
+        //     this.$emit("MapInitComplete",this);
 
             
-        }, 100);
+        // }, 100);
     },
     destroyed(){
 

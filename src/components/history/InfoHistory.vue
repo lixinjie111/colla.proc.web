@@ -55,9 +55,9 @@
 
       <el-table-column prop="taskCode" label="信息编号" min-width="13%"></el-table-column>
 
-      <el-table-column prop="eventName" label="信息类型" min-width="5%"></el-table-column>
+      <el-table-column prop="eventName" label="信息类型" min-width="6%"></el-table-column>
 
-      <el-table-column prop="status" label="信息状态" min-width="5%">
+      <el-table-column prop="status" label="信息状态" min-width="6%">
         <template slot-scope="scope">
           <!-- {{scope.row.status}} -->
           <span v-show="scope.row.status == 1">有效</span>
@@ -66,27 +66,27 @@
         </template>
       </el-table-column>
 
-      <el-table-column prop="longitude,latitude " label="中心位置" min-width="20%">
-        <template slot-scope="scope">{{scope.row.longitude}} , {{scope.row.latitude}}</template>
+      <el-table-column prop="longitude,latitude " label="中心位置" min-width="15%">
+        <template slot-scope="scope">{{Number(scope.row.longitude).toFixed(8)}} , {{Number(scope.row.latitude).toFixed(8)}}</template>
       </el-table-column>
 
-      <el-table-column prop="beginTime" label="发布时间" min-width="10%"></el-table-column>
+      <el-table-column prop="beginTime" label="发布时间" min-width="12%"></el-table-column>
 
-      <el-table-column prop="endTime" label="失效时间" min-width="10%"></el-table-column>
+      <el-table-column prop="endTime" label="失效时间" min-width="12%"></el-table-column>
 
-      <el-table-column prop="expirationTime" label="实际结束时间" min-width="10%"></el-table-column>
+      <!-- <el-table-column prop="expirationTime" label="实际结束时间" min-width="12%"></el-table-column> -->
 
       <el-table-column prop="content" label="信息内容" min-width="15%"></el-table-column>
 
       <el-table-column prop="sendNumber" label="下发次数" min-width="6%"></el-table-column>
 
-      <el-table-column prop="datasource" label="信息来源" min-width="7%">
+      <el-table-column prop="datasource" label="信息来源" min-width="8%">
         <template slot-scope="scope">
-          <span v-if="scope.row.datasource == 1">平台运营人员</span>
+          <span v-if="scope.row.datasource === 1">平台运营人员</span>
           <span v-else>{{scope.row.datasource}}</span>
         </template>
       </el-table-column>
-      <el-table-column min-width="8%" label="操作">
+      <el-table-column min-width="5%" label="操作">
         <template slot-scope="scope">
           <el-button
             @click.native="checkDetail(scope.row)"
@@ -109,7 +109,7 @@
         @current-change="pagingChange"
       ></el-pagination>
     </el-row>
-    <info-history-detail v-if="isShow" :videoData="videoData" :detailData="detailData" :infoData="infoData" @infoHistoryBack="infoHistoryBack"></info-history-detail>
+    <info-history-detail v-if="isShow" :taskCode="taskCode" :detailData="detailData" :infoData="infoData" @infoHistoryBack="infoHistoryBack"></info-history-detail>
   </div>
 </template>
 <script>
@@ -148,7 +148,7 @@ export default {
       isShow: false,
       infoData: '',
       detailData: [],
-      videoData: []
+      taskCode: ''
     };
   },
 
@@ -253,60 +253,51 @@ export default {
     },
     // 查看详情
     checkDetail(scope) {
-      console.log("scope", scope);
-      let info = {};
-      let params = {
-        'taskCode': scope.taskCode
-      };
-      let url = 'event/task/getEventDetail';
-      this.$api.post(url, params, res => {
-        if (res.data.status === 200) {
-           info = res.data.data.eventTask;
-           this.videoData = res.data.data.videoList;
-            let newArr = [info];
-            let longlat = newArr.map(x =>(Number(x.longitude).toFixed(8)) + ',' + (Number(x.latitude).toFixed(8)));
-            this.isShow = true;
-            let arr = [];
-            this.infoData = info.content;
-            Object.keys(info).forEach(x => {
-              arr.push({
-                'name': (_ => {
-                    if (x === 'taskCode') {
-                      return '信息编号';
-                    } else if (x === 'eventName') {
-                      return '信息类型';
-                    } else if (x === 'eventCode') {
-                      return '事件编号';
-                    } else if (x === 'beginTime') {
-                      return '事件发生时间';
-                    } else if (x === 'endTime') {
-                      return '事件结束时间';
-                    } else if (x === 'longitude') {
-                      return '事件发生位置';
-                    } else if (x === 'createTime') {
-                      return '发布开始时间';
-                    } else if (x === 'updateTime') {
-                      return '发布结束时间';
-                    } else if (x === 'sendNumber') {
-                      return '累计发送次数';
-                    }
-                })(),
-                'value': (_ => {
-                  if (x === 'longitude') {
-                    return info[x] = longlat[0];
-                  } else {
-                      return info[x]
-                  }
-                })()
-              })
-            });
-            arr = arr.filter(x => x.name !== undefined);
-            this.splitArr(arr);
-            console.log('info', info);
-        } else {
-            this.$message.error(res.data.message);
-        }
+      let newArr;
+      let longlat;
+      let info = scope;
+      newArr = [info];
+      console.log('newArr', newArr);
+      longlat = newArr.map(x =>(Number(x.longitude).toFixed(8) + ',' + Number(x.latitude).toFixed(8)));
+      console.log('longat', longlat);
+      this.isShow = true;
+      let arr = [];
+      this.infoData = info.content;
+      Object.keys(info).forEach(x => {
+        arr.push({
+          'name': (_ => {
+              if (x === 'taskCode') {
+                return '信息编号';
+              } else if (x === 'eventType') {
+                return '信息类型';
+              } else if (x === 'eventCode') {
+                return '事件编号';
+              } else if (x === 'beginTime') {
+                return '事件发生时间';
+              } else if (x === 'endTime') {
+                return '事件结束时间';
+              } else if (x === 'longitude') {
+                return '事件发生位置';
+              } else if (x === 'createTime') {
+                return '发布开始时间';
+              } else if (x === 'updateTime') {
+                return '发布结束时间';
+              } else if (x === 'sendNumber') {
+                return '累计发送次数';
+              }
+          })(),
+          'value': (_ => {
+            if (x === 'longitude') {
+              return info[x] = longlat[0];
+            } else {
+                return info[x]
+            }
+          })()
+        })
       });
+      arr = arr.filter(x => x.name !== undefined);
+      this.splitArr(arr);
+      this.taskCode = scope.taskCode;
     },
     splitArr(data) {
         let proportion = 3;

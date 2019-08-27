@@ -1,7 +1,7 @@
 <template>
   <div class="c-wrapper-20 c-detail-box">
-    <p class="c-title" :class="detailData.length ? '' : 'c-border-bottom'" v-if="title">{{title}}</p>
-    <ul class="c-detail-table-vertical clearfix" v-if="detailData.length">
+    <p class="c-title" :class="detailData ? '' : 'c-border-bottom'" v-if="title">{{title}}</p>
+    <ul class="c-detail-table-vertical clearfix" v-if="detailData">
       <li
         v-for="(item,index) in detailData"
         :key="index"
