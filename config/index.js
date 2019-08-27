@@ -58,8 +58,8 @@ module.exports = {
     // Paths
     assetsRoot: path.resolve(__dirname, '../trafficInfoRelease'),
     assetsSubDirectory: 'static',
-    assetsPublicPath: '/trafficInfoRelease/',
-    //assetsPublicPath: './',
+    // assetsPublicPath: '/trafficInfoRelease/',
+    assetsPublicPath: './',
 
     /**
      * Source Maps
