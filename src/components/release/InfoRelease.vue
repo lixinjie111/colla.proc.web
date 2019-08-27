@@ -150,12 +150,10 @@ export default {
         },
         
         poiClick(item){
-            
             if(!item) return;
             item.isCheck = !item.isCheck;
             let type = item.value;
             this.olMarker[type] = !this.olMarker[type];
-
             this.$refs.refInfoMap.showMarker(type,this.olMarker[type]);
             // this.$refs.ruleFormMap.resetFields();
         },

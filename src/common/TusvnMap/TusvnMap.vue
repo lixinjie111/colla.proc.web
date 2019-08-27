@@ -114,11 +114,11 @@
                                 </el-form-item>
 
                                 <el-form-item style="text-align:right;margin-top: 10px;margin-top: 15px;margin-bottom: 10px;">
-                                    <el-button class="yk-w-80 yk-border-normal" type="warning" v-show="!trafficInfo.isEdit" @click="publichInfo($event);">发布</el-button>
+                                    <el-button class="yk-w-80 yk-border-normal" type="warning" :loading="publishLoading" v-show="!trafficInfo.isEdit" @click="publichInfo($event);">发布</el-button>
                                     <el-button class="yk-w-80 yk-border-normal" type="info" v-show="!trafficInfo.isEdit" @click="closeInforWindow($event);">取消</el-button>
 
-                                    <el-button class="yk-w-80 yk-border-normal" type="warning" v-show="trafficInfo.isEdit" @click="updateInfo($event);">更新</el-button>
-                                    <el-button class="yk-border-normal" type="info" v-show="trafficInfo.isEdit" @click="destroyInfo($event);">手动失效</el-button>                                    
+                                    <el-button class="yk-w-80 yk-border-normal" type="warning" :loading="updateLoading" v-show="trafficInfo.isEdit" @click="updateInfo($event);">更新</el-button>
+                                    <el-button class="yk-border-normal" type="info" :loading="invalidLoading" v-show="trafficInfo.isEdit" @click="destroyInfo($event);">手动失效</el-button>                                    
                                 </el-form-item>
 
                             </el-form>
@@ -166,7 +166,7 @@ export default {
     data(){
         return {
             isLoading: false,
-             orderStatus: -1
+            orderStatus: -1
             ,map: null
             ,project:"EPSG:4326"//地图投影
             // 120.80224989415075-----latitude:31.28000259048651
@@ -217,7 +217,9 @@ export default {
                     { required: true, message: '请选择信息来源', trigger: 'change' }
                 ],
             },
-
+            updateLoading: false,
+            publishLoading: false,
+            invalidLoading: false,
             trafficInfo : {
                 id: '',
                 title: '信息发布',
@@ -565,39 +567,147 @@ export default {
             return '';
         },
         publichInfo(e){
+            this.publishLoading = true;
             this.trafficInfo.datasource = this.select.datasource ? (this.select.datasource.key ? this.select.datasource.key : '') : '';
             this.trafficInfo.frequencyUnit = this.select.frequencyUnit ? (this.select.frequencyUnit.key ? this.select.frequencyUnit.key : '') : '';
             // console.log(this.trafficInfo.alertCategory);
             if(!this.submitForm()) return; 
 
-            this.$emit('PublishInfo',this.trafficInfo);
-            this.closeMyInfoWindow();
-            this.initSelect();
-            this.initTrafficInof();
+            let url = 'event/task/save';
+            let params = {
+                status: 1,
+                eventType: this.trafficInfo.eventType,      //信息类型
+                longitude: this.trafficInfo.longitude,      // 经度
+                latitude: this.trafficInfo.latitude,       // 纬度
+                affectRange: this.trafficInfo.affectRange,    // 广播范围
+                content: this.trafficInfo.content,        // 信息内容
+                frequency: this.trafficInfo.frequency,      // 广播频率
+                frequencyUnit: this.trafficInfo.frequencyUnit,      // 频率单位
+                beginTime: TDate.formatTime(this.trafficInfo.beginTime),      // 生效时间
+                endTime: TDate.formatTime(this.trafficInfo.endTime),     // 失效时间
+                datasource: this.trafficInfo.datasource,     // 信息来源
+                sendChannel: this.trafficInfo.sendChannel,         //  4G下发通道
+                infoType: this.trafficInfo.infoType,       // 子类型代码
+                alertRadius: this.trafficInfo.alertRadius,                      
+                alertPath: this.trafficInfo.alertPath,
+                alertCategory: this.trafficInfo.alertCategory,
+            };
+
+            this.$api.post( url,params,
+                response => {
+                    if (response.status >= 200 && response.status < 300) {
+                        
+                        if(response.data.status == 200){
+                            this.$message.success('发布成功！');
+                            this.$emit('PublishInfo',this.trafficInfo);
+                            this.closeMyInfoWindow();
+                            this.initSelect();
+                            this.initTrafficInof();
+                            this.publishLoading = false; 
+                        }else if(response.data.status == 500){
+                            let msg = response.data.message ? response.data.message : '发布失败 !';
+                            this.$message.error(msg);
+                            this.publishLoading = false;
+                        }
+                        
+                    } else {                     
+                        this.$message.error("发布失败 ！"); 
+                        this.publishLoading = false;
+                    }
+                }
+            );
         },        
         updateInfo(e){
-           
+            this.updateLoading = true;
             this.trafficInfo.datasource = this.select.datasource ? (this.select.datasource.key ? this.select.datasource.key : '') : '';
             this.trafficInfo.frequencyUnit = this.select.frequencyUnit ? (this.select.frequencyUnit.key ? this.select.frequencyUnit.key : '') : '';
             // console.log(this.trafficInfo.alertCategory);
            if(!this.submitForm()) return; 
+            let url = 'event/task/update';
+            let params = {
+                id: this.trafficInfo.id,
+                "taskCode": this.trafficInfo.taskCode,
+                eventType: this.trafficInfo.eventType,      //信息类型
+                longitude: this.trafficInfo.longitude,      // 经度
+                latitude: this.trafficInfo.latitude,       // 纬度
+                affectRange: this.trafficInfo.affectRange,    // 广播范围
+                content: this.trafficInfo.content,        // 信息内容
+                frequency: this.trafficInfo.frequency,      // 广播频率
+                frequencyUnit: this.trafficInfo.frequencyUnit,      // 频率单位
+                beginTime: TDate.formatTime(this.trafficInfo.beginTime),      // 生效时间
+                endTime: TDate.formatTime(this.trafficInfo.endTime),     // 失效时间
+                datasource: this.trafficInfo.datasource,     // 信息来源
+                sendChannel: this.trafficInfo.sendChannel,         //  4G下发通道
+                infoType: this.trafficInfo.infoType,       // 子类型代码
+                alertRadius: this.trafficInfo.alertRadius,                      
+                alertPath: this.trafficInfo.alertPath,
+                alertCategory: this.trafficInfo.alertCategory,
+            };
 
-            this.$emit('UpdateInfo',this.trafficInfo);
-            this.closeMyInfoWindow();
-            this.initSelect();
-             this.initTrafficInof();
+            this.$api.post( url,params,
+                response => {
+                    if (response.status >= 200 && response.status < 300) {                    
+                        
+                        if(response.data.status == 200){
+                            this.$message.success('更新成功！');
+                            this.$emit('UpdateInfo',this.trafficInfo);
+                            this.updateLoading = false;
+                            this.closeMyInfoWindow();
+                            this.initSelect();
+                            this.initTrafficInof();
+                        }else if(response.data.status == 500){
+                            let msg = response.data.message ? response.data.message : '更新失败 !';
+                            this.$message.error(msg);
+                            this.updateLoading = false;
+                        }
+                    } else {                     
+                        this.$message.error("更新失败 ！"); 
+                        this.updateLoading = false;
+                    }
+                }
+            );
         },
-        destroyInfo(e){           
-            this.$emit('DestroyInfo',this.trafficInfo);
-            this.closeMyInfoWindow(e);
-            this.initSelect();
-             this.initTrafficInof();
+        destroyInfo(e){ 
+            this.invalidLoading = true;
+            let url = 'event/task/cancel';
+            let params = {
+                id: this.trafficInfo.id,
+                "taskCode": this.trafficInfo.taskCode,
+                "expirationTime": TDate.formatTime(), 
+                "status": 2                
+            };
+
+            this.$api.post( url,params,
+                response => {
+                    if (response.status >= 200 && response.status < 300) {
+                        
+                        if(response.data.status == 200){
+                            this.$message.success('手动失效成功！');
+                            this.$emit('DestroyInfo',this.trafficInfo);
+                            this.closeMyInfoWindow(e);
+                            this.initSelect();
+                            this.initTrafficInof();
+                        }else if(response.data.status == 500){
+                            let msg = response.data.message ? response.data.message : '手动失效失败 !';
+                            this.$message.error(msg)
+                        }                         
+                        this.invalidLoading = false;
+                    } else {                     
+                        this.$message.error("手动失效失败 ！"); 
+                        this.invalidLoading = false;
+                    }
+                }
+            );
+            // this.$emit('DestroyInfo',this.trafficInfo);
+            // this.closeMyInfoWindow(e);
+            // this.initSelect();
+            // this.initTrafficInof();
         },
         closeInforWindow(e){            
             this.closeMyInfoWindow();
             this.initSelect();
-             this.initTrafficInof();
-             this.$emit("setPointer",{bool: false, flag: true}); 
+            this.initTrafficInof();
+            this.$emit("setPointer",{bool: false, flag: true}); 
         },
         initDatasourceList(isEdit=false,datasource){
             let url = 'common/queryDictionary';
@@ -607,7 +717,6 @@ export default {
             this.$api.post( url,params,
                 response => {
                     if (response.status >= 200 && response.status < 300) {
-
                         this.datasourceList = response.data ? response.data : [];
                         if(this.datasourceList.length){
                             
@@ -679,6 +788,8 @@ export default {
                     if (response.status >= 200 && response.status < 300) {
                         // console.log("----------------------------");
                         // console.log(response.data);
+                        this.trafficInfo.longitude = this.toFixedLen(this.trafficInfo.longitude);
+                        this.trafficInfo.latitude = this.toFixedLen(response.data.latitude);
                         this.trafficInfo.id = response.data.id;
                         this.trafficInfo.taskCode = response.data.taskCode;
                         this.trafficInfo.eventName = response.data.eventName;
@@ -699,11 +810,7 @@ export default {
                             this.select.alertPath = response.data.alertPath;    
                         }
                         this.trafficInfo.alertRadius = response.data.alertRadius;
-                        this.trafficInfo.alertCategory = response.data.alertCategory; 
-                        // console.log(response.data.alertPath);
-                        // console.log(this.trafficInfo.alertPath);
-
-                        // const radius = response.data.alertRadius;   
+                        this.trafficInfo.alertCategory = response.data.alertCategory;  
                         const radius = response.data.affectRange;   
 
                         this.circleLon = response.data.longitude;
@@ -726,10 +833,11 @@ export default {
         initSelect(){
             this.select.sliderVal = 1000;
             this.select.alertPath = '';
+            console.log('this.frequencyUnitList', this.frequencyUnitList);
             if(Array.isArray(this.frequencyUnitList) && this.frequencyUnitList.length){
                 this.select.frequencyUnit = this.frequencyUnitList[0];
             }
-            
+            console.log('this.datasourceList', this.datasourceList);
             if(Array.isArray(this.datasourceList) && this.datasourceList.length){
                 this.select.datasource = this.datasourceList[0];
             }
@@ -763,7 +871,6 @@ export default {
 
         //初始化地图
         initMap:function(){
-
             this.$data.map = new Map({
                 controls: defaultControls({attribution: false,zoom: false,}).extend([
                     // overviewMapControl
@@ -893,7 +1000,7 @@ export default {
         },
 
         addMyInfoWindow: function(obj, flag){
-
+            console.log('obj', obj);
             this.pointData = obj;
 
             this.trafficInfo.id = obj.id;
@@ -902,14 +1009,10 @@ export default {
             this.circleLon = obj.lon;
             this.circleLat = obj.lat;
             
-            if(obj.isEdit){
-                console.log("??????????????");
+            if (obj.isEdit) {
                 this.initDetail(obj, flag);
                 this.trafficInfo.isEdit = true;
-            }else{
-                console.log("----------------");
-                // console.log(obj);
-                // console.log(this.trafficInfo);
+            } else {
                 obj.trafficInfo.longitude = this.toFixedLen(obj.trafficInfo.longitude);
                 obj.trafficInfo.latitude = this.toFixedLen(obj.trafficInfo.latitude);
                 let _alertCategory = this.trafficInfo.alertCategory;
@@ -967,12 +1070,11 @@ export default {
             // lon,lat,id,layerId,carImgUrl,size,rotation,rotateWithView,opacity,offset,scale
             let pubMsgBgIco = 'static/images/ico-bg2.png';
             let pubMsgBgIcoID = 'bg_' + this.pubMsgIconID;
-
             // [44,58]
-            this.addImg(lon,lat,pubMsgBgIcoID,this.MessageTempLayer,pubMsgBgIco,[44,87],null,null,null,[0,15]);
+            this.addImg(lon,lat,pubMsgBgIcoID,this.MessageTempLayer,pubMsgBgIco,[44,87],null,null,null,[0,10]);
 
             // [22,37]
-            this.addImg(lon,lat,this.pubMsgIconID,this.MessageTempLayer,icon,[22,66],null,null,null,[0,15]);
+            this.addImg(lon,lat,this.pubMsgIconID,this.MessageTempLayer,icon,[28,66],null,null,null,[0,8]);
         },
         // 移除 发布信息图标
         clearPubMsgIcon(){
@@ -1545,10 +1647,9 @@ export default {
         },
         pageResize(){
             const borwserHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
-            this.pageHeight = borwserHeight - 64;         
+            this.pageHeight = borwserHeight - 64;        
         },
-        resize:function(size)
-        {
+        resize:function(size) {
             this.$data.map.setSize(size);
         }
     },
@@ -1558,16 +1659,18 @@ export default {
     },
     mounted(){
         this.pageResize();
-        window.onresize = () => {
-            // this.pageResize();
-        }
+        // window.onresize = () => {
+        //     // this.pageResize();
+        // }
+        this.initMap();
+        this.$emit("MapInitComplete",this);
         //初始化地图
-        setTimeout(() => {
-            this.initMap();
-            this.$emit("MapInitComplete",this);
+        // setTimeout(() => {
+        //     this.initMap();
+        //     this.$emit("MapInitComplete",this);
 
             
-        }, 100);
+        // }, 100);
     },
     destroyed(){
 
