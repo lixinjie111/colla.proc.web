@@ -20,7 +20,7 @@
             </el-select>
         </el-form-item>
 
-        <el-form-item label="告警类别(国标)" v-if="ruleForm.eventCategory == 'TI02'">
+        <el-form-item label="告警类别(国标)">
              <el-input v-model.trim="ruleForm.alertCategory"></el-input>
         </el-form-item>
 
@@ -46,7 +46,7 @@
             <el-input v-model.trim="ruleForm.frequency">             
             
               <template slot="append">
-                <select class="yk-w-60 yk-border-left-none yk-input-select" v-model.trim="ruleForm.frequencyUnit" placeholder="请选择">
+                <select class="yk-border-left-none yk-input-select" v-model.trim="ruleForm.frequencyUnit" placeholder="请选择">
                     <option v-for="(item,index) in frequencyUnitList" :key="index" :value="item.key">{{item.name}}</option>
                 </select>
               </template>
@@ -60,6 +60,7 @@
 
         <el-form-item label="默认影响范围" prop="alertRadius">
             <el-input-number v-model.trim="ruleForm.alertRadius" controls-position="right" :min="1" :max="1024"></el-input-number>
+            <span class="c-ml-10">单位:10cm</span>
         </el-form-item>
 
         <el-form-item label="下发通道" prop="sendChannel">
@@ -121,10 +122,6 @@
           ],
           name: [
             { required: true, message: '请输入信息类型名称', trigger: 'blur' },
-            // { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
-          ],
-          content: [
-            { required: true, message: '请输入默认信息内容', trigger: 'blur' },
             // { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
           ],
           icon: [
