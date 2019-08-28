@@ -67,6 +67,7 @@
       border: 1px solid #DCDFE6;
       border-top-right-radius: 3px;
       border-bottom-right-radius: 3px;
+      padding: 0 10px;
   }
   .yk-input-select-2{
     height: 28px;
@@ -77,6 +78,7 @@
     border-bottom-left-radius: 0px!important;
     color: #fff;
     padding-left: 3px;
+    padding: 0 10px;
   } 
   
   .yk-border-normal{
