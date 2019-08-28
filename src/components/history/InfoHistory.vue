@@ -257,9 +257,7 @@ export default {
       let longlat;
       let info = scope;
       newArr = [info];
-      console.log('newArr', newArr);
       longlat = newArr.map(x =>(Number(x.longitude).toFixed(8) + ',' + Number(x.latitude).toFixed(8)));
-      console.log('longat', longlat);
       this.isShow = true;
       let arr = [];
       this.infoData = info.content;

@@ -63,7 +63,6 @@ export default {
         if (res.data.status === 200) {
             this.videoData = res.data.data.videoList;
             this.isShowVideo = true;
-            console.log('this.videoData', this.videoData);
         } else {
             this.$message({
               type: 'error',
