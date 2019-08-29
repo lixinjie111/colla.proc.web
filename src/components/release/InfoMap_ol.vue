@@ -569,8 +569,8 @@ export default {
             this.mapInitOk = true;   
 
             // 设置地图中心点及级别
-            this.$refs.refTusvnMap.centerAt(121.1882114,31.2771320);
-            this.$refs.refTusvnMap.zoomTo(14);
+            this.$refs.refTusvnMap.centerAt(window.defaultMapOption.center[0], window.defaultMapOption.center[1]);
+            this.$refs.refTusvnMap.zoomTo(window.defaultMapOption.zoom);
             
             // this.showRsu();
             // this.showRoadsideUnit();
