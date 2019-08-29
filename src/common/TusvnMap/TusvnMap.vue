@@ -910,7 +910,7 @@ export default {
             });
             //dl_shcsq_wgs84_zc_0708
             // this.addWms("shanghai_qcc:dl_shcsq_wgs84",window.config.dlWmsUrl+"geoserver/shanghai_qcc/wms","shanghai_qcc:dl_shcsq_wgs84","",1,true,null); // 上海汽车城
-            this.addWms("shanghai_qcc:dl_shcsq_wgs84_zc_0708",window.config.dlWmsUrl+"geoserver/shanghai_qcc/wms","shanghai_qcc:dl_shcsq_wgs84_zc_0708","",1,true,null); // 上海汽车城
+            this.addWms(window.dlWmsDefaultOption.LAYERS,window.dlWmsDefaultOption.url,window.dlWmsDefaultOption.LAYERS,"",1,true,null); // 上海汽车城
 
             // this.clickEventKey = this.$data.map.on("click",this.mapClick);
             this.$data.map.getView().on("change:resolution",this.viewLevelChange);
@@ -953,10 +953,10 @@ export default {
         },
         
         showRoadNet(){
-            this.setVisible('shanghai_qcc:dl_shcsq_wgs84_zc_0708',true)
+            this.setVisible(window.dlWmsDefaultOption.LAYERS,true)
         },
         clearRoadNet(){
-            this.setVisible('shanghai_qcc:dl_shcsq_wgs84_zc_0708',false)
+            this.setVisible(window.dlWmsDefaultOption.LAYERS,false)
         },
 
         addClickEvent(item){
