@@ -1,6 +1,4 @@
 <template>
- <div class="c-wrapper-20 c-detail-box" v-cloak>
-    <p class="c-title c-border-bottom" v-if="title">{{title}}</p>
     <ul class="c-video-list-wrapper c-detail-box c-padding-10 clearfix">
       <template v-if="videoData.length">
         <li class="c-video-list" v-for="(item, index) in videoData" :key="index">
@@ -27,8 +25,6 @@
         </div>
       </li>
     </ul>
-  </div>
-
 </template>
 
 <script>
@@ -38,7 +34,6 @@ export default {
       VideoPlayer
     },
     props: {
-        title: String,
         videoData: Array
     },
     data() {
