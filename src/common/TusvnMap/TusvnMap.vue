@@ -68,6 +68,7 @@
                                 <!-- <el-input-number v-model.trim="ruleForm.alertRadius" controls-position="right" :min="1" :max="1024"></el-input-number> -->
                                 <el-form-item label="影响范围" prop="alertRadius" class="yk-bottom-12 yk-txt">
                                     <el-input-number v-model.trim="trafficInfo.alertRadius" controls-position="right" :min="1" :max="1024"></el-input-number>
+                                    <span class="c-ml-10">单位:10cm</span>
                                 </el-form-item>
 
                                 <el-form-item label="信息内容" prop="content" class="yk-bottom-16 yk-textarea">
@@ -708,6 +709,9 @@ export default {
             this.initSelect();
             this.initTrafficInof();
             this.$emit("setPointer",{bool: false, flag: true}); 
+            this.updateLoading = false;
+            this.publishLoading = false;
+            this.invalidLoading = false;
         },
         initDatasourceList(isEdit=false,datasource){
             let url = 'common/queryDictionary';
@@ -833,11 +837,11 @@ export default {
         initSelect(){
             this.select.sliderVal = 1000;
             this.select.alertPath = '';
-            console.log('this.frequencyUnitList', this.frequencyUnitList);
+            // console.log('this.frequencyUnitList', this.frequencyUnitList);
             if(Array.isArray(this.frequencyUnitList) && this.frequencyUnitList.length){
                 this.select.frequencyUnit = this.frequencyUnitList[0];
             }
-            console.log('this.datasourceList', this.datasourceList);
+            // console.log('this.datasourceList', this.datasourceList);
             if(Array.isArray(this.datasourceList) && this.datasourceList.length){
                 this.select.datasource = this.datasourceList[0];
             }
@@ -961,6 +965,9 @@ export default {
 
         addClickEvent(item){
             if(item) {
+                // console.log("------------------------");
+                // console.log(item);
+                this.trafficInfo.alertRadius = item.alertRadius;
                 this.trafficInfo.alertCategory = item.alertCategory;
             }
             this.clickEventKey = this.$data.map.on("click",this.mapClick);
@@ -1000,7 +1007,10 @@ export default {
         },
 
         addMyInfoWindow: function(obj, flag){
-            console.log('obj', obj);
+            this.updateLoading = false;
+            this.publishLoading = false;
+            this.invalidLoading = false;
+            // console.log('obj', obj);
             this.pointData = obj;
 
             this.trafficInfo.id = obj.id;
@@ -1018,7 +1028,7 @@ export default {
                 let _alertCategory = this.trafficInfo.alertCategory;
                 this.trafficInfo = obj.trafficInfo;
                 this.trafficInfo.alertCategory = _alertCategory;
-                console.log(_alertCategory);
+                // console.log(_alertCategory);
                 this.trafficInfo.isEdit = false;
                 this.initDatasourceList();
 

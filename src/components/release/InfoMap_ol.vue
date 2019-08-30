@@ -533,7 +533,7 @@ export default {
                 datasource: '',
                 infoType: this.msgTypeInfo.infoType,
                 sendChannel: this.msgTypeInfo.sendChannel,
-                alertRadius: 1024,
+                alertRadius: this.msgTypeInfo.alertRadius,
                 alertPath: '',              //格式 "[[12.333,23.333],[12.444,23,444]]"，转换显示为 12.333,23.333;12.444,23,444
                 alertCategory: ''       //告警类型
             };
