@@ -74,6 +74,15 @@ export default {
         handleLogin(){
              this.$refs.loginForm.validate(valid => {
                 if (valid) {
+                    let temp = "{\"email\":\"\",\"id\":2,\"ip\":\"\",\"loginName\":\"dev\",\"mac\":\"\",\"menus\":[],\"mobile\":\"\",\"operations\":[\"31201\",\"31101\",\"31401\",\"31302\",\"31301\",\"31403\",\"31402\",\"31303\"],\"phone\":\"\",\"token\":\"03bd9619f9714ab684966dc13b77650d\",\"userNo\":\"dev\"}";                            
+                    temp = JSON.parse(temp);
+                    this.$store.dispatch('login',temp);
+                    LocalStorageUtil.setItem('login',temp);
+                    LocalStorageUtil.setItem('currentMenu','/infoRelease');
+                    LocalStorageUtil.setItem('currentMenuId','1');
+                    this.$router.push({ path: '/infoRelease' ,params: {key:'登录成功!'}});
+                    this.$message.success('登录成功！');
+                    return false;
                     this.loading = true;
                     this.$api.post('sys/user/login',{
                         "userNo": this.loginForm.name,
