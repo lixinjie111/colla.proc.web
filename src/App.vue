@@ -155,7 +155,7 @@ export default {
   height: 100%;
 }
 #header{
-    background: #1a1d20;
+    background: #031636;
     position: relative;
     padding: 11px 20px;
     height: 28px;
@@ -197,7 +197,7 @@ export default {
 
 .el-aside{
   width: 240px!important;
-  background: #1a1d20;
+  background: #031636;
   color: #ffffff;
   padding-top: 20px;
 }
@@ -226,7 +226,7 @@ export default {
 
 .el-menu{
   color: #ffffff!important;
-  background: #1a1d20;
+  background: #031636;
   border-right: 0px;
   text-align: center;
 }
@@ -246,7 +246,7 @@ export default {
 }
 .el-submenu__title:hover{
     outline: 0 !important;
-    background: #21272F !important;
+    background: #031636 !important;
 }
 
 .el-submenu__icon-arrow{
