@@ -316,7 +316,7 @@ export default {
             });
           }
         }
-        console.log(' this.detailData ',  this.detailData );
+        // console.log(' this.detailData ',  this.detailData );
         return this.detailData;
     },
     infoHistoryBack() {
