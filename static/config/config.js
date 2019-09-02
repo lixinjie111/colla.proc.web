@@ -26,3 +26,13 @@ window.config = {
 
     version: 1.0,       // 版本号
 }
+//地图额外配置项添加
+window.defaultMapOption = {
+    center: [121.1882114,31.2771320], // 上海 -- gps坐标点
+    zoom: 14
+}
+//路网配置参数
+window.dlWmsDefaultOption = {
+    url: window.config.dlWmsUrl+'geoserver/shanghai_qcc/wms',
+    LAYERS: 'shanghai_qcc:dl_shcsq_wgs84_zc_0708'
+}
