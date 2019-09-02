@@ -11,7 +11,7 @@
         </div>
         <!-- 信息模块(基础信息) -->
           <history-basic-info title="基本信息" :detailData="detailData"></history-basic-info>
-        <!-- 内容详情 -->
+        <!-- 详情 -->
           <div class="c-wrapper-20 c-detail-box">
             <p class="c-title c-border-bottom">内容详情</p>
             <div class="c-padding-20" v-if="infoData">{{infoData}}</div>
