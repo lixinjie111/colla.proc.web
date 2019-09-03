@@ -13,10 +13,10 @@
                     </div>
                     <div class="login-item-box">
                         <el-form :model="loginForm" :rules="loginRules" ref="loginForm" label-position="right" label-width="105px" class="login-form">
-                            <el-form-item prop="name" label="用户名：" class="login-item">
+                            <el-form-item prop="name" label="用户名" class="login-item">
                                 <el-input type="text" v-model.trim="loginForm.name" :maxlength="40" placeholder="请输入用户名"></el-input>
                             </el-form-item>
-                            <el-form-item prop="pass" label="密码：" class="login-item">
+                            <el-form-item prop="pass" label="密码" class="login-item">
                                 <el-input type="password" v-model.trim="loginForm.pass" :maxlength="20" placeholder="请输入密码" @keyup.enter="handleLogin"></el-input>
                             </el-form-item>
                         </el-form>
@@ -122,6 +122,7 @@ export default {
     position: relative;
     height: 100%;
     background-color: #f2f2f2;
+    letter-spacing: 2px;
     .login-logo {
         position: absolute;
         left: 49px;
@@ -185,6 +186,7 @@ export default {
         height: 80px;
         letter-spacing: 3px;
         background-color: #f2f2f2;
+        color: #000;
         @include layoutMode();
     }
     .login-item-box {
@@ -227,12 +229,14 @@ export default {
         }
     }
     .el-input__inner {
+        font-size: 14px;
         background: transparent;        
-        border: none;
+        border: none !important;
         height: 50px;
         padding: 0 21px;
         @include layoutMode(pack);
         color: #333 !important;
+        width: 100% !important;
     }
     input:-webkit-autofill {
         -webkit-box-shadow: 0 0 0px 1000px white inset;
@@ -240,4 +244,3 @@ export default {
     }
 }
 </style>
-
