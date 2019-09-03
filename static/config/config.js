@@ -12,9 +12,9 @@ window.config = {
     // mapApiUrl: 'http://113.208.118.62:8085/',                        // 地图api
 
     //内网
-    // url:'http://172.17.1.13:9094/collaProcApp/',                    //望京环境 
-    // iconPath:'http://172.17.1.13:9090/file/pic/trafficType/',       // 图片服务器地址
-    // mapWaPianPath:'http://172.17.1.13:8086/',   //地图瓦片
+    // url:'http://172.17.1.16:9094/collaProcApp/',                    //望京环境 
+    // iconPath:'http://172.17.1.16:9090/file/pic/trafficType/',       // 图片服务器地址
+    // mapWaPianPath:'http://172.17.1.16:8086/',   //地图瓦片
     // dlUrl: 'http://10.0.1.22:8085/', //迪路
     // dlWmsUrl: 'http://10.0.1.22:8080/', //迪路
     //外网
