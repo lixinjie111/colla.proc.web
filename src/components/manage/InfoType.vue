@@ -57,6 +57,9 @@
                     </div>
                 </template>
             </el-table-column>
+            <el-table-column label="告警类别(国标)" prop="alertCategory" min-width="15%"></el-table-column>
+            <el-table-column label="信息编码" prop="code" min-width="15%"></el-table-column>
+            
             <el-table-column
                 prop="content"
                 label="默认信息内容"
