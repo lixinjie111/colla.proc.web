@@ -11,7 +11,7 @@ import store from './store/index.js'
 
 import Api from './api/index.js';
 
-import LocalStorageUtil from '@/store/localstorage.js'
+import SessionUtil from '@/store/session.js'
 // import AMap from 'vue-amap';
 // Vue.use(AMap);
 
@@ -45,7 +45,7 @@ import '@/assets/scss/map.scss';
 // 路由拦截器
 router.beforeEach((to, from, next) => {
   if (to.meta.requireAuth) {  // 判断该路由是否需要登录权限
-      if (LocalStorageUtil.getItem('login')) {  // 通过vuex state获取当前的token是否存在
+      if (SessionUtil.getItem('login')) {  // 通过vuex state获取当前的token是否存在
           next();
       }
       else {
