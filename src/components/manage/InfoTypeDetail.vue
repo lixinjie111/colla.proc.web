@@ -21,6 +21,9 @@
             <!-- <el-input size="mini" v-model="data.name" disabled></el-input> -->
             {{ruleForm.name}}
         </el-form-item>
+        <el-form-item label="告警类别(国标)：">
+            {{ruleForm.alertCategory}}
+        </el-form-item>
         <el-form-item label="信息类型图标：">
             
             <!-- <el-image :src="iconPath"></el-image> -->
