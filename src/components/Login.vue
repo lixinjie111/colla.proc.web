@@ -190,8 +190,6 @@ export default {
         }
       } else {
         this.$refs.loginForm.resetFields();
-        this.loginForm.userNo = "";
-        this.loginForm.password = "";
         this.checked = false;
       }
     },
