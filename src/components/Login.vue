@@ -7,7 +7,7 @@
       <div class="login-item-box">
         <el-form
           :model="loginForm"
-          :rules="loginForm"
+          :rules="loginRules"
           ref="loginForm"
           label-position="right"
           label-width="105px"
@@ -76,7 +76,7 @@ export default {
         password: "",
         platform: ""
       },
-      loginForm: {
+      loginRules: {
         name: [{ validator: checkAdminName, trigger: "blur" }],
         pass: [{ validator: checkPassword, trigger: "blur" }]
       },
@@ -189,7 +189,9 @@ export default {
           }
         }
       } else {
-        this.$refs.loginForm.resetFields();
+        // this.$refs.loginForm.resetFields();
+        this.loginForm.userNo = "";
+        this.loginForm.password = "";
         this.checked = false;
       }
     },
