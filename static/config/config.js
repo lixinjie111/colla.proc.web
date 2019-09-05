@@ -6,7 +6,8 @@ window.config = {
     // 120.133.21.14
     // 113.208.118.62
 
-    url:'http://111.23.140.59:9094/collaProcApp/',                    //望京环境 
+    url:'http://111.23.140.59:9094/collaProcApp/',                    //望京环境
+    operateUrl: 'http://120.133.21.14:9090/operateApp/',
     iconPath:'http://111.23.140.59:9090/file/pic/trafficType/',       // 图片服务器地址
     mapWaPianPath:'http://111.23.140.59:8086/',   //地图瓦片
     dlUrl: 'http://111.23.140.59:8085/', //迪路
