@@ -60,7 +60,7 @@
   </div>
 </template>
 <script>
-import LocalStorageUtil from '@/store/localstorage.js'
+import SessionUtil from '@/store/session.js'
 import MenuList from './assets/menu.json'
 import { Utils } from '@/common/utils/utils.js'
 
@@ -80,6 +80,18 @@ export default {
   watch: {
     '$store.state.isSubMenu': 'subMenuFn'
   },
+  created(){
+    
+    window.onload = () =>{            
+      this.initMenu(); 
+      this.flushUser();      
+    }
+
+    this.menuList = MenuList;
+  },
+  mounted(){
+    this.initMenu();
+  },
   methods: {
 
     subMenuFn(newVal,oldVal){
@@ -89,7 +101,7 @@ export default {
 
     navChange(item){
       this.$router.push(item.path);
-      LocalStorageUtil.setItem('currentMenu',item.path);
+      // SessionUtil.setItem('currentMenu',item.path);
       Utils.setMenuByPath(item.path);     
     },
 
@@ -109,8 +121,9 @@ export default {
       
       this.$store.dispatch('logout');
       this.$store.dispatch('showSubMenu',false);
-      //  LocalStorageUtil.deleteItem('login');
-      LocalStorageUtil.clearItems();
+      //  SessionUtil.deleteItem('login');
+      SessionUtil.clearItems();
+      localStorage.removeItem("yk-token");
 
     },
     showSubMenu(){
@@ -118,29 +131,12 @@ export default {
         this.$store.dispatch('showSubMenu',bool);
     },
     flushUser(){
-      let user = LocalStorageUtil.getItem('login');
+      let user = SessionUtil.getItem('login');
       if(!user) return;
 
       user = JSON.parse(user);
       this.$store.state.userName = user.loginName ? user.loginName : '';
     },
-  },
-  created(){
-    
-    window.onload = () =>{            
-      this.initMenu(); 
-      this.flushUser();      
-    }
-
-    this.menuList = MenuList;
-
-    
-
-  },
-  mounted(){
-    this.initMenu();
-
-    
   }
 }
 </script>

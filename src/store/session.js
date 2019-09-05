@@ -6,9 +6,7 @@ class SessionUtil {
 
     }
     static setItem(key,value){
-                
         this.cacheData(key,value);
-
         value = JSON.stringify(value);
         sessionStorage.setItem(key,value);
     }
@@ -24,7 +22,7 @@ class SessionUtil {
     static cacheData(type,value){
        
         switch(type){
-            case 'login':                 
+            case 'login':   
                 store.dispatch('login', value)
                 break
             case 'logout':
