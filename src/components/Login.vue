@@ -1,5 +1,5 @@
 <template>
-  <div id="login-warpper">
+  <div id="login-warpper" v-if="visibleFlag">
     <img class="login-logo" src="static/images/login-logo.png" />
     <!-- 登录 -->
     <div class="login-card">
@@ -50,6 +50,8 @@
 <script>
 import LocalStorageUtil from "@/store/localstorage.js";
 
+import SessionUtil from '@/store/session.js'
+
 export default {
   name: "Login",
   data() {
@@ -78,11 +80,32 @@ export default {
         name: [{ validator: checkAdminName, trigger: "blur" }],
         pass: [{ validator: checkPassword, trigger: "blur" }]
       },
-      loading: false
+      loading: false,
+      visibleFlag: false
     };
   },
   mounted() {
     this.getCookie();
+  },
+  created() {
+      let _data = localStorage.getItem("yk-token");
+      if(_data) {
+          let _dataObj = JSON.parse(_data),
+              _delayTime = 1000 * 60 * 60 * 24;
+          if (new Date().getTime() - _dataObj.time > _delayTime) {
+              console.log('信息已过期');
+              this.removeStorage();
+          }else{
+              // 直接调用登录接口
+              let _params = {
+                  token: _dataObj.data,
+                  platform: '40000'
+              };
+              this.loginFunc(_params);
+          }
+      } else {
+          this.removeStorage();
+      }
   },
   methods: {
     handleLogin() {
@@ -94,44 +117,45 @@ export default {
           } else {
             this.clearCookie();
           }
-          this.$api.post(
-            "sys/user/login",
-            {
-              userNo: this.loginForm.userNo,
-              password: this.loginForm.password,
-              platform: "40000"
-            },
-            response => {
-              this.loading = false;
-              if (response.status >= 200 && response.status < 300) {
-                if (response.data.status == 1) {
-                  this.$message.error(response.data.message);
-                } else if (response.status == 200) {
-                  this.loading = false;
-                  let temp = response.data.data;
-                  temp = JSON.parse(temp);
-                  console.log("temp", temp);
-                  this.$store.dispatch("login", temp);
-                  LocalStorageUtil.setItem("login", temp);
-                  LocalStorageUtil.setItem("currentMenu", "/infoRelease");
-                  LocalStorageUtil.setItem("currentMenuId", "1");
-                  this.$router.push({
-                    path: "/infoRelease",
-                    params: { key: "登录成功!" }
-                  });
-                  this.$message.success("登录成功！");
-                }
-              }
-              // else{
-              //     this.$store.dispatch('showPrompt',response.message);
-              // }
-            }
-          );
+        let _params = {
+            "userNo": this.loginForm.userNo,
+            "password":this.loginForm.password,
+            'platform':'40000'
+        };
+        this.loginFunc(_params);
         } else {
           this.loading = false;
           return false;
         }
       });
+    },
+    loginFunc(params) {
+        this.$api.post('openApi/user/login',params,response => {
+            this.loading = false;
+            if(response.status >= 200 && response.status < 300){
+                if(response.data.status == 200){
+                    let temp = response.data.data;
+                    SessionUtil.setItem('login',JSON.parse(temp));
+                    // SessionUtil.setItem('currentMenu','/infoRelease');
+                    // SessionUtil.setItem('currentMenuId','1');
+                    localStorage.setItem('yk-token', JSON.stringify({data: JSON.parse(temp).token, 'time': new Date().getTime()}));                          
+                    
+                    this.$router.push('/infoRelease');
+                }else {
+                    this.removeStorage();
+                }
+            }else {
+                this.removeStorage();
+            }
+        },err => {
+            this.loading = false;
+            this.removeStorage();
+        }, "login");
+    },
+    removeStorage() {
+        SessionUtil.clearItems();
+        localStorage.removeItem("yk-token");
+        this.visibleFlag = true;
     },
     //设置cookie
     setCookie(c_name, c_pwd, exdays) {

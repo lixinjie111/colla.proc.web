@@ -6,10 +6,11 @@ class LocalStorageUtil {
 
     }
     static setItem(key,value){
-                
-        this.cacheData(key,value);
+        
+        this.cacheData(key,JSON.parse(value));
 
         value = JSON.stringify(value);
+        console.log(value);
         localStorage.setItem(key,value);
     }
     static getItem(key){
@@ -24,7 +25,7 @@ class LocalStorageUtil {
     static cacheData(type,value){
        
         switch(type){
-            case 'login':                 
+            case 'login':      
                 store.dispatch('login', value)
                 break
             case 'logout':
