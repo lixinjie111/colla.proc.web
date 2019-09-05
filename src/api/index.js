@@ -37,38 +37,18 @@ let http = axios.create({
     }]
 });
 
-function apiAxios(method, url, params, response) {
+function apiAxios(method, url, params, response, err = function(){} ,type) {
 
     params = JSON.stringify(params);
-    // params = queryString.stringify(params);
-    // console.log('queryString.stringify(params) : ' + params);
-
-    // const random = new Date().getTime();
-    // url = url + '?random=' + random;
-
-    // if(isLoading){
-    //     // store.dispatch('popLoading',true);
-    //     store.dispatch('showLoading');
-    //     // requestOverTime();       // 请求超时
-    // }
-
-    // const random = "?random=" + Math.round(Math.random() * 1000000);
-
-    
-
-    // 判断url是否包含?
-    // const index = url.indexOf('?');
-    // if(index > -1){
-    //     url.splice(index,1,random)
-    // }else{
-    //     url = url + random;
-    // }
-
-    // console.log('apiAxios ----2222222------ ' + url + ' --- random ' + random);
     let headers = {
         'Content-Type': 'application/json;charset=UTF-8'
     };
-    
+    if(type && type=='login'){
+        axios.defaults.baseURL = window.config.operateUrl;
+    }else {
+        axios.defaults.baseURL = window.config.url;
+    }
+    url = axios.defaults.baseURL + url;
     http({
         method: method,
         headers: headers,
@@ -81,6 +61,9 @@ function apiAxios(method, url, params, response) {
         response(res);       
 
     }).catch(function(err) {
+        if(typeof err == 'function') {
+            err();
+        }
         // console.log(err.response);
         // console.log('fail !!! --------------- ' + err);
         // if(res.response == undefined){
@@ -146,21 +129,21 @@ function downloadFile(url,params){
 }
 
 export default {
-    get: function(url, params, response) {
-        return apiAxios('GET', url, params, response);
+    get: function(url, params, response, err, type) {
+        return apiAxios('GET', url, params, response, err, type);
     },
 
     // post: function(url, params, response,isLoading=true,type='normal') {
     //     return apiAxios('POST', url+"?token="+token, params, response,isLoading,type);
     // },
-    post: function(url, params, response) {
-        return apiAxios('POST', url, params, response);
+    post: function(url, params, response, err, type) {
+        return apiAxios('POST', url, params, response, err, type);
     },
-    put: function(url, params, response) {
-        return apiAxios('PUT', url, params, response);
+    put: function(url, params, response, err, type) {
+        return apiAxios('PUT', url, params, response, err, type);
     },
-    delete: function(url, params, response) {
-        return apiAxios('DELETE', url, params, response);
+    delete: function(url, params, response, err, type) {
+        return apiAxios('DELETE', url, params, response, err, type);
     } ,
     download: function(url,params){
         console.log('download ----------------');

@@ -82,8 +82,7 @@
 
       <el-table-column prop="datasource" label="信息来源" min-width="8%">
         <template slot-scope="scope">
-          <span v-if="scope.row.datasource === 1">平台运营人员</span>
-          <span v-else>{{scope.row.datasource}}</span>
+          <span>{{scope.row.datasource === 1 ? '平台运营人员' : '融合计算'}}</span>
         </template>
       </el-table-column>
       <el-table-column min-width="5%" label="操作">
