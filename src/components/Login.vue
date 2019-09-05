@@ -7,7 +7,7 @@
       <div class="login-item-box">
         <el-form
           :model="loginForm"
-          :rules="loginRules"
+          :rules="loginForm"
           ref="loginForm"
           label-position="right"
           label-width="105px"
@@ -76,7 +76,7 @@ export default {
         password: "",
         platform: ""
       },
-      loginRules: {
+      loginForm: {
         name: [{ validator: checkAdminName, trigger: "blur" }],
         pass: [{ validator: checkPassword, trigger: "blur" }]
       },
