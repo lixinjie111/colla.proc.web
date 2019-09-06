@@ -142,6 +142,7 @@ export default {
                     
                     this.$router.push('/infoRelease');
                 }else {
+                    this.$message.error(response.data.message);
                     this.removeStorage();
                 }
             }else {
