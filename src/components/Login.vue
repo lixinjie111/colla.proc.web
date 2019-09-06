@@ -84,9 +84,6 @@ export default {
       visibleFlag: false
     };
   },
-  mounted() {
-    this.getCookie();
-  },
   created() {
       let _data = localStorage.getItem("yk-token");
       if(_data) {
@@ -106,6 +103,9 @@ export default {
       } else {
           this.removeStorage();
       }
+  },
+  mounted() {
+    this.getCookie();
   },
   methods: {
     handleLogin() {
