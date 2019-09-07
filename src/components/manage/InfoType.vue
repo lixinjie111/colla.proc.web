@@ -13,6 +13,7 @@
             </el-form-item>
         </el-form>
         <el-table
+                ref="table"
                 class="c-mb-70"
                 max-height="724"
                 :data="dataList"
@@ -271,6 +272,7 @@ export default {
         },
         pagingChange(index){
             this.paging.index = index - 1;
+            this.$refs.table.bodyWrapper.scrollTop = 0;
             this.initData();
         }
     },

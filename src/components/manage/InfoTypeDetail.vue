@@ -1,5 +1,6 @@
 <template>
 <el-dialog
+    :close-on-click-modal="false"
     :title="popData.title"
     width="30%"
     :before-close="handleCancel"

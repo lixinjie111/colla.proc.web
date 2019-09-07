@@ -50,6 +50,9 @@
 	}
 	.el-input-number--mini {
 		width: calc(100% - 80px);
+		.el-input--mini .el-input__inner {
+			text-align: left;
+		}
 	}
 }
 .el-dialog {
