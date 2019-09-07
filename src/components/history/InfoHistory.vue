@@ -211,6 +211,7 @@ export default {
           this.$message.error("showPrompt", "获取设备列表失败  ！");
         }
         this.isLoading = false;
+        this.$refs.table.bodyWrapper.scrollTop = 0;
       });
     },
     initDatasourceList(isEdit = false, datasource) {
@@ -242,7 +243,6 @@ export default {
     },
     pagingChange(value) {
       this.paging.index = value - 1;
-      this.$refs.table.bodyWrapper.scrollTop = 0;
       this.initData();
 
       // this.saveWater();

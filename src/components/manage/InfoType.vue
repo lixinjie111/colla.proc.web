@@ -184,6 +184,7 @@ export default {
                     }
 
                     this.isLoading = false;
+                    this.$refs.table.bodyWrapper.scrollTop = 0;
                 }
                 
             );
@@ -272,7 +273,6 @@ export default {
         },
         pagingChange(index){
             this.paging.index = index - 1;
-            this.$refs.table.bodyWrapper.scrollTop = 0;
             this.initData();
         }
     },
