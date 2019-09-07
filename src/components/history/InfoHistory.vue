@@ -39,6 +39,7 @@
       </el-form-item>
     </el-form>
     <el-table
+      ref="table"
       class="c-mb-70"
       max-height="724"
       :data="dataList"
@@ -73,8 +74,6 @@
       <el-table-column prop="beginTime" label="发布时间" min-width="12%"></el-table-column>
 
       <el-table-column prop="endTime" label="失效时间" min-width="12%"></el-table-column>
-
-      <!-- <el-table-column prop="expirationTime" label="实际结束时间" min-width="12%"></el-table-column> -->
 
       <el-table-column prop="content" label="信息内容" min-width="15%"></el-table-column>
 
@@ -147,11 +146,28 @@ export default {
       isShow: false,
       infoData: '',
       detailData: [],
-      taskCode: ''
+      taskCode: '',
+      scrollTop: 0
     };
   },
+  created() {
+    this.initDatasourceList();
+    this.init();
+  },
+  mounted() {
+    // let dom = this.$refs.table.bodyWrapper;
+    // console.log('dom', dom);
+    // dom.addEventListener('scroll', () => {
+    //     // 滚动距离
+    //     this.scrollTop = dom.scrollTop;
+    //     console.log('this.scrollTop', this.scrollTop);
+    // });
 
+  },
   methods: {
+    handleScroll(el) {
+      console.log(el);
+    },
     init() {
       this.initSearch();
       this.initPaging();
@@ -174,7 +190,6 @@ export default {
     },
     initData(type) {
       this.isLoading = true;
-
       let url = "event/task/queryPage";
       let params = {
         // code: this.search.code,
@@ -227,6 +242,7 @@ export default {
     },
     pagingChange(value) {
       this.paging.index = value - 1;
+      this.$refs.table.bodyWrapper.scrollTop = 0;
       this.initData();
 
       // this.saveWater();
@@ -321,10 +337,6 @@ export default {
     infoHistoryBack() {
       this.isShow = false;
     }
-  },
-  created() {
-    this.initDatasourceList();
-    this.init();
   }
 };
 </script>
