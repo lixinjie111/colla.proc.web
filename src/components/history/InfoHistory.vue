@@ -72,11 +72,11 @@
       </el-table-column>
 
       <el-table-column label="发布时间" min-width="12%">
-        <template slot-scope="scope">{{$TDate.formatTime(scope.row.beginTime)}}</template>
+        <template slot-scope="scope">{{TDate.formatTime(scope.row.beginTime)}}</template>
       </el-table-column>
 
       <el-table-column label="失效时间" min-width="12%">
-        <template slot-scope="scope">{{$TDate.formatTime(scope.row.endTime)}}</template>
+        <template slot-scope="scope">{{TDate.formatTime(scope.row.endTime)}}</template>
       </el-table-column>
 
       <el-table-column prop="content" label="信息内容" min-width="15%"></el-table-column>
@@ -124,6 +124,7 @@ export default {
   data() {
     return {
       dataList: [],
+      TDate: TDate,
       search: {
         eventType: "",
         status: "",
