@@ -10,6 +10,7 @@ import ElementUI from 'element-ui'
 import store from './store/index.js'
 
 import Api from './api/index.js';
+import TDate from './common/date.js';
 
 import SessionUtil from '@/store/session.js'
 // import AMap from 'vue-amap';
@@ -20,6 +21,7 @@ Vue.config.productionTip = false
 Vue.use(ElementUI)
 
 Vue.prototype.$api = Api;
+// Vue.prototype.$TDate = TDate;
 
 // video视频播放器
 import VideoPlayer  from 'vue-video-player'
