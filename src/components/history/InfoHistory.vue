@@ -149,8 +149,7 @@ export default {
       detailData: [],
       isShow: false,
       infoData: '',
-      taskCode: '',
-      scrollTop: 0
+      taskCode: ''
     };
   },
   created() {
@@ -158,14 +157,6 @@ export default {
     this.init();
   },
   mounted() {
-    // let dom = this.$refs.table.bodyWrapper;
-    // console.log('dom', dom);
-    // dom.addEventListener('scroll', () => {
-    //     // 滚动距离
-    //     this.scrollTop = dom.scrollTop;
-    //     console.log('this.scrollTop', this.scrollTop);
-    // });
-
   },
   methods: {
     handleScroll(el) {
