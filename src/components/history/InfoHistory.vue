@@ -39,6 +39,7 @@
       </el-form-item>
     </el-form>
     <el-table
+      ref="table"
       class="c-mb-70"
       max-height="724"
       :data="dataList"
@@ -67,14 +68,12 @@
       </el-table-column>
 
       <el-table-column prop="longitude,latitude " label="中心位置" min-width="15%">
-        <template slot-scope="scope">{{Number(scope.row.longitude).toFixed(8)}} , {{Number(scope.row.latitude).toFixed(8)}}</template>
+        <template slot-scope="scope">{{parseFloat(scope.row.longitude).toFixed(8)}} , {{parseFloat(scope.row.latitude).toFixed(8)}}</template>
       </el-table-column>
 
       <el-table-column prop="beginTime" label="发布时间" min-width="12%"></el-table-column>
 
       <el-table-column prop="endTime" label="失效时间" min-width="12%"></el-table-column>
-
-      <!-- <el-table-column prop="expirationTime" label="实际结束时间" min-width="12%"></el-table-column> -->
 
       <el-table-column prop="content" label="信息内容" min-width="15%"></el-table-column>
 
@@ -146,12 +145,28 @@ export default {
       detailData: [],
       isShow: false,
       infoData: '',
-      detailData: [],
-      taskCode: ''
+      taskCode: '',
+      scrollTop: 0
     };
   },
+  created() {
+    this.initDatasourceList();
+    this.init();
+  },
+  mounted() {
+    // let dom = this.$refs.table.bodyWrapper;
+    // console.log('dom', dom);
+    // dom.addEventListener('scroll', () => {
+    //     // 滚动距离
+    //     this.scrollTop = dom.scrollTop;
+    //     console.log('this.scrollTop', this.scrollTop);
+    // });
 
+  },
   methods: {
+    handleScroll(el) {
+      console.log(el);
+    },
     init() {
       this.initSearch();
       this.initPaging();
@@ -174,7 +189,6 @@ export default {
     },
     initData(type) {
       this.isLoading = true;
-
       let url = "event/task/queryPage";
       let params = {
         // code: this.search.code,
@@ -191,6 +205,7 @@ export default {
       this.$api.post(url, params, response => {
         if (response.status >= 200 && response.status < 300) {
           this.dataList = response.data.list;
+          this.$refs.table.bodyWrapper.scrollTop = 0;
           this.paging.total = response.data.totalCount;
         } else {
           this.$message.error("showPrompt", "获取设备列表失败  ！");
@@ -256,7 +271,7 @@ export default {
       let longlat;
       let info = scope;
       newArr = [info];
-      longlat = newArr.map(x =>(Number(x.longitude).toFixed(8) + ',' + Number(x.latitude).toFixed(8)));
+      longlat = newArr.map(x =>(parseFloat(x.longitude).toFixed(8) + ',' + parseFloat(x.latitude).toFixed(8)));
       this.isShow = true;
       let arr = [];
       this.infoData = info.content;
@@ -265,7 +280,7 @@ export default {
           'name': (_ => {
               if (x === 'taskCode') {
                 return '信息编号';
-              } else if (x === 'eventType') {
+              } else if (x === 'eventName') {
                 return '信息类型';
               } else if (x === 'eventCode') {
                 return '事件编号';
@@ -321,10 +336,6 @@ export default {
     infoHistoryBack() {
       this.isShow = false;
     }
-  },
-  created() {
-    this.initDatasourceList();
-    this.init();
   }
 };
 </script>
