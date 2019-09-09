@@ -13,6 +13,7 @@
             </el-form-item>
         </el-form>
         <el-table
+                ref="table"
                 class="c-mb-70"
                 max-height="724"
                 :data="dataList"
@@ -176,6 +177,7 @@ export default {
                     if (response.status >= 200 && response.status < 300) {
 
                         this.dataList = response.data.list;
+                        this.$refs.table.bodyWrapper.scrollTop = 0;
                         this.paging.total = response.data.totalCount;
                         
                     } else {                     
