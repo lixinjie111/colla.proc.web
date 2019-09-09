@@ -29,6 +29,7 @@
               :maxlength="20"
               placeholder="请输入密码"
               auto-complete="new-password"
+              @keyup.enter.native="handleLogin"
             ></el-input>
           </el-form-item>
           <el-form-item class="login-item login-remember-item">
