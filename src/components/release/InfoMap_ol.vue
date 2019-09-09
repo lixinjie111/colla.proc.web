@@ -83,8 +83,8 @@ export default {
                 content: '',
                 frequency: 500,
                 frequencyUnit: '',
-                beginTime: TDate.formatTime(),
-                endTime: TDate.formatTime(),
+                beginTime: new Date().getTime(),
+                endTime: new Date().getTime(),
                 datasource: '',
                 infoType: '',
                 sendChannel: '',
@@ -94,6 +94,7 @@ export default {
             },
             isPointerIco: false,    // 是否修改鼠标的图标
             pubMsgList: [],
+            prevData:{},
             dyHeight: 'yk-dy-height',
             isOk: false,
         }
@@ -109,8 +110,7 @@ export default {
         },
         initPubMsgList(){
 
-            this.clearPubMsg();
-            
+            //this.clearPubMsg();
             let url = 'event/task/findEffectiveList';
             let params = {                
                 status: 1,
@@ -121,8 +121,7 @@ export default {
 
                         this.pubMsgList = response.data ? response.data : [];                        
                         let t = this.pubMsgList;
-
-                        this.addPubMsg();
+                        this.addPubMsg(this.pubMsgList);
                         
                         // if(t.length){
                         //     this.$refs.refTusvnMap.centerAt( t.length, t[0], t[1])
@@ -134,73 +133,130 @@ export default {
                 }
             );
         },
-        addPubMsg(){
-            for(let i=0;i<this.pubMsgList.length;i++){
-                let item = this.pubMsgList[i];
-                let icon = 'static/images/position.png';
-                // let icon = 'https://webapi.amap.com/theme/v1.3/markers/n/mark_b.png';
-                if(item.icon){
-                    icon = this.iconPath + item.icon;
-                }              
-                
-                let lon = item.longitude;
-                let lat = item.latitude;                            
-                let id = item.taskCode;
-                let size = [30,30];                           
-
-                let bgImgId = 'bg_' + id;
-                let bgImgSrc = 'static/images/ico-bg2.png';                            
-                let bgImgSize = [44,58];
-                let bgImgOffset = [0,0];                            
-                this.$refs.refTusvnMap.addImg(lon, lat, bgImgId,this.mapLayer.messageBg,bgImgSrc,bgImgSize,0,true,1,bgImgOffset,1,[0.5,1]);                            
-
-                let imgOffset = [0,-34];
-                this.$refs.refTusvnMap.addImgOverlay( id, icon, null, lon, lat, id, imgOffset, (e) => {
-                    
-                    e.preventDefault();
-                    e.stopPropagation();
-
-                    let marker = {
-                        id: item.id,
-                        lon: lon,
-                        lat: lat,
-                        isEdit: true,
-                        icon: this.iconPath + this.msgTypeInfo.icon,
-                        trafficInfo: this.trafficInfo,
-
-                    };
-
-                    this.cricleID = 'icon_' + item.id;
-                    this.$refs.refTusvnMap.addMyInfoWindow(marker);
-
-                }); 
-                
+        addPubMsg(_result){
+        	let _this=this;
+        	let _filterData = {};
+            _result.forEach((item, index) => {
+                _filterData[item.taskCode] = {
+                    lon: item.longitude,
+                    lat: item.latitude,
+                    id: item.taskCode,
+                    icon: item.icon?this.iconPath + item.icon:'static/images/position.png',
+                    bgImgId:'bg_' + item.taskCode,
+                    bgImgSrc:'static/images/ico-bg2.png',
+                    bgImgSize: [44,58],
+           			bgImgOffset : [0,0],
+           			size:[30,30],
+           			imgOffset:[0,-34],
+           			alertCategory:item.alertCategory,
+           			beginTime:item.beginTime,
+           			cameraId:item.cameraId,
+           			endTime:item.endTime,
+           			eventType:item.eventType,
+                };
+            });
+            
+            for (let id in _this.prevData) {
+                if(_filterData[id]) {   //表示有该点，做setPosition
+                     //console.log(_filterData[id],"更新")
+                   // this.$refs.refTusvnMap.setOverlayPosition(_filterData[id].id, _filterData[id].lon, _filterData[id].lat);
+                } else {   //表示没有该点，做remove
+                    //console.log(_this.prevData[id], "remove");
+                    this.$refs.refTusvnMap.removeOverlayById(_this.prevData[id].id);
+                        this.$refs.refTusvnMap.closeInforWindow
+                    delete _this.prevData[id];
+                }
             }
+			
+			
+            for (let id in _filterData) {
+                if(!_this.prevData[id]) {   //表示新增该点，做add
+                	this.$refs.refTusvnMap.addImg(_filterData[id].lon, _filterData[id].lat, _filterData[id].bgImgId,this.mapLayer.messageBg,_filterData[id].bgImgSrc,_filterData[id].bgImgSize,0,true,1,_filterData[id].bgImgOffset,1,[0.5,1]);  
+	                this.$refs.refTusvnMap.addImgOverlay(_filterData[id].id, _filterData[id].icon, null, _filterData[id].lon, _filterData[id].lat, _filterData[id].id, _filterData[id].imgOffset, (e) => {
+	                    e.preventDefault();
+	                    e.stopPropagation();
+	                    let marker = {
+	                        id: _filterData[id].id,
+	                        lon: _filterData[id].lon,
+                            lat: _filterData[id].lat,
+	                        isEdit: true,
+	                        icon: this.iconPath + this.msgTypeInfo.icon,
+	                        trafficInfo: this.trafficInfo,
+	                    };
+	                    this.cricleID = 'icon_' + _filterData[id].id;
+	                    this.$refs.refTusvnMap.addMyInfoWindow(marker);
+	
+	                }); 
+                }
+            }
+            _this.prevData = _filterData;
+
+//          for(let i=0;i<this.pubMsgList.length;i++){
+//              let item = this.pubMsgList[i];
+//              let icon = 'static/images/position.png';
+//              // let icon = 'https://webapi.amap.com/theme/v1.3/markers/n/mark_b.png';
+//              if(item.icon){                               
+//                  icon = this.iconPath + item.icon;
+//              }              
+//              
+//              let lon = item.longitude;
+//              let lat = item.latitude;                            
+//              let id = item.taskCode;
+//              let taskCode = item.taskCode;
+//              let size = [30,30];                           
+//
+//              let bgImgId = 'bg_' + id;
+//              let bgImgSrc = 'static/images/ico-bg2.png';                            
+//              let bgImgSize = [44,58];
+//              let bgImgOffset = [0,0];                            
+//              this.$refs.refTusvnMap.addImg(lon, lat, bgImgId,this.mapLayer.messageBg,bgImgSrc,bgImgSize,0,true,1,bgImgOffset,1,[0.5,1]);                            
+//
+//              let imgOffset = [0,-34];
+//              this.$refs.refTusvnMap.addImgOverlay( id, icon, null, lon, lat, id, imgOffset, (e) => {
+//                  
+//                  e.preventDefault();
+//                  e.stopPropagation();
+//
+//                  let marker = {
+//                      id: item.id,
+//                      lon: lon,
+//                      lat: lat,
+//                      taskCode:taskCode,
+//                      isEdit: true,
+//                      icon: this.iconPath + this.msgTypeInfo.icon,
+//                      trafficInfo: this.trafficInfo,
+//
+//                  };
+//
+//                  this.cricleID = 'icon_' + item.id;
+//                  this.$refs.refTusvnMap.addMyInfoWindow(marker);
+//
+//              }); 
+//              
+//          }
         },
         temporaryClearPubMsg(e){
-            
-            if(e.bool){
-                this.clearPubMsgIco();
-            }else{
-                this.addPubMsg();
+            if(e.bool){//删除地图上的点;关掉webscoket;
+                this.clearPubMsg();
             }
-            
         },
         clearPubMsgIco(){
             this.$refs.refTusvnMap.removeAllFeature(this.mapLayer.messageBg);
-
-            for(let item of this.pubMsgList){
-                this.$refs.refTusvnMap.removeOverlayById(item.taskCode);
+			if(Object.keys(this.prevData).length<1){
+				return;
+			}
+            for(let item in this.prevData){
+                this.$refs.refTusvnMap.removeOverlayById(this.prevData[item].id);
             }
         },
         clearPubMsg(){
-
             this.clearPubMsgIco();
-            this.pubMsgList = [];
+            this.prevData = {};
         },
 
-        publishInfo(e){
+        publishInfo(e){//发布成功后：建立webscoket连接；清空数据
             this.initPubMsgList();
+            this.clearPubMsg();
             // this.$emit('PubMsgChange');        
             // let url = 'event/task/save';
             // let params = {
@@ -241,8 +297,9 @@ export default {
             //     }
             // );
         },
-        updateInfo(e){
+        updateInfo(e){//更新不需要操作
             this.initPubMsgList();
+            this.clearPubMsg();
             // let url = 'event/task/update';
             // let params = {
             //     id: e.id,
@@ -282,8 +339,9 @@ export default {
             //     }
             // );
         },
-        destroyInfo(e){
+        destroyInfo(e){//手动失效也不需要操作
             this.initPubMsgList();
+            this.clearPubMsg();
             this.$emit('PubMsgChange');
             // let url = 'event/task/cancel';
             // let params = {
@@ -511,10 +569,10 @@ export default {
             let lat = evt.coordinate[1];
 
             // 生效时间 当前时间
-            let beginTime = TDate.formatTime();
+            let beginTime = new Date().getTime();
             // 失效时间 当前时间 +24 小时
-            let tomorrow = (new Date()).getTime() + 24 * 60 * 60 * 1000;
-            let endTime = TDate.formatTime(tomorrow);
+            let endTime = (new Date()).getTime() + 24 * 60 * 60 * 1000;
+           
 
             this.trafficInfo = {
                 title: '信息发布',
