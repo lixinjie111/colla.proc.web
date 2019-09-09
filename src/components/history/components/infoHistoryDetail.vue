@@ -14,7 +14,7 @@
         <!-- 内容详情 -->
         <div class="c-wrapper-20 c-detail-box m-desc c-flex">
           <span class="title">内容详情</span>
-          <span class="desc">{{infoData || '--'}}</span>
+          <span class="desc" :title="infoData || '--'">{{infoData || '--'}}</span>
         </div>
         <!-- 视频内容 -->
 
