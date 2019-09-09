@@ -67,11 +67,13 @@ export default {
             this.videoData = res.data.data.videoList;
             this.isShowVideo = true;
         } else {
+          if(res.data.message) {
             this.$message({
               type: 'error',
-              message: '暂无视频数据'
+              message: res.data.message
             })
-            this.isShowVideo = true;
+          }
+          this.isShowVideo = true;
         }
       });
     },
