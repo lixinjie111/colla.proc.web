@@ -71,9 +71,13 @@
         <template slot-scope="scope">{{parseFloat(scope.row.longitude).toFixed(8)}} , {{parseFloat(scope.row.latitude).toFixed(8)}}</template>
       </el-table-column>
 
-      <el-table-column prop="beginTime" label="发布时间" min-width="12%"></el-table-column>
+      <el-table-column label="发布时间" min-width="12%">
+        <template slot-scope="scope">{{$TDate.formatTime(scope.row.beginTime)}}</template>
+      </el-table-column>
 
-      <el-table-column prop="endTime" label="失效时间" min-width="12%"></el-table-column>
+      <el-table-column label="失效时间" min-width="12%">
+        <template slot-scope="scope">{{$TDate.formatTime(scope.row.endTime)}}</template>
+      </el-table-column>
 
       <el-table-column prop="content" label="信息内容" min-width="15%"></el-table-column>
 
@@ -230,8 +234,8 @@ export default {
       if (Array.isArray(this.search.publishTime)) {
         let start = this.search.publishTime[0];
         let end = this.search.publishTime[1];
-        this.search.startTime = TDate.formatTime(start);
-        this.search.endTime = TDate.formatTime(end);
+        this.search.startTime = TDate.dateToMs(start);
+        this.search.endTime = TDate.dateToMs(end);
       }
 
       this.initData();
@@ -267,6 +271,11 @@ export default {
     },
     // 查看详情
     checkDetail(scope) {
+      console.log(scope)
+      scope.beginTime=TDate.formatTime(scope.beginTime);
+      scope.createTime=TDate.formatTime(scope.createTime);
+      scope.endTime=TDate.formatTime(scope.endTime);
+      scope.updateTime=TDate.formatTime(scope.updateTime);
       let newArr;
       let longlat;
       let info = scope;
@@ -330,7 +339,6 @@ export default {
             });
           }
         }
-        console.log(' this.detailData ',  this.detailData );
         return this.detailData;
     },
     infoHistoryBack() {

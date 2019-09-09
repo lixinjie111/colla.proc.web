@@ -235,8 +235,8 @@ export default {
                 content: '',
                 frequency: 500,
                 frequencyUnit: '',
-                beginTime: TDate.formatTime(),
-                endTime: TDate.formatTime(),
+                beginTime: new Date().getTime(),
+                endTime: new Date().getTime(),
                 datasource: '',
                 // alertRadius: 1000,
                 affectRange: 1000,
@@ -379,10 +379,6 @@ export default {
                 this.select.alertPath = '';
             }
             this.clearTempLayer();
-            // console.log(this.pointData);
-            // 重新打开窗口
-            // console.log("11111111111111111111");
-            // console.log(this.pointData);
             this.addMyInfoWindow(this.pointData, true);
 
             this.$emit('TemporaryClearPubMsg',{bool:false});
@@ -584,8 +580,8 @@ export default {
                 content: this.trafficInfo.content,        // 信息内容
                 frequency: this.trafficInfo.frequency,      // 广播频率
                 frequencyUnit: this.trafficInfo.frequencyUnit,      // 频率单位
-                beginTime: TDate.formatTime(this.trafficInfo.beginTime),      // 生效时间
-                endTime: TDate.formatTime(this.trafficInfo.endTime),     // 失效时间
+                beginTime: TDate.dateToMs(this.trafficInfo.beginTime),      // 生效时间
+                endTime: TDate.dateToMs(this.trafficInfo.endTime),     // 失效时间
                 datasource: this.trafficInfo.datasource,     // 信息来源
                 sendChannel: this.trafficInfo.sendChannel,         //  4G下发通道
                 infoType: this.trafficInfo.infoType,       // 子类型代码
@@ -635,8 +631,8 @@ export default {
                 content: this.trafficInfo.content,        // 信息内容
                 frequency: this.trafficInfo.frequency,      // 广播频率
                 frequencyUnit: this.trafficInfo.frequencyUnit,      // 频率单位
-                beginTime: TDate.formatTime(this.trafficInfo.beginTime),      // 生效时间
-                endTime: TDate.formatTime(this.trafficInfo.endTime),     // 失效时间
+                beginTime: TDate.dateToMs(this.trafficInfo.beginTime),      // 生效时间
+                endTime: TDate.dateToMs(this.trafficInfo.endTime),     // 失效时间
                 datasource: this.trafficInfo.datasource,     // 信息来源
                 sendChannel: this.trafficInfo.sendChannel,         //  4G下发通道
                 infoType: this.trafficInfo.infoType,       // 子类型代码
@@ -671,10 +667,11 @@ export default {
         destroyInfo(e){ 
             this.invalidLoading = true;
             let url = 'event/task/cancel';
+           // console.log(TDate.formatTime())
             let params = {
                 id: this.trafficInfo.id,
                 "taskCode": this.trafficInfo.taskCode,
-                "expirationTime": TDate.formatTime(), 
+                "expirationTime": new Date().getTime(), 
                 "status": 2                
             };
 
@@ -785,7 +782,7 @@ export default {
         initDetail(marker,flag) {
             let url = 'event/task/findDetail';
             let params = {
-                id: marker.id,
+                taskCode: marker.id,
             };
             this.$api.post( url,params,
                 response => {
@@ -861,8 +858,8 @@ export default {
                 content: '',
                 frequency: 500,
                 frequencyUnit: '',
-                beginTime: TDate.formatTime(),
-                endTime: TDate.formatTime(),
+                beginTime: new Date().getTime(),
+                endTime: new Date().getTime(),
                 datasource: '',
                 // alertRadius: 1000,
                 affectRange: 1000,
@@ -1010,7 +1007,6 @@ export default {
             this.updateLoading = false;
             this.publishLoading = false;
             this.invalidLoading = false;
-            // console.log('obj', obj);
             this.pointData = obj;
 
             this.trafficInfo.id = obj.id;
