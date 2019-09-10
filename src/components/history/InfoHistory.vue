@@ -19,8 +19,8 @@
           v-model="search.publishTime"
           type="datetimerange"
           range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
+          start-placeholder="开始时间"
+          end-placeholder="结束时间"
         ></el-date-picker>
       </el-form-item>
       <el-form-item label="信息来源：">
@@ -71,12 +71,12 @@
         <template slot-scope="scope">{{parseFloat(scope.row.longitude).toFixed(8)}} , {{parseFloat(scope.row.latitude).toFixed(8)}}</template>
       </el-table-column>
 
-      <el-table-column label="发布时间" min-width="12%">
+      <el-table-column label="发布开始时间" min-width="12%">
         <template slot-scope="scope">{{$TDate.formatTime(scope.row.beginTime)}}</template>
       </el-table-column>
 
-      <el-table-column label="失效时间" min-width="12%">
-        <template slot-scope="scope">{{$TDate.formatTime(scope.row.endTime)}}</template>
+      <el-table-column label="发布结束时间" min-width="12%">
+        <template slot-scope="scope">{{$TDate.formatTime(scope.row.expirationTime)}}</template>
       </el-table-column>
 
       <el-table-column prop="content" label="信息内容" min-width="15%"></el-table-column>
@@ -262,11 +262,10 @@ export default {
     },
     // 查看详情
     checkDetail(scope) {
-      console.log(scope)
       scope.beginTime=TDate.formatTime(scope.beginTime);
       scope.createTime=TDate.formatTime(scope.createTime);
       scope.endTime=TDate.formatTime(scope.endTime);
-      scope.updateTime=TDate.formatTime(scope.updateTime);
+      scope.expirationTime=TDate.formatTime(scope.expirationTime);//updateTime
       let newArr;
       let longlat;
       let info = scope;
@@ -292,7 +291,7 @@ export default {
                 return '事件发生位置';
               } else if (x === 'createTime') {
                 return '发布开始时间';
-              } else if (x === 'updateTime') {
+              } else if (x === 'expirationTime') {//updateTime
                 return '发布结束时间';
               } else if (x === 'sendNumber') {
                 return '累计发送次数';

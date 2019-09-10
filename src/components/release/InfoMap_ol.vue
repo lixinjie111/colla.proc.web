@@ -97,6 +97,12 @@ export default {
             prevData:{},
             dyHeight: 'yk-dy-height',
             isOk: false,
+            webSocket: null,
+            webSocketData: {
+                action: "event_detail_data",
+                token: "tusvn",
+                id: ""
+            }
         }
     },
     methods: {
@@ -107,6 +113,52 @@ export default {
             if(!e.flag) {
                 this.removeMapClickEvent();
             }
+        },
+        initWebSocket() {
+            if("WebSocket" in window) {
+                this.webSocket = new WebSocket(window.config.websocketUrl); //获得WebSocket对象
+            }
+            this.webSocket.onmessage = this.onmessage;
+            this.webSocket.onclose = this.onclose;
+            this.webSocket.onopen = this.onopen;
+            this.webSocket.onerror = this.onerror;
+        },
+        onmessage(mesasge) {
+            //console.log(JSON.parse(mesasge.data))
+            this.itemData = JSON.parse(mesasge.data).result.data;
+            this.position = this.coordinateTransfer("EPSG:4326", "+proj=utm +zone=51 +ellps=WGS84 +datum=WGS84 +units=m +no_defs", this.itemData.longitude, this.itemData.latitude);
+            let list = JSON.parse(mesasge.data).result.deviceList;
+            if(list) {
+                this.deviceList = JSON.parse(mesasge.data).result.deviceList;
+            } else {
+                this.deviceList = [];
+            }
+            if(this.itemData.status == 2) { //事件消失取消模型
+                if(this.$refs.tusvnMap3.getStaticModel(this.selectedItem.cameraId)) {
+                    this.$refs.tusvnMap3.removeStaticModel(this.selectedItem.cameraId);
+                }
+            }
+
+        },
+        onclose(data) {
+            console.log("结束连接");
+        },
+        onopen(data) {
+            var _traffic = JSON.stringify(this.webSocketData);
+            this.sendMsg(_traffic);
+        },
+        sendMsg(msg) {
+            if(window.WebSocket) {
+                if(this.webSocket.readyState == WebSocket.OPEN) {
+                    //如果WebSocket是打开状态
+                    this.webSocket.send(msg); //send()发送消息
+                }
+            } else {
+                return;
+            }
+        },
+        destroyed(){
+            this.webSocket && this.webSocket.close();
         },
         initPubMsgList(){
 
@@ -237,6 +289,7 @@ export default {
         },
         temporaryClearPubMsg(e){
             if(e.bool){//删除地图上的点;关掉webscoket;
+                this.webscoket && this.webscoket.close();
                 this.clearPubMsg();
             }
         },
@@ -255,6 +308,7 @@ export default {
         },
 
         publishInfo(e){//发布成功后：建立webscoket连接；清空数据
+            //this.initWebSocket();
             this.initPubMsgList();
             this.clearPubMsg();
             // this.$emit('PubMsgChange');        
@@ -633,7 +687,7 @@ export default {
             // this.showRsu();
             // this.showRoadsideUnit();
             // this.showTrafficSignal();
-
+            //this.initWebSocket();
             this.initPubMsgList();
             //this.$refs.refTusvnMap.showRoadNet(this.mapLayer.messageBg);
 
