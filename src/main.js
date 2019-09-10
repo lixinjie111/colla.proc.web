@@ -21,7 +21,7 @@ Vue.config.productionTip = false
 Vue.use(ElementUI)
 
 Vue.prototype.$api = Api;
-Vue.prototype.$TDate = TDate;
+// Vue.prototype.$TDate = TDate;
 
 // video视频播放器
 import VideoPlayer  from 'vue-video-player'
