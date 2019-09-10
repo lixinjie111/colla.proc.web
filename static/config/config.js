@@ -7,7 +7,7 @@ window.config = {
     dlUrl: 'http://120.133.21.14:8085/', //迪路
     dlWmsUrl: 'http://120.133.21.14:8080/', //迪路
 
-    //上海  内网-IP
+    //上海正式环境  内网-IP
     // url:'http://172.16.1.197:9094/collaProcApp/',  // 交通平台
     // operateUrl: 'http://172.16.1.197:9090/operateApp/', //运营平台登陆
     // iconPath:'http://172.16.1.197:9090/file/pic/trafficType/',  // 图片服务器地址
@@ -15,7 +15,7 @@ window.config = {
     // dlUrl: 'http://172.16.1.197:8085/', //迪路
     // dlWmsUrl: 'http://172.16.1.197:8080/', //迪路
 
-    // //上海  内网-主机名
+    //上海正式环境  内网-主机名
     // url:'http://app01:9094/collaProcApp/',  // 交通平台
     // operateUrl: 'http://app01:9090/operateApp/', //运营平台登陆
     // iconPath:'http://app01:9090/file/pic/trafficType/',  // 图片服务器地址
