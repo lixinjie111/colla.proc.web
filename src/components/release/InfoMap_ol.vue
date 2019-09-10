@@ -502,7 +502,7 @@
 					alertPath: '', //格式 "[[12.333,23.333],[12.444,23,444]]"，转换显示为 12.333,23.333;12.444,23,444
 					alertCategory: '' //告警类型
 				};
-				console.log('this.msgTypeInfo.icon', this.iconPath + this.msgTypeInfo.icon);
+				//console.log('this.msgTypeInfo.icon', this.iconPath + this.msgTypeInfo.icon);
 				let marker = {
 					id: 'marker' + (new Date()).getTime(),
 					lon: lon,
