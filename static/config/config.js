@@ -1,17 +1,5 @@
-window.config = {    
-    
-    // 本地测试环境
-    // url:'http://10.0.1.57:9094/collaProcApp/',   
-    // iconPath:'http://10.0.1.57:9090/file/pic/trafficType/',   
-
-    //望京环境
-    // url:'http://172.17.1.13:9094/collaProcApp/',                    //望京环境 
-    // iconPath:'http://172.17.1.13:9090/file/pic/trafficType/',       // 图片服务器地址
-    // mapApiUrl: 'http://120.133.21.14:8085/',                        // 地图api
-    // mapApiUrl: 'http://192.168.0.1:8085/', 
-    // mapApiUrl: 'http://113.208.118.62:8085/',                        // 地图api
-
-    //内网
+window.config = {  
+     //内网
     // url:'http://172.17.1.16:9094/collaProcApp/',                    //望京环境 
     // operateUrl: 'http://172.17.1.16:9090/operateApp/',	//运营平台
     // iconPath:'http://172.17.1.16:9090/file/pic/trafficType/',       // 图片服务器地址
