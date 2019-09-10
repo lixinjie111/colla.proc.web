@@ -146,7 +146,12 @@ export default {
                         this.pubMsgList = response.data ? response.data : []; 
                         
                     } else {                     
-                        this.$message("获取信息类型列表失败  ！"); 
+                        this.$message({
+                            type: 'error',
+                            duration: '1500',
+                            message: "获取信息类型列表失败  ！",
+                            showClose: true
+                        });       
                     }
                 }
             );

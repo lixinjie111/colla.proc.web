@@ -471,7 +471,12 @@ export default {
                         // }                                             
                         
                     } else {                     
-                        this.$message.error("获取设备列表失败 ！"); 
+                        this.$message({
+                            type: 'error',
+                            duration: '1500',
+                            message: "获取设备列表失败 ！",
+                            showClose: true
+                        });         
                     }
                 }
             );
@@ -514,7 +519,12 @@ export default {
                         // }                        
                         
                     } else {                     
-                        this.$message.error("获取路侧单元失败 ！"); 
+                        this.$message({
+                            type: 'error',
+                            duration: '1500',
+                            message: "获取路侧单元失败 ！",
+                            showClose: true
+                        });      
                     }
                 }
             );
@@ -556,7 +566,12 @@ export default {
                         // }
                         
                     } else {                     
-                        this.$message.error("获取红绿灯失败 ！"); 
+                        this.$message({
+                            type: 'error',
+                            duration: '1500',
+                            message: "获取红绿灯失败 ！",
+                            showClose: true
+                        });       
                     }
                 }
             );
@@ -611,7 +626,12 @@ export default {
             // this.isPointerIco = false;
 
             if(!this.msgTypeInfo){
-                this.$message.warning('请选择信息类型 ！');
+                this.$message({
+                    type: 'warning',
+                    duration: '1500',
+                    message: "请选择信息类型 ！",
+                    showClose: true
+                });       
                 return;
             }
            

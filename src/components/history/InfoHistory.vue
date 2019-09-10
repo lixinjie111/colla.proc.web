@@ -204,7 +204,12 @@ export default {
           this.$refs.table.bodyWrapper.scrollTop = 0;
           this.paging.total = response.data.totalCount;
         } else {
-          this.$message.error("showPrompt", "获取设备列表失败  ！");
+          this.$message({
+              type: 'error',
+              duration: '1500',
+              message: "获取设备列表失败  ！",
+              showClose: true
+          });    
         }
         this.isLoading = false;
       });
@@ -218,7 +223,12 @@ export default {
         if (response.status >= 200 && response.status < 300) {
           this.datasourceList = response.data ? response.data : [];
         } else {
-          this.$message.error("获取单位失败 ！");
+          this.$message({
+              type: 'error',
+              duration: '1500',
+              message: "获取单位失败 ！",
+              showClose: true
+          });    
         }
       });
     },
