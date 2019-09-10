@@ -99,9 +99,7 @@ export default {
             isOk: false,
             webSocket: null,
             webSocketData: {
-                action: "event_detail_data",
-                token: "tusvn",
-                id: ""
+                action: "event_efficient",
             }
         }
     },
@@ -124,21 +122,13 @@ export default {
             this.webSocket.onerror = this.onerror;
         },
         onmessage(mesasge) {
-            //console.log(JSON.parse(mesasge.data))
-            this.itemData = JSON.parse(mesasge.data).result.data;
-            this.position = this.coordinateTransfer("EPSG:4326", "+proj=utm +zone=51 +ellps=WGS84 +datum=WGS84 +units=m +no_defs", this.itemData.longitude, this.itemData.latitude);
-            let list = JSON.parse(mesasge.data).result.deviceList;
-            if(list) {
-                this.deviceList = JSON.parse(mesasge.data).result.deviceList;
-            } else {
-                this.deviceList = [];
-            }
-            if(this.itemData.status == 2) { //事件消失取消模型
-                if(this.$refs.tusvnMap3.getStaticModel(this.selectedItem.cameraId)) {
-                    this.$refs.tusvnMap3.removeStaticModel(this.selectedItem.cameraId);
-                }
-            }
-
+            let _data=JSON.parse(mesasge.data);
+            let _realData = JSON.parse(_data.result);
+            let statistics=_realData.statistics;
+            let taskList=_realData.taskList;
+            this.$emit('PubMsgChange',statistics);
+            this.addPubMsg(taskList);
+            console.log(_realData)
         },
         onclose(data) {
             console.log("结束连接");
@@ -160,31 +150,31 @@ export default {
         destroyed(){
             this.webSocket && this.webSocket.close();
         },
-        initPubMsgList(){
-
-            //this.clearPubMsg();
-            let url = 'event/task/findEffectiveList';
-            let params = {                
-                status: 1,
-            };
-            this.$api.post( url,params,
-                response => {
-                    if (response.status >= 200 && response.status < 300) {
-
-                        this.pubMsgList = response.data ? response.data : [];                        
-                        let t = this.pubMsgList;
-                        this.addPubMsg(this.pubMsgList);
-                        
-                        // if(t.length){
-                        //     this.$refs.refTusvnMap.centerAt( t.length, t[0], t[1])
-                        // }
-
-                    } else {                     
-                        this.$message.error("获取信息列表失败 ！"); 
-                    }
-                }
-            );
-        },
+//      initPubMsgList(){
+//
+//          //this.clearPubMsg();
+//          let url = 'event/task/findEffectiveList';
+//          let params = {                
+//              status: 1,
+//          };
+//          this.$api.post( url,params,
+//              response => {
+//                  if (response.status >= 200 && response.status < 300) {
+//
+//                      this.pubMsgList = response.data ? response.data : [];                        
+//                      let t = this.pubMsgList;
+//                      this.addPubMsg(this.pubMsgList);
+//                      
+//                      // if(t.length){
+//                      //     this.$refs.refTusvnMap.centerAt( t.length, t[0], t[1])
+//                      // }
+//
+//                  } else {                     
+//                      this.$message.error("获取信息列表失败 ！"); 
+//                  }
+//              }
+//          );
+//      },
         addPubMsg(_result){
         	let _this=this;
         	let _filterData = {};
@@ -213,9 +203,10 @@ export default {
                      //console.log(_filterData[id],"更新")
                    // this.$refs.refTusvnMap.setOverlayPosition(_filterData[id].id, _filterData[id].lon, _filterData[id].lat);
                 } else {   //表示没有该点，做remove
-                    //console.log(_this.prevData[id], "remove");
+                    console.log(_this.prevData[id], "remove");
                     this.$refs.refTusvnMap.removeOverlayById(_this.prevData[id].id);
-                        this.$refs.refTusvnMap.closeInforWindow
+                    this.$refs.refTusvnMap.removeFeature(_this.prevData[id].bgImgId,this.mapLayer.messageBg);
+                    this.$refs.refTusvnMap.closeInforWindow;
                     delete _this.prevData[id];
                 }
             }
@@ -308,9 +299,10 @@ export default {
         },
 
         publishInfo(e){//发布成功后：建立webscoket连接；清空数据
-            //this.initWebSocket();
-            this.initPubMsgList();
             this.clearPubMsg();
+            this.initWebSocket();
+            //this.initPubMsgList();
+           
             // this.$emit('PubMsgChange');        
             // let url = 'event/task/save';
             // let params = {
@@ -352,8 +344,10 @@ export default {
             // );
         },
         updateInfo(e){//更新不需要操作
-            this.initPubMsgList();
             this.clearPubMsg();
+        	this.initWebSocket();
+            //this.initPubMsgList();
+            //this.clearPubMsg();
             // let url = 'event/task/update';
             // let params = {
             //     id: e.id,
@@ -394,9 +388,11 @@ export default {
             // );
         },
         destroyInfo(e){//手动失效也不需要操作
-            this.initPubMsgList();
+        	this.initWebSocket();
             this.clearPubMsg();
-            this.$emit('PubMsgChange');
+            //this.initPubMsgList();
+            //this.clearPubMsg();
+            //this.$emit('PubMsgChange');
             // let url = 'event/task/cancel';
             // let params = {
             //     id: e.id,
@@ -687,8 +683,8 @@ export default {
             // this.showRsu();
             // this.showRoadsideUnit();
             // this.showTrafficSignal();
-            //this.initWebSocket();
-            this.initPubMsgList();
+            this.initWebSocket();
+            //this.initPubMsgList();
             //this.$refs.refTusvnMap.showRoadNet(this.mapLayer.messageBg);
 
         },

@@ -106,87 +106,35 @@ export default {
             pageHeight: 250,
             oldTime: null,
             timeInterval: 400,
-            webSocket: null,
-            webSocketData: {
-                action: "event_detail_data",
-                token: "tusvn",
-                id: ""
-            }
         }
     },
     created(){
-        this.initStatisics();
-        //this.initWebSocket();
+        //this.initStatisics();
         this.initPubMsgList();
     },
     methods: {
-        initWebSocket() {
-            if("WebSocket" in window) {
-                this.webSocket = new WebSocket(window.config.websocketUrl); //获得WebSocket对象
-            }
-            this.webSocket.onmessage = this.onmessage;
-            this.webSocket.onclose = this.onclose;
-            this.webSocket.onopen = this.onopen;
-            this.webSocket.onerror = this.onerror;
-        },
-        onmessage(mesasge) {
-            //console.log(JSON.parse(mesasge.data))
-            this.itemData = JSON.parse(mesasge.data).result.data;
-            this.position = this.coordinateTransfer("EPSG:4326", "+proj=utm +zone=51 +ellps=WGS84 +datum=WGS84 +units=m +no_defs", this.itemData.longitude, this.itemData.latitude);
-            let list = JSON.parse(mesasge.data).result.deviceList;
-            if(list) {
-                this.deviceList = JSON.parse(mesasge.data).result.deviceList;
-            } else {
-                this.deviceList = [];
-            }
-            if(this.itemData.status == 2) { //事件消失取消模型
-                if(this.$refs.tusvnMap3.getStaticModel(this.selectedItem.cameraId)) {
-                    this.$refs.tusvnMap3.removeStaticModel(this.selectedItem.cameraId);
-                }
-            }
+//      initStatisics(){
+//          
+//          let url = 'event/task/statisticsTask';
+//          let params = {                
+//              
+//          };
+//          this.$api.post( url,params,
+//              response => {
+//                  if (response.status >= 200 && response.status < 300) {
+//
+//                      this.statisicsData = response.data ? response.data : [];
+//
+//                  } else {                     
+//                      this.$message("获取信息列表失败 ！"); 
+//                  }
+//              }
+//          );
+//      },        
 
-        },
-        onclose(data) {
-            console.log("结束连接");
-        },
-        onopen(data) {
-            var _traffic = JSON.stringify(this.webSocketData);
-            this.sendMsg(_traffic);
-        },
-        sendMsg(msg) {
-            if(window.WebSocket) {
-                if(this.webSocket.readyState == WebSocket.OPEN) {
-                    //如果WebSocket是打开状态
-                    this.webSocket.send(msg); //send()发送消息
-                }
-            } else {
-                return;
-            }
-        },             
-        destroyed(){
-            this.webSocket && this.webSocket.close();
-        },
-        initStatisics(){
-            
-            let url = 'event/task/statisticsTask';
-            let params = {                
-                
-            };
-            this.$api.post( url,params,
-                response => {
-                    if (response.status >= 200 && response.status < 300) {
-
-                        this.statisicsData = response.data ? response.data : [];
-
-                    } else {                     
-                        this.$message("获取信息列表失败 ！"); 
-                    }
-                }
-            );
-        },        
-
-        pubMsgChange(){
-            this.initStatisics();
+        pubMsgChange(data){
+           this.statisicsData=data;
+            //this.initStatisics();
         },
 
         initPubMsgList(){
