@@ -109,7 +109,7 @@ export default {
         let url = window.location.hash;
         // let url = window.location.pathname;
 
-        console.log('url -- ' + url);
+        //console.log('url -- ' + url);
         url = url.slice(1);
         if(!url){
           url = '/infoRelease';

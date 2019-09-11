@@ -148,6 +148,7 @@
           { id: 1, name: '道路施工/路面打滑' , key: 'DM0202'},
           { id: 2, name: '前方有障碍物' , key: 'DM0203'},
           { id: 3, name: '公交专用车道' , key: 'DM0208'},
+          { id: 4, name: '无' , key: 'Done'},
         ]
       };
     },
@@ -171,7 +172,12 @@
                     this.typeList = response.data ? response.data : [];
                     
                 } else {                     
-                    this.$message.error( "获取类型失败 ！"); 
+                    this.$message({
+                        type: 'error',
+                        duration: '1500',
+                        message: "获取类型失败 ！",
+                        showClose: true
+                    });        
                 }
             }
         );
@@ -191,7 +197,13 @@
                     }
                    
                 } else {                     
-                    this.$message.error("获取单位失败 ！"); 
+                    this.$message({
+                        type: 'error',
+                        duration: '1500',
+                        message: "获取单位失败 ！",
+                        showClose: true
+                    });        
+                     
                 }
             }
         );
@@ -214,17 +226,27 @@
         };
         axios.post(url, formData, config)
           .then(response=>{
-              console.log('文件上传结果 ： -------------- ' + JSON.stringify(response.data) );              
+              //console.log('文件上传结果 ： -------------- ' + JSON.stringify(response.data) );              
 
               if(response.data.status == '200'){
                   this.ruleForm.icon = response.data.data;
                     // 隐藏批量导入面板
-                  this.$message.success('上传成功！');
+                  this.$message({
+                      type: 'success',
+                      duration: '1500',
+                      message: '上传成功！',
+                      showClose: true
+                  });       
               }
 
               if(response.data.status != '200'){              
-                  this.$message.error('上传失败！');
-                  console.log('error data --- ' + JSON.stringify(response.data.data))
+                  this.$message({
+                      type: 'error',
+                      duration: '1500',
+                      message: '上传失败！',
+                      showClose: true
+                  });      
+                  //console.log('error data --- ' + JSON.stringify(response.data.data))
               }
           }
         ).catch( (error) => {
@@ -269,10 +291,20 @@
                   if (response.status >= 200 && response.status < 300) {
 
                       this.$emit("successBack");
-                      this.$message.success("新增信息类型成功 ！"); 
+                      this.$message({
+                          type: 'success',
+                          duration: '1500',
+                          message: "新增信息类型成功 ！",
+                          showClose: true
+                      });      
                       this.submitLoading = false;
                   } else {                     
-                      this.$message.error("新增信息类型失败 ！"); 
+                      this.$message({
+                          type: 'error',
+                          duration: '1500',
+                          message: "新增信息类型失败 ！",
+                          showClose: true
+                      });      
                   }
               }
           );
@@ -299,10 +331,20 @@
                   if (response.status == 200) {
 
                       this.$emit("successBack");
-                      this.$message.success("修改信息类型成功 ！"); 
+                      this.$message({
+                          type: 'success',
+                          duration: '1500',
+                          message: "修改信息类型成功 ！",
+                          showClose: true
+                      });       
                       this.submitLoading = false;
                   } else {                     
-                      this.$message.error("修改信息类型失败 ！"); 
+                      this.$message({
+                          type: 'error',
+                          duration: '1500',
+                          message: "修改信息类型失败 ！",
+                          showClose: true
+                      });        
                   }
               }
           );
