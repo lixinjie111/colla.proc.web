@@ -4,7 +4,7 @@
         <div id="header">
               <div class="logo">
                   <img src="static/images/logo.png" class="logo-img"/>
-                  <!-- <em class="name">交通信息发布平台</em> -->
+                  <em class="name">服务发布中心</em>
               </div>
 
               <div class="userinfo">
