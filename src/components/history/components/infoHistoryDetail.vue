@@ -69,9 +69,11 @@ export default {
         } else {
           if(res.data.message) {
             this.$message({
-              type: 'error',
-              message: res.data.message
-            })
+                type: 'error',
+                duration: '1500',
+                message: res.data.message,
+                showClose: true
+            });    
           }
           this.isShowVideo = true;
         }
