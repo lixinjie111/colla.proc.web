@@ -238,6 +238,9 @@ export default {
 <style lang="scss">
 @import "@/assets/scss/theme.scss";
 .login-item-box {
+    .el-form-item {
+        margin-right: 0 !important;
+    }
     .el-form-item__label {
         position: relative;
         color: #999;
@@ -267,6 +270,12 @@ export default {
     input:-webkit-autofill {
         -webkit-box-shadow: 0 0 0px 1000px white inset;
         -webkit-text-fill-color: #333;
+    }
+    .el-button{
+        i, span{
+            line-height: 0;
+            vertical-align: middle;
+        }
     }
 }
 </style>
