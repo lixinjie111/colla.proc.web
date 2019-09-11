@@ -181,7 +181,12 @@ export default {
                         this.paging.total = response.data.totalCount;
                         
                     } else {                     
-                        this.$message.error("获取信息类型列表失败  ！"); 
+                        this.$message({
+                            type: 'error',
+                            duration: '1500',
+                            message: "获取信息类型列表失败  ！",
+                            showClose: true
+                        });    
                     }
 
                     this.isLoading = false;
@@ -201,7 +206,12 @@ export default {
                         this.typeList = response.data ? response.data : [];
                         
                     } else {                     
-                        this.$message.error("获取类型失败  ！"); 
+                        this.$message({
+                            type: 'error',
+                            duration: '1500',
+                            message: "获取类型失败  ！",
+                            showClose: true
+                        });     
                     }
                 }
             );
@@ -248,9 +258,19 @@ export default {
                     response => {
                         if (response.status >= 200 && response.status < 300) {
                             this.initData();
-                            this.$message.success("删除信息类型成功  ！"); 
+                            this.$message({
+                                type: 'success',
+                                duration: '1500',
+                                message: "删除信息类型成功  ！",
+                                showClose: true
+                            });      
                         } else {                     
-                            this.$message.error("删除信息类型失败  ！"); 
+                            this.$message({
+                                type: 'success',
+                                duration: '1500',
+                                message: "删除信息类型失败  ！",
+                                showClose: true
+                            });       
                         }
                     }
                 ); 

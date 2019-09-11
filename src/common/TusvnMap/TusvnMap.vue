@@ -485,13 +485,23 @@ export default {
                     if(response.data.data) {
                         let pointList = response.data.data ? response.data.data : '';
                         if(pointList.length < 2) {
-                            this.$message.error("选择的影响路线太短，请重新选择！");
+                            this.$message({
+                                type: 'error',
+                                duration: '1500',
+                                message: "选择的影响路线太短，请重新选择！",
+                                showClose: true
+                            });
                             // this.addPathIcoBtn(startLon,startLat);
                             // this.$emit('TemporaryClearPubMsg',{bool:false});
                             return;
                         }
                         if(pointList.length > 32) {
-                            this.$message.error("选择的影响路线太长，请重新选择！");
+                            this.$message({
+                                type: 'error',
+                                duration: '1500',
+                                message: "选择的影响路线太长，请重新选择！",
+                                showClose: true
+                            });
                             // this.addPathIcoBtn(startLon,startLat);
                             // this.$emit('TemporaryClearPubMsg',{bool:false});
                             return;
@@ -524,7 +534,14 @@ export default {
                         // coordinates, id, color, lineCap, lineJoin, lineDash, lineDashOffset, miterLimit, width, layerId
                         this.addLineString(coordinates, id, "red", "round", "round", [5,0], [-14,0], 10, 5, layerId);  
                     }else {
-                        this.$message.error(response.data.message || "未获取到数据，请重新选择！");
+                        this.$message({
+                            type: 'error',
+                            duration: '1500',
+                            message: response.data.message || "未获取到数据，请重新选择！",
+                            showClose: true
+                        });
+                            
+
                     }  
 
                     // 画按钮
@@ -532,7 +549,12 @@ export default {
                     this.$emit("setPointer",{bool: false, flag: true}); 
                 }).catch((error) => {
                     this.isLoading = false;
-                    this.$message.error("取到数据失败，请重试！");
+                    this.$message({
+                        type: 'error',
+                        duration: '1500',
+                        message: "取到数据失败，请重试！",
+                        showClose: true
+                    });
                     this.addPathIcoBtn(startLon,startLat);
                     this.$emit("setPointer",{bool: false, flag: true});
                 }
@@ -595,7 +617,12 @@ export default {
                     if (response.status >= 200 && response.status < 300) {
                         
                         if(response.data.status == 200){
-                            this.$message.success('发布成功！');
+                            this.$message({
+                                type: 'success',
+                                duration: '1500',
+                                message: "发布成功！",
+                                showClose: true
+                            });
                             this.$emit('PublishInfo',this.trafficInfo);
                             this.closeMyInfoWindow();
                             this.initSelect();
@@ -603,12 +630,22 @@ export default {
                             this.publishLoading = false; 
                         }else if(response.data.status == 500){
                             let msg = response.data.message ? response.data.message : '发布失败 !';
-                            this.$message.error(msg);
+                            this.$message({
+                                type: 'error',
+                                duration: '1500',
+                                message: msg,
+                                showClose: true
+                            });
                             this.publishLoading = false;
                         }
                         
                     } else {                     
-                        this.$message.error("发布失败 ！"); 
+                        this.$message({
+                            type: 'error',
+                            duration: '1500',
+                            message: "发布失败 ！",
+                            showClose: true
+                        }); 
                         this.publishLoading = false;
                     }
                 }
@@ -646,7 +683,12 @@ export default {
                     if (response.status >= 200 && response.status < 300) {                    
                         
                         if(response.data.status == 200){
-                            this.$message.success('更新成功！');
+                            this.$message({
+                                type: 'success',
+                                duration: '1500',
+                                message: "更新成功！",
+                                showClose: true
+                            }); 
                             this.$emit('UpdateInfo',this.trafficInfo);
                             this.updateLoading = false;
                             this.closeMyInfoWindow();
@@ -654,11 +696,21 @@ export default {
                             this.initTrafficInof();
                         }else if(response.data.status == 500){
                             let msg = response.data.message ? response.data.message : '更新失败 !';
-                            this.$message.error(msg);
+                            this.$message({
+                                type: 'error',
+                                duration: '1500',
+                                message: msg,
+                                showClose: true
+                            }); 
                             this.updateLoading = false;
                         }
                     } else {                     
-                        this.$message.error("更新失败 ！"); 
+                        this.$message({
+                            type: 'error',
+                            duration: '1500',
+                            message: "更新失败 ！",
+                            showClose: true
+                        });  
                         this.updateLoading = false;
                     }
                 }
@@ -680,18 +732,33 @@ export default {
                     if (response.status >= 200 && response.status < 300) {
                         
                         if(response.data.status == 200){
-                            this.$message.success('手动失效成功！');
+                            this.$message({
+                                type: 'success',
+                                duration: '1500',
+                                message: "手动失效成功！",
+                                showClose: true
+                            });  
                             this.$emit('DestroyInfo',this.trafficInfo);
                             this.closeMyInfoWindow(e);
                             this.initSelect();
                             this.initTrafficInof();
                         }else if(response.data.status == 500){
                             let msg = response.data.message ? response.data.message : '手动失效失败 !';
-                            this.$message.error(msg)
+                            this.$message({
+                                type: 'error',
+                                duration: '1500',
+                                message: msg,
+                                showClose: true
+                            });  
                         }                         
                         this.invalidLoading = false;
                     } else {                     
-                        this.$message.error("手动失效失败 ！"); 
+                        this.$message({
+                            type: 'error',
+                            duration: '1500',
+                            message: "手动失效失败 ！",
+                            showClose: true
+                        });   
                         this.invalidLoading = false;
                     }
                 }
@@ -735,7 +802,12 @@ export default {
                         }
                     
                     } else {                     
-                        this.$message.error("获取单位失败 ！"); 
+                        this.$message({
+                            type: 'error',
+                            duration: '1500',
+                            message: "获取单位失败 ！",
+                            showClose: true
+                        });   
                     }
                 }
             );
@@ -765,7 +837,12 @@ export default {
                         }                        
                     
                     } else {                     
-                        this.$message.error("获取单位失败 ！"); 
+                        this.$message({
+                            type: 'error',
+                            duration: '1500',
+                            message: "获取单位失败 ！",
+                            showClose: true
+                        });   
                     }
                 }
             );
@@ -819,13 +896,23 @@ export default {
                         this.drawBgCircle(response.data.longitude,response.data.latitude,radius);                                            
 
                         if(response.data.status == 200){                            
-                            this.$message.error('获取详情成功！');
+                            this.$message({
+                                type: 'success',
+                                duration: '1500',
+                                message: "获取详情成功！",
+                                showClose: true
+                            });   
                         }
                         this.initUnintList(true,this.trafficInfo.frequencyUnit);
                         this.initDatasourceList(true,this.trafficInfo.datasource);
                         
                     } else {                     
-                        this.$message.error("获取详情失败 ！"); 
+                        this.$message({
+                            type: 'error',
+                            duration: '1500',
+                            message: "获取详情失败 ！",
+                            showClose: true
+                        });    
                     }
                 }
             );
