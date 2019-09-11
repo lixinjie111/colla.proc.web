@@ -77,12 +77,7 @@ export default {
                 { id: 3, name: '红绿灯', value: 'trafficSignal', isCheck: false,icon:'icon-light'},
                 { id: 4, name: '路网', value: 'roadNet', isCheck: true,icon:'icon-roadnet'},
             ],
-            pubMsgList: [
-                
-                // { id: 1, name: '障碍物', value: '障碍物', isCheck: false},
-                // { id: 2, name: '道路施工', value: '道路施工', isCheck: false},
-                // { id: 3, name: '货物散落', value: '货物散落', isCheck: false},
-            ],            
+            pubMsgList: [],            
             poiGruop: [{id:1}],
             pubMsgGroup: [{id: 1}],
             paging: {
@@ -108,29 +103,12 @@ export default {
             timeInterval: 400,
         }
     },
-    methods: {             
-
-        initStatisics(){
-            
-            let url = 'event/task/statisticsTask';
-            let params = {                
-                
-            };
-            this.$api.post( url,params,
-                response => {
-                    if (response.status >= 200 && response.status < 300) {
-
-                        this.statisicsData = response.data ? response.data : [];
-
-                    } else {                     
-                        this.$message("获取信息列表失败 ！"); 
-                    }
-                }
-            );
-        },        
-
-        pubMsgChange(){
-            this.initStatisics();
+    created(){
+        this.initPubMsgList();
+    },
+    methods: {
+        pubMsgChange(data){
+           this.statisicsData=data;
         },
 
         initPubMsgList(){
@@ -142,7 +120,12 @@ export default {
                         this.pubMsgList = response.data ? response.data : []; 
                         
                     } else {                     
-                        this.$message("获取信息类型列表失败  ！"); 
+                        this.$message({
+                            type: 'error',
+                            duration: '1500',
+                            message: "获取信息类型列表失败  ！",
+                            showClose: true
+                        });       
                     }
                 }
             );
@@ -154,14 +137,9 @@ export default {
             let type = item.value;
             this.olMarker[type] = !this.olMarker[type];
             this.$refs.refInfoMap.showMarker(type,this.olMarker[type]);
-            // this.$refs.ruleFormMap.resetFields();
         },
 
         removeTagClick(e){
-            
-            // { id: 1, name: 'RSU', value: 'rsu', isCheck: false},
-            //     { id: 2, name: '路侧单元', value: 'roadsideUnit', isCheck: false},
-            //     { id: 3, name: '红绿灯', value: 'trafficSignal', isCheck: false},
             let temp = this.getItemByName(this.poiList,e);
             this.poiClick(temp);
         },
@@ -189,93 +167,7 @@ export default {
             //this.$refs.refPoi.handleClose()
         },
 
-        // winResize(){
-        //     let offsetHeight = window.outerHeight;
-        //     let offsetWidth = window.outerWidth;
-        //     console.log('offsetHeight --- ' + offsetHeight + ' ------ offsetWidth --- ' + window.outerWidth)
-        // },
-        
-        // shaking
-        // avoidShake(height){
-            
-        //     let inval = 400;
-        //     let timer = null;
-        //     if(!this.isOk){
-        //         this.isOk = true;
-        //         timer = setTimeout(()=>{
-        //             this.isOk = false;
-        //             this.pageHeight = height - 62;
-
-        //             console.log('--avoidShake------ pageHeight = ' + this.pageHeight);
-
-        //             clearTimeout(timer);
-        //             timer = null;
-        //         },inval);
-        //     }
-        // },
-        // // saving
-        // saveWater(){
-        //     let newTime = (new Date()).gettime();
-            
-        //     if(!this.oldTime){
-        //         this.oldTime = newTime;
-        //     }
-
-        //     let intval = this.newTime - this.oldTime;
-        //     if( intval > this.timeInterval){
-        //         console.log('do it !');
-        //         this.oldTime = newTime;
-        //     }
-        // },
     },
-    created(){
-        this.initStatisics();
-        this.initPubMsgList();
-       
-        // this.winResize();
-        // window.onresize = document.body.onresize = this.winResize();
-
-        // this.pageResize();
-       
-        
-    },
-    mounted(){
-        // setTimeout(()=>{
-        //     this.$refs.refInfoMap.showMarker('roadNet',true);
-        // },500)
-        
-        // const that = this
-        // window.onload = () => {
-        //     return (() => {
-        //         window.screenWidth = document.body.clientWidth;
-        //         that.screenWidth = window.screenWidth;
-        //         window.screenHeight = document.body.clientHeight;
-        //         that.screenHeight = window.screenHeight;
-
-        //         const borwserHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
-
-        //         console.log('-------- screenHeight = ' + screenHeight + ' --- borwserHeight : ' + borwserHeight);
-        //         this.avoidShake(borwserHeight);
-                
-        //     })()
-        // };
-
-        // window.onresize = () => {
-        //     return (() => {
-        //         window.screenWidth = document.body.clientWidth;
-        //         that.screenWidth = window.screenWidth;
-        //         window.screenHeight = document.body.clientHeight;
-        //         that.screenHeight = window.screenHeight;
-
-        //         const borwserHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
-
-        //         console.log('-------- screenHeight = ' + screenHeight + ' --- borwserHeight : ' + borwserHeight);
-        //         this.avoidShake(borwserHeight);
-                
-        //     })()
-        // }
-    },
-
 }
 </script>
 <style scoped lang="scss">
