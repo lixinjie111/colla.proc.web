@@ -76,7 +76,7 @@
       </el-table-column>
 
       <el-table-column label="发布结束时间" min-width="12%">
-        <template slot-scope="scope">{{TDate.formatTime(scope.row.expirationTime)}}</template>
+        <template slot-scope="scope">{{scope.row.expirationTime==0?"--":TDate.formatTime(scope.row.expirationTime)}}</template>
       </el-table-column>
 
       <el-table-column prop="content" label="信息内容" min-width="15%"></el-table-column>

@@ -105,7 +105,10 @@
 				let taskList = _realData.taskList;
 				this.$emit('PubMsgChange', statistics);
 				//this.clearPubMsg();
-				this.addPubMsg(taskList);
+				//setTimeout(()=>{
+					this.addPubMsg(taskList);
+				//},100)
+				
 				//console.log(_realData)
 			},
 			onclose(data) {
@@ -129,6 +132,7 @@
 				this.webSocket && this.webSocket.close();
 			},
 			//      initPubMsgList(){
+				
 			//
 			//          //this.clearPubMsg();
 			//          let url = 'event/task/findEffectiveList';
@@ -154,6 +158,7 @@
 			//          );
 			//      },
 			addPubMsg(_result) {
+				console.log(_result)
 				let _this = this;
 				let _filterData = {};
 				_result.forEach((item, index) => {
@@ -178,20 +183,29 @@
 				//console.log(_filterData)
 				//console.log(_this.prevData)
 				for(let id in _this.prevData) {
-					if(_filterData[id]) { //表示有该点，做setPosition
+					if(_filterData[id]) { //表示有该点，
 						//console.log(_filterData[id],"更新")
+						if(_filterData[id].lon == _this.prevData[id].lon && _filterData[id].lat == _this.prevData[id].lat){
+							
+						}else{//表示有该点，做setPosition
+							console.log("cccccccccc")
+							//this.$refs.refTusvnMap.setOverlayPosition(_filterData[id], _filterData[id].lon, _filterData[id].lat)
+						}
 					} else { //表示没有该点，做remove
 						//console.log(_this.prevData[id].id)
-						this.$refs.refTusvnMap.removeOverlayById(_this.prevData[id].id);
-						this.$refs.refTusvnMap.removeFeature(_this.prevData[id].bgImgId, this.mapLayer.messageBg);
-						this.$refs.refTusvnMap.closeInforWindow;
-						delete _this.prevData[id];
+						if(this.$refs.refTusvnMap.getOverlayById(_this.prevData[id].id)){
+							this.$refs.refTusvnMap.removeOverlayById(_this.prevData[id].id);
+							this.$refs.refTusvnMap.removeFeature(_this.prevData[id].bgImgId, this.mapLayer.messageBg);
+							this.$refs.refTusvnMap.closeInforWindow;
+							delete _this.prevData[id];
+						}
+						
 					}
 				}
 
 				for(let id in _filterData) {
 					if(!_this.prevData[id]) { //表示新增该点，做add
-						//console.log(_filterData[id].imgOffset,_filterData[id])
+						//console.log(_filterData[id].icon)
 						this.$refs.refTusvnMap.addImg(_filterData[id].lon, _filterData[id].lat, _filterData[id].bgImgId, this.mapLayer.messageBg, _filterData[id].bgImgSrc, _filterData[id].bgImgSize, 0, true, 1, _filterData[id].bgImgOffset, 1, [0.5, 1]);
 						this.$refs.refTusvnMap.addImgOverlay(_filterData[id].id, _filterData[id].icon, null, _filterData[id].lon, _filterData[id].lat, _filterData[id].id, _filterData[id].imgOffset, (e) => {
 							e.preventDefault();
@@ -276,6 +290,7 @@
 				this.prevData = {};
 			},
 			publishInfo(e) { //发布成功后：建立webscoket连接；清空数据
+				console.log(111111111111)
 				this.clearPubMsg();
 				this.initWebSocket();
 			},
