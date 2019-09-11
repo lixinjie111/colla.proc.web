@@ -78,8 +78,8 @@ export default {
         platform: ""
       },
       loginRules: {
-        name: [{ validator: checkAdminName, trigger: "blur" }],
-        pass: [{ validator: checkPassword, trigger: "blur" }]
+        userNo: [{ validator: checkAdminName, trigger: "blur" }],
+        password: [{ validator: checkPassword, trigger: "blur" }]
       },
       loading: false,
       visibleFlag: false

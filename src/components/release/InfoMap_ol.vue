@@ -175,11 +175,13 @@
 						eventType: item.eventType,
 					};
 				});
-
+				//console.log(_filterData)
+				//console.log(_this.prevData)
 				for(let id in _this.prevData) {
 					if(_filterData[id]) { //表示有该点，做setPosition
 						//console.log(_filterData[id],"更新")
 					} else { //表示没有该点，做remove
+						//console.log(_this.prevData[id].id)
 						this.$refs.refTusvnMap.removeOverlayById(_this.prevData[id].id);
 						this.$refs.refTusvnMap.removeFeature(_this.prevData[id].bgImgId, this.mapLayer.messageBg);
 						this.$refs.refTusvnMap.closeInforWindow;
@@ -278,8 +280,8 @@
 				this.initWebSocket();
 			},
 			updateInfo(e) { //更新不需要操作
-				this.clearPubMsg();
 				this.initWebSocket();
+				this.clearPubMsg();
 			},
 			destroyInfo(e) { //手动失效也不需要操作
 				this.initWebSocket();
@@ -463,7 +465,7 @@
 			},
 			mapClick: function(map, evt) {
 
-				// this.isPointerIco = false;
+				 this.isPointerIco = false;
 
 				if(!this.msgTypeInfo) {
 					this.$message({
