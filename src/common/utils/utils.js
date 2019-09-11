@@ -129,29 +129,31 @@ class Utils{
         let arr = [];
         for( let item of MenuList ){
             item.isCheck = false;
-            item.css = 'yk-tree-li';
+            
+            //item.css = 'yk-tree-li';
             if(item.path == url){
                 item.isCheck = true;
-                item.css = 'yk-tree-li-selected';                
+                //item.css = 'yk-tree-li-selected';                
             }else{
+            	
                 if(item.children && item.children.length > 0){
 
                     for( let sub of item.children ){
                         sub.isCheck = false;
-                        sub.css = 'yk-tree-li';
+                        //sub.css = 'yk-tree-li';
                         if(sub.path == url){
                             sub.isCheck = true;
-                            sub.css = 'yk-tree-li-selected';
+                            //sub.css = 'yk-tree-li-selected';
                             item.isCheck = true;                            
                         }
                         if(sub.children && sub.children.length > 0){
-
+							
                             for(let ssub of sub.children){
                                 ssub.isCheck = false;
-                                ssub.css = 'yk-tree-li';
+                                //ssub.css = 'yk-tree-li';
                                 if(ssub.path == url){
                                     ssub.isCheck = true;
-                                    ssub.css = 'yk-tree-li-selected';
+                                    //ssub.css = 'yk-tree-li-selected';
                                     sub.isCheck = true;
                                     item.isCheck = true;                                    
                                 }
@@ -161,10 +163,10 @@ class Utils{
                 }
             }
             
-            // 登录进主页面，默认选中 home
-            if( (item.path == '/home') && (url == '/main') ){
-                item.css = 'yk-tree-li-selected'; 
-            }
+//          // 登录进主页面，默认选中 home
+//          if( (item.path == '/infoRelease')){
+//              item.css = 'yk-tree-li-selected'; 
+//          }
 
             arr.push(item);
         }
