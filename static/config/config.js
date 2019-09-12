@@ -28,13 +28,13 @@ window.config = {
     // dlWmsUrl: 'http://app01:8080/', //迪路
 
     //上海正式环境 外网
-    // url:'http://116.236.72.204:9094/collaProcApp/',  // 交通平台
-    // operateUrl: 'http://116.236.72.204:9090/operateApp/', //运营平台登陆
-    // iconPath:'http://116.236.72.204:9090/file/pic/trafficType/',  // 图片服务器地址
-    // mapWaPianPath:'http://116.236.72.204:8086/',   //地图瓦片
-    // websocketUrl:'ws://116.236.72.204:9996/colla',
-    // dlUrl: 'http://116.236.72.204:8085/', //迪路
-    // dlWmsUrl: 'http://116.236.72.204:8080/', //迪路
+    // url:'http://116.236.72.204:49094/collaProcApp/',  // 交通平台
+    // operateUrl: 'http://116.236.72.204:49090/operateApp/', //运营平台登陆
+    // iconPath:'http://116.236.72.204:49090/file/pic/trafficType/',  // 图片服务器地址
+    // mapWaPianPath:'http://116.236.72.204:48086/',   //地图瓦片
+    // websocketUrl:'ws://116.236.72.204:49996/colla',
+    // dlUrl: 'http://116.236.72.204:48085/', //迪路
+    // dlWmsUrl: 'http://116.236.72.204:48080/', //迪路
 
     version: 1.0,       // 版本号
 }
