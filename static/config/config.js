@@ -10,7 +10,7 @@ window.config = {
     operateUrl: 'http://111.23.140.59:9090/operateApp/',
     iconPath:'http://111.23.140.59:9090/file/pic/trafficType/',       // 图片服务器地址
     mapWaPianPath:'http://111.23.140.59:8086/',   //地图瓦片
-    websocketUrl:'ws://111.23.140.59:9996/colla',
+    websocketUrl:'ws://111.23.140.59:9970/colla',
     dlUrl: 'http://111.23.140.59:8085/', //迪路
     dlWmsUrl: 'http://111.23.140.59:8080/', //迪路
 
