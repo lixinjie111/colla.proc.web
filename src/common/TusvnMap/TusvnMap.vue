@@ -167,6 +167,7 @@ export default {
     data(){
         return {
             isLoading: false,
+            pointerFlag:false,
             orderStatus: -1
             ,map: null
             ,project:"EPSG:4326"//地图投影
@@ -339,6 +340,7 @@ export default {
             this.addPathIco( this.trafficInfo.longitude, this.trafficInfo.latitude );
 
             this.$emit('TemporaryClearPubMsg',{bool:true});
+            this.pointerFlag=true;
 
 
             this.$emit("setPointer",{bool: true, flag: true}); 
@@ -507,7 +509,6 @@ export default {
                             return;
                         }
 
-
                         let points = [];
                         for(let i=0;i<pointList.length;i++){
                             let temp = pointList[i];
@@ -530,7 +531,7 @@ export default {
                         let miterLimit = 10;
                         let width = 5;
                         let layerId = this.TempIcoLayer;
-
+				
                         // coordinates, id, color, lineCap, lineJoin, lineDash, lineDashOffset, miterLimit, width, layerId
                         this.addLineString(coordinates, id, "red", "round", "round", [5,0], [-14,0], 10, 5, layerId);  
                     }else {
@@ -1005,7 +1006,15 @@ export default {
             this.$data.map.on("moveend",this.moveEnd);
             this.$data.map.on("contextmenu", e=>{
                 e.preventDefault();
-                this.$emit("setPointer",{bool: false}); 
+                if(this.pointerFlag){
+                	this.clearTempLayer();
+		            this.$emit('TemporaryClearPubMsg',{bool:false,getData:true});
+		            this.$emit("setPointer",{bool: false, flag: false});
+		            this.pointerFlag=false;
+                }else{
+                	this.$emit("setPointer",{bool: false}); 
+                }
+                
             });
     // 书写事件触发后的函数
 
