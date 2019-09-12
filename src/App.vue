@@ -37,7 +37,7 @@
                 <el-menu-item-group>
                   <template v-for="(sub,skey) in item.children" >
                     <el-menu-item :key="skey" :index="sub.path" @click="navChange(sub);">
-                      <div class="yk-sub-title" :class="sub.isCheck ? 'yk-tree-select' : ''">{{sub.name}}</div>
+                      <div class="yk-sub-title" :class="sub.isCheck ? 'yk-tree-select' : 'yk-tree-unselect' ">{{sub.name}}</div>
                     </el-menu-item>
                   </template>                
                 </el-menu-item-group>
@@ -68,63 +68,51 @@ import { Utils } from '@/common/utils/utils.js'
 
 export default {
   name: 'App',
- 
   data(){
     return {
       openedItems: ['0','1','2'],
       menuList: [],
       collapse: true,
       isSubMenu: false,
+      flag:false,
     }
   },
   watch: {
-    '$store.state.isSubMenu': 'subMenuFn'
+    '$store.state.isSubMenu': 'subMenuFn',
+    '$route'(newVal,oldVal){
+     	 this.initMenu();
+    },
   },
   created(){
-    
-    window.onload = () =>{            
-      this.initMenu(); 
+    	this.menuList = MenuList;
+      this.initMenu();
       this.flushUser();      
-    }
-
-    this.menuList = MenuList;
-  },
-  mounted(){
-    this.initMenu();
   },
   methods: {
-
     subMenuFn(newVal,oldVal){
-      console.log('subMenuFn --- ' + newVal + ' ----- ' + oldVal);
       this.isSubMenu = newVal;
     },
-
     navChange(item){
       this.$router.push(item.path);
-      // SessionUtil.setItem('currentMenu',item.path);
-      Utils.setMenuByPath(item.path);     
     },
-
     initMenu(){
         let url = window.location.hash;
-        // let url = window.location.pathname;
-
-        //console.log('url -- ' + url);
         url = url.slice(1);
         if(!url){
           url = '/infoRelease';
         }
+
         Utils.setMenuByPath(url);
+//      this.menuList = [];
+//      this.menuList = Utils.setMenuByPath(url);
+//      this.$forceUpdate()
     },
     logoutClick(){
       this.$router.push('/login');
-      
       this.$store.dispatch('logout');
       this.$store.dispatch('showSubMenu',false);
-      //  SessionUtil.deleteItem('login');
       SessionUtil.clearItems();
       localStorage.removeItem("yk-token");
-
     },
     showSubMenu(){
         let bool = !this.$store.state.isSubMenu;        
@@ -257,6 +245,9 @@ export default {
 
 .yk-tree-select{
   color: #F59307 !important;
+}
+.yk-tree-unselect{
+  color: #b5b5b5 !important;
 }
 
 .yk-sub-title{

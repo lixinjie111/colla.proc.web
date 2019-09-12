@@ -1404,6 +1404,9 @@ export default {
         removeOverlayById:function(id) {
             mapInit.removeOverlayById(id,this.$data.map);
         },
+        getOverlayById:function(id) {
+            return this.$data.map.getOverlayById(id);
+        },
         /**
          * 添加矢量图层
          * @param {string} id 矢量图层id
