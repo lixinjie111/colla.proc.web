@@ -104,15 +104,17 @@
 				let statistics = _realData.statistics;
 				let taskList = _realData.taskList;
 				this.$emit('PubMsgChange', statistics);
-				//this.clearPubMsg();
-				//setTimeout(()=>{
-					this.addPubMsg(taskList);
-				//},100)
+				//this.addPubMsg(taskList);
+				this.initPubMsgList();//放开
 				
 				//console.log(_realData)
 			},
 			onclose(data) {
 				console.log("结束连接");
+			},
+			onerror(data) {
+				this.$emit('initStatisics');
+				this.initPubMsgList();
 			},
 			onopen(data) {
 				var _traffic = JSON.stringify(this.webSocketData);
@@ -131,144 +133,144 @@
 			destroyed() {
 				this.webSocket && this.webSocket.close();
 			},
-			//      initPubMsgList(){
-				
-			//
-			//          //this.clearPubMsg();
-			//          let url = 'event/task/findEffectiveList';
-			//          let params = {                
-			//              status: 1,
-			//          };
-			//          this.$api.post( url,params,
-			//              response => {
-			//                  if (response.status >= 200 && response.status < 300) {
-			//
-			//                      this.pubMsgList = response.data ? response.data : [];                        
-			//                      let t = this.pubMsgList;
-			//                      this.addPubMsg(this.pubMsgList);
-			//                      
-			//                      // if(t.length){
-			//                      //     this.$refs.refTusvnMap.centerAt( t.length, t[0], t[1])
-			//                      // }
-			//
-			//                  } else {                     
-			//                      this.$message.error("获取信息列表失败 ！"); 
-			//                  }
-			//              }
-			//          );
-			//      },
+		    initPubMsgList(){
+		          this.clearPubMsg();
+		          let url = 'event/task/findEffectiveList';
+		          let params = {                
+		              status: 1,
+		          };
+		          this.$api.post( url,params,
+		              response => {
+		                  if (response.status >= 200 && response.status < 300) {
+		
+		                      this.pubMsgList = response.data ? response.data : [];                        
+		                      let t = this.pubMsgList;
+		                      this.addPubMsg(this.pubMsgList);
+		                      //console.log(response.data)
+		                      
+		                      // if(t.length){
+		                      //     this.$refs.refTusvnMap.centerAt( t.length, t[0], t[1])
+		                      // }
+		
+		                  } else {                     
+		                      this.$message.error("获取信息列表失败 ！"); 
+		                  }
+		              }
+		          );
+		    },
 			addPubMsg(_result) {
-				console.log(_result)
-				let _this = this;
-				let _filterData = {};
-				_result.forEach((item, index) => {
-					_filterData[item.taskCode] = {
-						lon: item.longitude,
-						lat: item.latitude,
-						id: item.taskCode,
-						icon: item.icon ? this.iconPath + item.icon : 'static/images/position.png',
-						bgImgId: 'bg_' + item.taskCode,
-						bgImgSrc: 'static/images/ico-bg2.png',
-						bgImgSize: [44, 58],
-						bgImgOffset: [0, 0],
-						size: [30, 30],
-						imgOffset: [0, -34],
-						alertCategory: item.alertCategory,
-						beginTime: item.beginTime,
-						cameraId: item.cameraId,
-						endTime: item.endTime,
-						eventType: item.eventType,
-					};
-				});
-				//console.log(_filterData)
-				//console.log(_this.prevData)
-				for(let id in _this.prevData) {
-					if(_filterData[id]) { //表示有该点，
-						//console.log(_filterData[id],"更新")
-						if(_filterData[id].lon == _this.prevData[id].lon && _filterData[id].lat == _this.prevData[id].lat){
-							
-						}else{//表示有该点，做setPosition
-							console.log("cccccccccc")
-							//this.$refs.refTusvnMap.setOverlayPosition(_filterData[id], _filterData[id].lon, _filterData[id].lat)
-						}
-					} else { //表示没有该点，做remove
-						//console.log(_this.prevData[id].id)
-						if(this.$refs.refTusvnMap.getOverlayById(_this.prevData[id].id)){
-							this.$refs.refTusvnMap.removeOverlayById(_this.prevData[id].id);
-							this.$refs.refTusvnMap.removeFeature(_this.prevData[id].bgImgId, this.mapLayer.messageBg);
-							this.$refs.refTusvnMap.closeInforWindow;
-							delete _this.prevData[id];
-						}
-						
-					}
-				}
+				//console.log(_result)
+//				let _this = this;
+//				let _filterData = {};
+//				_result.forEach((item, index) => {
+//					_filterData[item.taskCode] = {
+//						lon: item.longitude,
+//						lat: item.latitude,
+//						id: item.taskCode,
+//						icon: item.icon ? this.iconPath + item.icon : 'static/images/position.png',
+//						bgImgId: 'bg_' + item.taskCode,
+//						bgImgSrc: 'static/images/ico-bg2.png',
+//						bgImgSize: [44, 58],
+//						bgImgOffset: [0, 0],
+//						size: [30, 30],
+//						imgOffset: [0, -34],
+//						alertCategory: item.alertCategory,
+//						beginTime: item.beginTime,
+//						cameraId: item.cameraId,
+//						endTime: item.endTime,
+//						eventType: item.eventType,
+//					};
+//				});
+//				for(let id in _this.prevData) {
+//					if(_filterData[id]) { //表示有该点，
+//						if(_filterData[id].lon == _this.prevData[id].lon && _filterData[id].lat == _this.prevData[id].lat){
+//							
+//						}else{//表示有该点，做setPosition
+//							//console.log("cccccccccc")
+//							//this.$refs.refTusvnMap.removeFeature(_this.prevData[id].bgImgId, this.mapLayer.messageBg);
+//							//this.$refs.refTusvnMap.addImg(_filterData[id].lon, _filterData[id].lat, _filterData[id].bgImgId, this.mapLayer.messageBg, _filterData[id].bgImgSrc, _filterData[id].bgImgSize, 0, true, 1, _filterData[id].bgImgOffset, 1, [0.5, 1]);
+//							
+//							this.$refs.refTusvnMap.setOverlayPosition(_this._filterData[id].bgImgId, _filterData[id].lon, _filterData[id].lat)
+//							this.$refs.refTusvnMap.setOverlayPosition(_filterData[id].id, _filterData[id].lon, _filterData[id].lat)
+//							this.$refs.refTusvnMap.$data.overlays[_filterData[id].id].setPosition(_filterData[id].lon, _filterData[id].lat);//弹窗
+//						}
+//					} else { //表示没有该点，做remove
+//						//console.log(_this.prevData[id].id)
+//						if(this.$refs.refTusvnMap.getOverlayById(_this.prevData[id].id)){
+//							this.$refs.refTusvnMap.removeOverlayById(_this.prevData[id].id);
+//							this.$refs.refTusvnMap.removeFeature(_this.prevData[id].bgImgId, this.mapLayer.messageBg);
+//							this.$refs.refTusvnMap.closeInforWindow();
+//							delete _this.prevData[id];
+//						}
+//						
+//					}
+//				}
+//
+//				for(let id in _filterData) {
+//					if(!_this.prevData[id]) { //表示新增该点，做add
+//						this.$refs.refTusvnMap.addImg(_filterData[id].lon, _filterData[id].lat, _filterData[id].bgImgId, this.mapLayer.messageBg, _filterData[id].bgImgSrc, _filterData[id].bgImgSize, 0, true, 1, _filterData[id].bgImgOffset, 1, [0.5, 1]);
+//						this.$refs.refTusvnMap.addImgOverlay(_filterData[id].id, _filterData[id].icon, null, _filterData[id].lon, _filterData[id].lat, _filterData[id].id, _filterData[id].imgOffset, (e) => {
+//							e.preventDefault();
+//							e.stopPropagation();
+//							let marker = {
+//								id: _filterData[id].id,
+//								lon: _filterData[id].lon,
+//								lat: _filterData[id].lat,
+//								isEdit: true,
+//								icon: this.iconPath + this.msgTypeInfo.icon,
+//								trafficInfo: this.trafficInfo,
+//							};
+//							this.cricleID = 'icon_' + _filterData[id].id;
+//							this.$refs.refTusvnMap.addMyInfoWindow(marker);
+//
+//						});
+//					}
+//				}
+//				_this.prevData = _filterData;
 
-				for(let id in _filterData) {
-					if(!_this.prevData[id]) { //表示新增该点，做add
-						//console.log(_filterData[id].icon)
-						this.$refs.refTusvnMap.addImg(_filterData[id].lon, _filterData[id].lat, _filterData[id].bgImgId, this.mapLayer.messageBg, _filterData[id].bgImgSrc, _filterData[id].bgImgSize, 0, true, 1, _filterData[id].bgImgOffset, 1, [0.5, 1]);
-						this.$refs.refTusvnMap.addImgOverlay(_filterData[id].id, _filterData[id].icon, null, _filterData[id].lon, _filterData[id].lat, _filterData[id].id, _filterData[id].imgOffset, (e) => {
-							e.preventDefault();
-							e.stopPropagation();
-							let marker = {
-								id: _filterData[id].id,
-								lon: _filterData[id].lon,
-								lat: _filterData[id].lat,
-								isEdit: true,
-								icon: this.iconPath + this.msgTypeInfo.icon,
-								trafficInfo: this.trafficInfo,
-							};
-							this.cricleID = 'icon_' + _filterData[id].id;
-							this.$refs.refTusvnMap.addMyInfoWindow(marker);
-
-						});
-					}
-				}
-				_this.prevData = _filterData;
-
-				//          for(let i=0;i<this.pubMsgList.length;i++){
-				//              let item = this.pubMsgList[i];
-				//              let icon = 'static/images/position.png';
-				//              // let icon = 'https://webapi.amap.com/theme/v1.3/markers/n/mark_b.png';
-				//              if(item.icon){                               
-				//                  icon = this.iconPath + item.icon;
-				//              }              
-				//              
-				//              let lon = item.longitude;
-				//              let lat = item.latitude;                            
-				//              let id = item.taskCode;
-				//              let taskCode = item.taskCode;
-				//              let size = [30,30];                           
-				//
-				//              let bgImgId = 'bg_' + id;
-				//              let bgImgSrc = 'static/images/ico-bg2.png';                            
-				//              let bgImgSize = [44,58];
-				//              let bgImgOffset = [0,0];                            
-				//              this.$refs.refTusvnMap.addImg(lon, lat, bgImgId,this.mapLayer.messageBg,bgImgSrc,bgImgSize,0,true,1,bgImgOffset,1,[0.5,1]);                            
-				//
-				//              let imgOffset = [0,-34];
-				//              this.$refs.refTusvnMap.addImgOverlay( id, icon, null, lon, lat, id, imgOffset, (e) => {
-				//                  
-				//                  e.preventDefault();
-				//                  e.stopPropagation();
-				//
-				//                  let marker = {
-				//                      id: item.id,
-				//                      lon: lon,
-				//                      lat: lat,
-				//                      taskCode:taskCode,
-				//                      isEdit: true,
-				//                      icon: this.iconPath + this.msgTypeInfo.icon,
-				//                      trafficInfo: this.trafficInfo,
-				//
-				//                  };
-				//
-				//                  this.cricleID = 'icon_' + item.id;
-				//                  this.$refs.refTusvnMap.addMyInfoWindow(marker);
-				//
-				//              }); 
-				//              
-				//          }
+	          for(let i=0;i<_result.length;i++){//放开
+	              let item = _result[i];
+	              let icon = 'static/images/position.png';
+	              // let icon = 'https://webapi.amap.com/theme/v1.3/markers/n/mark_b.png';
+	              if(item.icon){                               
+	                  icon = this.iconPath + item.icon;
+	              }              
+	              
+	              let lon = item.longitude;
+	              let lat = item.latitude;                            
+	              let id = item.taskCode;
+	              let taskCode = item.taskCode;
+	              let size = [30,30];                           
+	
+	              let bgImgId = 'bg_' + id;
+	              let bgImgSrc = 'static/images/ico-bg2.png';                            
+	              let bgImgSize = [44,58];
+	              let bgImgOffset = [0,0];                            
+	              this.$refs.refTusvnMap.addImg(lon, lat, bgImgId,this.mapLayer.messageBg,bgImgSrc,bgImgSize,0,true,1,bgImgOffset,1,[0.5,1]);                            
+	
+	              let imgOffset = [0,-34];
+	              this.$refs.refTusvnMap.addImgOverlay( id, icon, null, lon, lat, id, imgOffset, (e) => {
+	                  
+	                  e.preventDefault();
+	                  e.stopPropagation();
+	
+	                  let marker = {
+	                      id: item.id,
+	                      lon: lon,
+	                      lat: lat,
+	                      taskCode:taskCode,
+	                      isEdit: true,
+	                      icon: this.iconPath + this.msgTypeInfo.icon,
+	                      trafficInfo: this.trafficInfo,
+	
+	                  };
+	
+	                  this.cricleID = 'icon_' + item.id;
+	                  this.$refs.refTusvnMap.addMyInfoWindow(marker);
+	
+	              }); 
+	              
+	          }
 			},
 			temporaryClearPubMsg(e) {
 				if(e.bool) { //删除地图上的点;关掉webscoket;
@@ -277,30 +279,36 @@
 				}
 			},
 			clearPubMsgIco() {
+//				this.$refs.refTusvnMap.removeAllFeature(this.mapLayer.messageBg);
+//				if(Object.keys(this.prevData).length < 1) {
+//					return;
+//				}
+//				for(let item in this.prevData) {
+//					this.$refs.refTusvnMap.removeOverlayById(this.prevData[item].id);
+//				}
+				
 				this.$refs.refTusvnMap.removeAllFeature(this.mapLayer.messageBg);
-				if(Object.keys(this.prevData).length < 1) {
-					return;
-				}
-				for(let item in this.prevData) {
-					this.$refs.refTusvnMap.removeOverlayById(this.prevData[item].id);
+				for(let item of this.pubMsgList) {
+					this.$refs.refTusvnMap.removeOverlayById(item.taskCode);
 				}
 			},
 			clearPubMsg() {
 				this.clearPubMsgIco();
-				this.prevData = {};
+				//this.prevData = {};
+				this.pubMsgList =[];//放开
 			},
 			publishInfo(e) { //发布成功后：建立webscoket连接；清空数据
-				console.log(111111111111)
 				this.clearPubMsg();
 				this.initWebSocket();
+				
 			},
 			updateInfo(e) { //更新不需要操作
-				this.initWebSocket();
 				this.clearPubMsg();
+				this.initWebSocket();
 			},
 			destroyInfo(e) { //手动失效也不需要操作
-				this.initWebSocket();
 				this.clearPubMsg();
+				this.initWebSocket();
 			},
 			showMarker(type, bool) {
 				switch(type) {
@@ -541,7 +549,7 @@
 				// 设置地图中心点及级别
 				this.$refs.refTusvnMap.centerAt(window.defaultMapOption.center[0], window.defaultMapOption.center[1]);
 				this.$refs.refTusvnMap.zoomTo(window.defaultMapOption.zoom);
-
+				this.initPubMsgList();
 				this.initWebSocket();
 			},
 			viewLevelChange: function(tusvnmap, mevent) {
