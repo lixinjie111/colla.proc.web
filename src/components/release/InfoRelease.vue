@@ -4,7 +4,7 @@
        
         <!-- openlayer地图 -->
         <div>
-            <InfoMapOL ref="refInfoMap" :mapHeight="pageHeight" :msgTypeInfo="search.pubMsg" @PubMsgChange="pubMsgChange"></InfoMapOL>
+            <InfoMapOL ref="refInfoMap" :mapHeight="pageHeight" :msgTypeInfo="search.pubMsg" @PubMsgChange="pubMsgChange" @initStatisics="initStatisics"></InfoMapOL>
         </div>
 
         <!-- 左侧信息 -->
@@ -105,10 +105,29 @@ export default {
     },
     created(){
         this.initPubMsgList();
+        this.initStatisics();
     },
     methods: {
+      	initStatisics(){
+            let url = 'event/task/statisticsTask';
+            let params = {                
+                
+            };
+            this.$api.post( url,params,
+                response => {
+                    if (response.status >= 200 && response.status < 300) {
+
+                        this.statisicsData = response.data ? response.data : [];
+
+                    } else {                     
+                        this.$message("获取信息列表失败 ！"); 
+                    }
+                }
+            );
+        },  
         pubMsgChange(data){
            this.statisicsData=data;
+           //this.initStatisics();
         },
 
         initPubMsgList(){
