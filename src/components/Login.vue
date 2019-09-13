@@ -9,7 +9,7 @@
                 </div>
                 <div class="login-card">
                     <div class="login-header">
-                        <div class="login-title">服务发布中心</div>
+                        <div class="login-title">决策控制中心</div>
                     </div>
                     <div class="login-item-box">
                         <el-form :model="loginForm" :rules="loginRules" ref="loginForm" label-position="right" label-width="105px" class="login-form">
