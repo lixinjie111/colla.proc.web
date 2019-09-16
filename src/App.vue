@@ -4,7 +4,7 @@
         <div id="header">
               <div class="logo">
                   <img src="static/images/logo.png" class="logo-img"/>
-                  <em class="name">决策控制中心</em>
+                  <em class="name">信息协同中心</em>
               </div>
 
               <div class="userinfo">
