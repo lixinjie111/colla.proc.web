@@ -3,7 +3,7 @@
     <img class="login-logo" src="static/images/login-logo.png" />
     <!-- 登录 -->
     <div class="login-card">
-      <div class="login-title">智能网联汽车决策控制中心</div>
+      <div class="login-title">智能网联汽车信息协同中心</div>
       <div class="login-item-box">
         <el-form
           :model="loginForm"
