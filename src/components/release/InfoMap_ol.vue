@@ -146,25 +146,27 @@
 			addPubMsg(_result) {
 				let _this = this;
 				let _filterData = {};
-				_result.forEach((item, index) => {
-					_filterData[item.taskCode] = {
-						lon: item.longitude,
-						lat: item.latitude,
-						id: item.taskCode,
-						icon: item.icon ? this.iconPath + item.icon : 'static/images/position.png',
-						bgImgId: 'bg_' + item.taskCode,
-						bgImgSrc: 'static/images/ico-bg2.png',
-						bgImgSize: [44, 58],
-						bgImgOffset: [0, 0],
-						size: [30, 30],
-						imgOffset: [0, -34],
-						alertCategory: item.alertCategory,
-						beginTime: item.beginTime,
-						cameraId: item.cameraId,
-						endTime: item.endTime,
-						eventType: item.eventType,
-					};
-				});
+				if(_result.length > 0) {
+					_result.forEach((item, index) => {
+						_filterData[item.taskCode] = {
+							lon: item.longitude,
+							lat: item.latitude,
+							id: item.taskCode,
+							icon: item.icon ? this.iconPath + item.icon : 'static/images/position.png',
+							bgImgId: 'bg_' + item.taskCode,
+							bgImgSrc: 'static/images/ico-bg2.png',
+							bgImgSize: [44, 58],
+							bgImgOffset: [0, 0],
+							size: [30, 30],
+							imgOffset: [0, -34],
+							alertCategory: item.alertCategory,
+							beginTime: item.beginTime,
+							cameraId: item.cameraId,
+							endTime: item.endTime,
+							eventType: item.eventType,
+						};
+					});
+				}
 				for(let id in _this.prevData) {
 					if(_filterData[id]) { //表示有该点，
 						if(_filterData[id].lon == _this.prevData[id].lon && _filterData[id].lat == _this.prevData[id].lat) {
