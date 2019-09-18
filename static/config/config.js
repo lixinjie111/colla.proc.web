@@ -1,18 +1,12 @@
 window.config = {   
- 
-    // 172.17.1.16
-    // 10.0.1.22
 
-    // 120.133.21.14
-    // 113.208.118.62
-
-    url:'http://111.23.140.59:9094/collaProcApp/',                    //长沙环境
-    operateUrl: 'http://111.23.140.59:9090/operateApp/',
-    iconPath:'http://111.23.140.59:9090/file/pic/trafficType/',       // 图片服务器地址
-    mapWaPianPath:'http://111.23.140.59:8086/',   //地图瓦片
-    websocketUrl:'ws://111.23.140.59:9970/colla',
-    dlUrl: 'http://111.23.140.59:8085/', //迪路
-    dlWmsUrl: 'http://111.23.140.59:8080/', //迪路
+    url:'http://218.76.44.22:9094/collaProcApp/',                    //长沙环境
+    operateUrl: 'http://218.76.44.22:9090/operateApp/',
+    iconPath:'http://218.76.44.22:9090/file/pic/trafficType/',       // 图片服务器地址
+    mapWaPianPath:'http://218.76.44.22:8086/',   //地图瓦片
+    websocketUrl:'ws://218.76.44.22:9970/colla',
+    dlUrl: 'http://218.76.44.22:8085/', //迪路
+    dlWmsUrl: 'http://218.76.44.22:8080/', //迪路
 
     version: 1.0,       // 版本号
 }
