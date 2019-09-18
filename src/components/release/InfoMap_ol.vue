@@ -132,6 +132,7 @@
 						if(response.status >= 200 && response.status < 300) {
 							this.pubMsgList = response.data ? response.data : [];
 							this.addPubMsg(this.pubMsgList);
+							this.initWebSocket();
 						} else {
 							this.$message({
 								type: 'error',
@@ -139,6 +140,7 @@
 								message: "获取信息列表失败 ！",
 								showClose: true
 							});
+							this.initWebSocket();
 						}
 					}
 				);
@@ -479,7 +481,6 @@
 				this.$refs.refTusvnMap.centerAt(window.defaultMapOption.center[0], window.defaultMapOption.center[1]);
 				this.$refs.refTusvnMap.zoomTo(window.defaultMapOption.zoom);
 				this.initPubMsgList();
-				this.initWebSocket();
 			},
 			viewLevelChange: function(tusvnmap, mevent) {
 				this.mapLevel.value = mevent;
