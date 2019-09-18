@@ -148,7 +148,7 @@
 			addPubMsg(_result) {
 				let _this = this;
 				let _filterData = {};
-				if(_result.length > 0) {
+				if(_result) {
 					_result.forEach((item, index) => {
 						_filterData[item.taskCode] = {
 							lon: item.longitude,
