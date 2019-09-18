@@ -6,13 +6,13 @@ window.config = {
     mapWaPianPath:'http://218.76.44.22:8086/',   //地图瓦片
     websocketUrl:'ws://218.76.44.22:9970/colla',
     dlUrl: 'http://218.76.44.22:8085/', //迪路
-    dlWmsUrl: 'http://218.76.44.22:8080/', //迪路
+    dlWmsUrl: 'http://218.76.44.22:48080/', //迪路
 
     version: 1.0,       // 版本号
 }
 //地图额外配置项添加
 window.defaultMapOption = {
-    center: [121.1882114,31.2771320], // 上海 -- gps坐标点
+    center: [113.07876,28.255618], // 长沙 -- 高德地图坐标点
     zoom: 14
 }
 //路网配置参数
