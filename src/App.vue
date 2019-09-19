@@ -5,6 +5,7 @@
               <div class="logo">
                   <img src="static/images/logo.png" class="logo-img"/>
                   <em class="name">信息协同中心</em>
+                  <img src="static/images/logo-title.png" class="logo-title"/>
               </div>
 
               <div class="userinfo">
@@ -166,6 +167,10 @@ export default {
             line-height: 28px;
             color: #fff;
             letter-spacing: 3px;
+            margin-right: 10px;
+        }
+        .logo-title {
+            height: 22px;
         }
     }
 }
