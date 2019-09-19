@@ -40,7 +40,7 @@
                                 </el-form-item>
 
                                 <el-form-item label="广播范围" prop="affectRange" class="yk-bottom-12 yk-txt" style="height: 45px;">
-                                    <el-slider style="padding: 0px 5px;" v-model="trafficInfo.affectRange" :marks="broadcastRangeMarks" :min="broadcastMin" :max="broadcastMax" :step="broadcastStep" @change="sliderChange"></el-slider>
+                                    <el-slider style="padding: 0px 5px;" :show-tooltip="slideFlag" v-model="trafficInfo.affectRange" :marks="broadcastRangeMarks" :min="broadcastMin" :max="broadcastMax" :step="broadcastStep" @input="sliderInputChange"  @change="sliderChange"></el-slider>
                                 </el-form-item>                                
 
                                 <el-form-item label="影响路径" prop="alertPath" class="yk-bottom-12 yk-txt">
@@ -166,6 +166,7 @@ export default {
     props:["targetId","overlayContainerId",], //'trafficInfo'
     data(){
         return {
+            slideFlag:true,
             isLoading: false,
             pointerFlag:false,
             orderStatus: -1
@@ -318,13 +319,16 @@ export default {
         
         // 表单事件
         sliderChange(value){
+            this.slideFlag=false;
             this.select.sliderVal = value;
             this.trafficInfo.affectRange = value;
             // this.trafficInfo.alertRadius = value;
 
             this.drawBgCircle(this.circleLon,this.circleLat,value);
         },
-
+        sliderInputChange(){
+             this.slideFlag=true;
+        },
         // 添加影响路径
         // 1 隐藏 弹框 2 画点 鼠标事件处理  点击打点 画线 ，可以点击多个点， 3 点击确定或关闭 清空 点、线、鼠标事件 ，确定则提交数据
         addEffectPath(){
