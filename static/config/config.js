@@ -5,7 +5,7 @@ window.config = {
     operateUrl: 'http://144.7.122.84:9090/operateApp/',	//运营平台
     iconPath:'http://144.7.122.84:9090/file/pic/trafficType/',       // 图片服务器地址
     websocketUrl:'ws://144.7.122.84:9996/colla', 
-    mapWaPianPath:'http://116.236.72.204:48086/',   //地图瓦片
+    mapWaPianPath:'http://144.7.122.89:48086/',   //地图瓦片
     dlUrl: 'http://144.7.122.89:8085/', //迪路
     dlWmsUrl: 'http://144.7.122.89:8080/', //迪路
 
