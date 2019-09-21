@@ -132,6 +132,7 @@
 						if(response.status >= 200 && response.status < 300) {
 							this.pubMsgList = response.data ? response.data : [];
 							this.addPubMsg(this.pubMsgList);
+							this.initWebSocket();
 						} else {
 							this.$message({
 								type: 'error',
@@ -139,6 +140,7 @@
 								message: "获取信息列表失败 ！",
 								showClose: true
 							});
+							this.initWebSocket();
 						}
 					}
 				);
@@ -146,25 +148,27 @@
 			addPubMsg(_result) {
 				let _this = this;
 				let _filterData = {};
-				_result.forEach((item, index) => {
-					_filterData[item.taskCode] = {
-						lon: item.longitude,
-						lat: item.latitude,
-						id: item.taskCode,
-						icon: item.icon ? this.iconPath + item.icon : 'static/images/position.png',
-						bgImgId: 'bg_' + item.taskCode,
-						bgImgSrc: 'static/images/ico-bg2.png',
-						bgImgSize: [44, 58],
-						bgImgOffset: [0, 0],
-						size: [30, 30],
-						imgOffset: [0, -34],
-						alertCategory: item.alertCategory,
-						beginTime: item.beginTime,
-						cameraId: item.cameraId,
-						endTime: item.endTime,
-						eventType: item.eventType,
-					};
-				});
+				if(_result) {
+					_result.forEach((item, index) => {
+						_filterData[item.taskCode] = {
+							lon: item.longitude,
+							lat: item.latitude,
+							id: item.taskCode,
+							icon: item.icon ? this.iconPath + item.icon : 'static/images/position.png',
+							bgImgId: 'bg_' + item.taskCode,
+							bgImgSrc: 'static/images/ico-bg2.png',
+							bgImgSize: [44, 58],
+							bgImgOffset: [0, 0],
+							size: [30, 30],
+							imgOffset: [0, -34],
+							alertCategory: item.alertCategory,
+							beginTime: item.beginTime,
+							cameraId: item.cameraId,
+							endTime: item.endTime,
+							eventType: item.eventType,
+						};
+					});
+				}
 				for(let id in _this.prevData) {
 					if(_filterData[id]) { //表示有该点，
 						if(_filterData[id].lon == _this.prevData[id].lon && _filterData[id].lat == _this.prevData[id].lat) {
@@ -477,7 +481,6 @@
 				this.$refs.refTusvnMap.centerAt(window.defaultMapOption.center[0], window.defaultMapOption.center[1]);
 				this.$refs.refTusvnMap.zoomTo(window.defaultMapOption.zoom);
 				this.initPubMsgList();
-				this.initWebSocket();
 			},
 			viewLevelChange: function(tusvnmap, mevent) {
 				this.mapLevel.value = mevent;
