@@ -75,7 +75,7 @@ export default {
       loginForm: {
         userNo: "",
         password: "",
-        platform: ""
+        platform: "40000"
       },
       loginRules: {
         userNo: [{ validator: checkAdminName, trigger: "blur" }],
@@ -118,15 +118,9 @@ export default {
           } else {
             this.clearCookie();
           }
-        let _params = {
-            "userNo": this.loginForm.userNo,
-            "password":this.loginForm.password,
-            'platform':'40000'
-        };
-        this.loginFunc(_params);
+          this.loginFunc(this.loginForm);
         } else {
           this.loading = false;
-          return false;
         }
       });
     },
@@ -194,7 +188,7 @@ export default {
         // this.$refs.loginForm.resetFields();
         this.loginForm.userNo = "";
         this.loginForm.password = "";
-        this.checked = false;
+        this.checked = true;
       }
     },
     //清除cookie
