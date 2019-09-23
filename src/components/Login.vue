@@ -13,11 +13,11 @@
                     </div>
                     <div class="login-item-box">
                         <el-form :model="loginForm" :rules="loginRules" ref="loginForm" label-position="right" label-width="105px" class="login-form">
-                            <el-form-item prop="name" label="用户名" class="login-item">
-                                <el-input type="text" v-model.trim="loginForm.name" :maxlength="40" placeholder="请输入用户名"></el-input>
+                            <el-form-item prop="userNo" label="用户名" class="login-item">
+                                <el-input type="text" v-model.trim="loginForm.userNo" :maxlength="40" placeholder="请输入用户名"></el-input>
                             </el-form-item>
-                            <el-form-item prop="pass" label="密码" class="login-item">
-                                <el-input type="password" v-model.trim="loginForm.pass" :maxlength="20" placeholder="请输入密码" @keyup.enter.native="handleLogin"></el-input>
+                            <el-form-item prop="password" label="密码" class="login-item">
+                                <el-input type="password" v-model.trim="loginForm.password" :maxlength="20" placeholder="请输入密码" @keyup.enter.native="handleLogin"></el-input>
                             </el-form-item>
                         </el-form>
                         <el-button class="login-button" type="primary" :loading="loading" @click.native.prevent="handleLogin">登 录</el-button>
@@ -56,14 +56,15 @@ export default {
         };
         return {
             loginForm: {
-                name:'',
-                pass:'',
+                userNo: '',
+                password: '',
+                platform: '40000'
             },
             loginRules: {
-                name: [
+                userNo: [
                     { validator: checkAdminName, trigger: 'blur' }
                 ],
-                pass: [
+                password: [
                     { validator: checkPassword, trigger: 'blur' }
                 ]
             },
@@ -96,12 +97,7 @@ export default {
              this.$refs.loginForm.validate(valid => {
                 if (valid) {
                     this.loading = true;
-                    let _params = {
-                        "userNo": this.loginForm.name,
-                        "password":this.loginForm.pass,
-                        'platform':'40000'
-                    };
-                    this.loginFunc(_params);
+                    this.loginFunc(this.loginForm);
                 } else {
                     this.loading = false;
                     return false;
