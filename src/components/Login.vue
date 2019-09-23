@@ -147,7 +147,12 @@ export default {
                     
                     this.$router.push('/infoRelease');
                 }else {
-                    this.$message.error(response.data.message);
+                    this.$message({
+                        type: 'error',
+                        duration: '1500',
+                        message: response.data.message,
+                        showClose: true
+                    });
                     this.removeStorage();
                 }
             }else {
