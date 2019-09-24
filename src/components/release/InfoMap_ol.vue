@@ -97,7 +97,6 @@
 				let taskList = _realData.taskList;
 				this.$emit('PubMsgChange', statistics);
 				this.addPubMsg(taskList);
-				console.log(111111111111)
 			},
 			onclose(data) {
 				console.log("结束连接");
