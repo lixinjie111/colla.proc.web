@@ -97,6 +97,7 @@
 				let taskList = _realData.taskList;
 				this.$emit('PubMsgChange', statistics);
 				this.addPubMsg(taskList);
+				console.log(111111111111)
 			},
 			onclose(data) {
 				console.log("结束连接");
@@ -191,7 +192,9 @@
 
 					}
 				}
-
+				console.log(_filterData)
+				console.log(_this.prevData)
+				console.log(this.$refs.refTusvnMap)
 				for(let id in _filterData) {
 					if(!_this.prevData[id]) { //表示新增该点，做add
 						this.$refs.refTusvnMap.addImg(_filterData[id].lon, _filterData[id].lat, _filterData[id].bgImgId, this.mapLayer.messageBg, _filterData[id].bgImgSrc, _filterData[id].bgImgSize, 0, true, 1, _filterData[id].bgImgOffset, 1, [0.5, 1]);
