@@ -176,22 +176,24 @@
 				}
 				for(let id in _this.prevData) {
 					if(_filterData[id]) { //表示有该点，
-						if(_filterData[id].lon == _this.prevData[id].lon && _filterData[id].lat == _this.prevData[id].lat) {
+						// if(_filterData[id].lon == _this.prevData[id].lon && _filterData[id].lat == _this.prevData[id].lat) {
 
-						} else { //表示有该点，做setPosition
-							if(this.$refs.refTusvnMap.getOverlayById(_this.prevData[id].id)) {
-								this.$refs.refTusvnMap.removeOverlayById(_this.prevData[id].id);
-								this.$refs.refTusvnMap.removeFeature(_this.prevData[id].bgImgId, this.mapLayer.messageBg);
-								this.$refs.refTusvnMap.closeInforWindow();
-								delete _this.prevData[id];
-							}
-						}
+						// } else { //表示有该点，做setPosition
+						// 	if(this.$refs.refTusvnMap.getOverlayById(_this.prevData[id].id)) {
+						// 		this.$refs.refTusvnMap.removeOverlayById(_this.prevData[id].id);
+						// 		this.$refs.refTusvnMap.removeFeature(_this.prevData[id].bgImgId, this.mapLayer.messageBg);
+						// 		this.$refs.refTusvnMap.closeInforWindow();
+						// 		delete _this.prevData[id];
+						// 	}
+						// }
 					} else { //表示没有该点，做remove
 						if(this.$refs.refTusvnMap.getOverlayById(_this.prevData[id].id)) {
 							this.$refs.refTusvnMap.removeOverlayById(_this.prevData[id].id);
 							this.$refs.refTusvnMap.removeFeature(_this.prevData[id].bgImgId, this.mapLayer.messageBg);
-							 this.$refs.refTusvnMap.closeInforWindow();
+							//  let infoWindow=this.$refs.refTusvnMap.$data.overlays[_this.prevData[id].id];
+							//  this.$refs.refTusvnMap.$data.map.removeOverlay(infoWindow);
 							delete _this.prevData[id];
+
 						}
 
 					}
@@ -222,7 +224,7 @@
 				if(e.bool) { //true:删除地图上的点;关掉webscoket;
 					this.webSocketFlag=false;
 					//this.webSocket && this.webSocket.close(); 
-					this.clearPubMsg();
+					//this.clearPubMsg();
 				}else{ //打开webscoket,并且获取数据
 					if(e.getData){
 						this.clearPubMsg();
@@ -248,17 +250,17 @@
 				this.prevData = {};
 			},
 			publishInfo(e) { //发布成功后：建立webscoket连接；清空数据
-				this.clearPubMsg();
+				//this.clearPubMsg();
 				this.webSocketFlag=true;
 			},
 			updateInfo(e) { //更新不需要操作
-				this.clearPubMsg();
+				//this.clearPubMsg();
 				this.webSocketFlag=true;
 				this.webSocket && this.webSocket.close(); 
 				this.initWebSocket();
 			},
 			destroyInfo(e) { //手动失效也不需要操作
-				this.clearPubMsg();
+				//this.clearPubMsg();
 				this.webSocketFlag=true;
 			},
 			showMarker(type, bool) {
