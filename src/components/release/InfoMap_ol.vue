@@ -176,16 +176,17 @@
 				}
 				for(let id in _this.prevData) {
 					if(_filterData[id]) { //表示有该点，
-						// if(_filterData[id].lon == _this.prevData[id].lon && _filterData[id].lat == _this.prevData[id].lat) {
-
-						// } else { //表示有该点，做setPosition
-						// 	if(this.$refs.refTusvnMap.getOverlayById(_this.prevData[id].id)) {
-						// 		this.$refs.refTusvnMap.removeOverlayById(_this.prevData[id].id);
-						// 		this.$refs.refTusvnMap.removeFeature(_this.prevData[id].bgImgId, this.mapLayer.messageBg);
-						// 		this.$refs.refTusvnMap.closeInforWindow();
-						// 		delete _this.prevData[id];
-						// 	}
-						// }
+					
+						if(_filterData[id].lon == _this.prevData[id].lon && _filterData[id].lat == _this.prevData[id].lat) {
+							//console.log(1111111)
+						} else { //表示有该点，做setPosition
+							if(this.$refs.refTusvnMap.getOverlayById(_this.prevData[id].id)) {
+								this.$refs.refTusvnMap.removeOverlayById(_this.prevData[id].id);
+								this.$refs.refTusvnMap.removeFeature(_this.prevData[id].bgImgId, this.mapLayer.messageBg);
+								//this.$refs.refTusvnMap.closeInforWindow();
+								delete _this.prevData[id];
+							}
+						}
 					} else { //表示没有该点，做remove
 						if(this.$refs.refTusvnMap.getOverlayById(_this.prevData[id].id)) {
 							this.$refs.refTusvnMap.removeOverlayById(_this.prevData[id].id);
