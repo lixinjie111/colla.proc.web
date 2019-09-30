@@ -191,7 +191,10 @@
 							this.$refs.refTusvnMap.removeOverlayById(_this.prevData[id].id);
 							this.$refs.refTusvnMap.removeFeature(_this.prevData[id].bgImgId, this.mapLayer.messageBg);
 							//  let infoWindow=this.$refs.refTusvnMap.$data.overlays[_this.prevData[id].id];
-							//  this.$refs.refTusvnMap.$data.map.removeOverlay(infoWindow);
+							// if(infoWindow){
+							// 	this.$refs.refTusvnMap.$data.map.removeOverlay(infoWindow);
+							// 	delete this.$refs.refTusvnMap.$data.overlays[_this.prevData[id].id];
+							// }
 							delete _this.prevData[id];
 
 						}
@@ -224,7 +227,7 @@
 				if(e.bool) { //true:删除地图上的点;关掉webscoket;
 					this.webSocketFlag=false;
 					//this.webSocket && this.webSocket.close(); 
-					//this.clearPubMsg();
+					this.clearPubMsg();
 				}else{ //打开webscoket,并且获取数据
 					if(e.getData){
 						this.clearPubMsg();
