@@ -778,7 +778,7 @@ export default {
             this.initSelect();
             this.initTrafficInof();
             this.$emit("setPointer",{bool: false, flag: true});
-            this.$emit('TemporaryClearPubMsg',{bool:false,getData:true}); 
+            //this.$emit('TemporaryClearPubMsg',{bool:false,getData:true}); 
             this.updateLoading = false;
             this.publishLoading = false;
             this.invalidLoading = false;

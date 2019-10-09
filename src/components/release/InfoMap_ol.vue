@@ -176,13 +176,14 @@
 				}
 				for(let id in _this.prevData) {
 					if(_filterData[id]) { //表示有该点，
+					
 						if(_filterData[id].lon == _this.prevData[id].lon && _filterData[id].lat == _this.prevData[id].lat) {
-
+							//console.log(1111111)
 						} else { //表示有该点，做setPosition
 							if(this.$refs.refTusvnMap.getOverlayById(_this.prevData[id].id)) {
 								this.$refs.refTusvnMap.removeOverlayById(_this.prevData[id].id);
 								this.$refs.refTusvnMap.removeFeature(_this.prevData[id].bgImgId, this.mapLayer.messageBg);
-								this.$refs.refTusvnMap.closeInforWindow();
+								//this.$refs.refTusvnMap.closeInforWindow();
 								delete _this.prevData[id];
 							}
 						}
@@ -190,8 +191,13 @@
 						if(this.$refs.refTusvnMap.getOverlayById(_this.prevData[id].id)) {
 							this.$refs.refTusvnMap.removeOverlayById(_this.prevData[id].id);
 							this.$refs.refTusvnMap.removeFeature(_this.prevData[id].bgImgId, this.mapLayer.messageBg);
-							 this.$refs.refTusvnMap.closeInforWindow();
+							//  let infoWindow=this.$refs.refTusvnMap.$data.overlays[_this.prevData[id].id];
+							// if(infoWindow){
+							// 	this.$refs.refTusvnMap.$data.map.removeOverlay(infoWindow);
+							// 	delete this.$refs.refTusvnMap.$data.overlays[_this.prevData[id].id];
+							// }
 							delete _this.prevData[id];
+
 						}
 
 					}
@@ -248,17 +254,17 @@
 				this.prevData = {};
 			},
 			publishInfo(e) { //发布成功后：建立webscoket连接；清空数据
-				this.clearPubMsg();
+				//this.clearPubMsg();
 				this.webSocketFlag=true;
 			},
 			updateInfo(e) { //更新不需要操作
-				this.clearPubMsg();
+				//this.clearPubMsg();
 				this.webSocketFlag=true;
 				this.webSocket && this.webSocket.close(); 
 				this.initWebSocket();
 			},
 			destroyInfo(e) { //手动失效也不需要操作
-				this.clearPubMsg();
+				//this.clearPubMsg();
 				this.webSocketFlag=true;
 			},
 			showMarker(type, bool) {
