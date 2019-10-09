@@ -40,7 +40,7 @@
                                 </el-form-item>
 
                                 <el-form-item label="广播范围" prop="affectRange" class="yk-bottom-12 yk-txt" style="height: 45px;">
-                                    <el-slider style="padding: 0px 5px;" v-model="trafficInfo.affectRange" :marks="broadcastRangeMarks" :min="broadcastMin" :max="broadcastMax" :step="broadcastStep" @change="sliderChange"></el-slider>
+                                    <el-slider style="padding: 0px 5px;" :show-tooltip="slideFlag" v-model="trafficInfo.affectRange" :marks="broadcastRangeMarks" :min="broadcastMin" :max="broadcastMax" :step="broadcastStep"  @change="sliderChange"></el-slider>
                                 </el-form-item>                                
 
                                 <el-form-item label="影响路径" prop="alertPath" class="yk-bottom-12 yk-txt">
@@ -166,7 +166,9 @@ export default {
     props:["targetId","overlayContainerId",], //'trafficInfo'
     data(){
         return {
+            slideFlag:true,
             isLoading: false,
+            pointerFlag:false,
             orderStatus: -1
             ,map: null
             ,project:"EPSG:4326"//地图投影
@@ -317,13 +319,16 @@ export default {
         
         // 表单事件
         sliderChange(value){
+            this.slideFlag=false;
+            setTimeout(() => {
+                this.slideFlag=true;
+            },300)
             this.select.sliderVal = value;
             this.trafficInfo.affectRange = value;
             // this.trafficInfo.alertRadius = value;
 
             this.drawBgCircle(this.circleLon,this.circleLat,value);
         },
-
         // 添加影响路径
         // 1 隐藏 弹框 2 画点 鼠标事件处理  点击打点 画线 ，可以点击多个点， 3 点击确定或关闭 清空 点、线、鼠标事件 ，确定则提交数据
         addEffectPath(){
@@ -339,6 +344,7 @@ export default {
             this.addPathIco( this.trafficInfo.longitude, this.trafficInfo.latitude );
 
             this.$emit('TemporaryClearPubMsg',{bool:true});
+            this.pointerFlag=true;
 
 
             this.$emit("setPointer",{bool: true, flag: true}); 
@@ -507,7 +513,6 @@ export default {
                             return;
                         }
 
-
                         let points = [];
                         for(let i=0;i<pointList.length;i++){
                             let temp = pointList[i];
@@ -530,7 +535,7 @@ export default {
                         let miterLimit = 10;
                         let width = 5;
                         let layerId = this.TempIcoLayer;
-
+				
                         // coordinates, id, color, lineCap, lineJoin, lineDash, lineDashOffset, miterLimit, width, layerId
                         this.addLineString(coordinates, id, "red", "round", "round", [5,0], [-14,0], 10, 5, layerId);  
                     }else {
@@ -772,7 +777,8 @@ export default {
             this.closeMyInfoWindow();
             this.initSelect();
             this.initTrafficInof();
-            this.$emit("setPointer",{bool: false, flag: true}); 
+            this.$emit("setPointer",{bool: false, flag: true});
+            //this.$emit('TemporaryClearPubMsg',{bool:false,getData:true}); 
             this.updateLoading = false;
             this.publishLoading = false;
             this.invalidLoading = false;
@@ -1005,7 +1011,15 @@ export default {
             this.$data.map.on("moveend",this.moveEnd);
             this.$data.map.on("contextmenu", e=>{
                 e.preventDefault();
-                this.$emit("setPointer",{bool: false}); 
+                if(this.pointerFlag){
+                	this.clearTempLayer();
+		            this.$emit('TemporaryClearPubMsg',{bool:false,getData:true});
+		            this.$emit("setPointer",{bool: false, flag: false});
+		            this.pointerFlag=false;
+                }else{
+                	this.$emit("setPointer",{bool: false}); 
+                }
+                
             });
     // 书写事件触发后的函数
 
@@ -1050,7 +1064,6 @@ export default {
         addClickEvent(item){
             if(item) {
                 // console.log("------------------------");
-                // console.log(item);
                 this.trafficInfo.alertRadius = item.alertRadius;
                 this.trafficInfo.alertCategory = item.alertCategory;
             }
@@ -1072,8 +1085,7 @@ export default {
          *     lat:39  //纬度
          * }
          */
-        addInfoWindow:function(obj){           
-
+        addInfoWindow:function(obj){  
             this.$set(this.$data.popupDatas, obj.id, obj);
             this.$nextTick(function(){
                 let container = document.getElementById(obj.id+'-popup');
@@ -1141,10 +1153,10 @@ export default {
 
                 
 
-            if(!obj.isEdit){
+            //if(!obj.isEdit){
                 this.pubMsgIconID = 'pub_msg_ico_' + obj.id;
                 this.drawPubMsgIcon(obj.lon,obj.lat,obj.icon);
-            }
+            //}
         },
         // 画圆形背景图片
         drawBgCircle(lon,lat,radius){
@@ -1202,7 +1214,8 @@ export default {
 
             this.showTrafficInfoPop = false;
             if(e=='self'){
-                this.$emit("setPointer",{bool: false}); 
+                this.$emit("setPointer",{bool: false});
+                //this.$emit('TemporaryClearPubMsg',{bool:false,getData:true}); 
             }
             //this.removeClickEvent(); 
            
@@ -1222,7 +1235,6 @@ export default {
         },
        
         mapClick:function(mevent){
-
             if(this.mapStatus == 'normal'){
                 this.$emit("MapClick",this,mevent);
                 this.removeClickEvent();        // 移除点击事件

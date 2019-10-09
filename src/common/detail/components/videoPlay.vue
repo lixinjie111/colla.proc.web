@@ -60,7 +60,7 @@ export default {
     methods: {
        cancleFunc() {
         //    this.vcrData.url = '';
-            this.$emit('cancleFunc');
+            this.$emit('cancleFunc',this.vcrData);
             
        }
     },

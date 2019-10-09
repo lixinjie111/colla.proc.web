@@ -14,8 +14,8 @@ window.config = {
     iconPath:'http://120.133.21.14:9090/file/pic/trafficType/',       // 图片服务器地址
     mapWaPianPath:'http://120.133.21.14:8086/',   //地图瓦片
     websocketUrl:'ws://120.133.21.14:49996/colla', 
-    dlUrl: 'http://113.208.118.62:8085/', //迪路
-    dlWmsUrl: 'http://113.208.118.62:8080/', //迪路
+    dlUrl: 'http://117.114.144.227:8085/', //迪路
+    dlWmsUrl: 'http://117.114.144.227:8080/', //迪路
 
     version: 1.0,       // 版本号
 }
