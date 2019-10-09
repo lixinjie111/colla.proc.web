@@ -777,7 +777,8 @@ export default {
             this.closeMyInfoWindow();
             this.initSelect();
             this.initTrafficInof();
-            this.$emit("setPointer",{bool: false, flag: true}); 
+            this.$emit("setPointer",{bool: false, flag: true});
+            //this.$emit('TemporaryClearPubMsg',{bool:false,getData:true}); 
             this.updateLoading = false;
             this.publishLoading = false;
             this.invalidLoading = false;
@@ -1063,7 +1064,6 @@ export default {
         addClickEvent(item){
             if(item) {
                 // console.log("------------------------");
-                // console.log(item);
                 this.trafficInfo.alertRadius = item.alertRadius;
                 this.trafficInfo.alertCategory = item.alertCategory;
             }
@@ -1085,8 +1085,7 @@ export default {
          *     lat:39  //纬度
          * }
          */
-        addInfoWindow:function(obj){           
-
+        addInfoWindow:function(obj){  
             this.$set(this.$data.popupDatas, obj.id, obj);
             this.$nextTick(function(){
                 let container = document.getElementById(obj.id+'-popup');
@@ -1154,10 +1153,10 @@ export default {
 
                 
 
-            if(!obj.isEdit){
+            //if(!obj.isEdit){
                 this.pubMsgIconID = 'pub_msg_ico_' + obj.id;
                 this.drawPubMsgIcon(obj.lon,obj.lat,obj.icon);
-            }
+            //}
         },
         // 画圆形背景图片
         drawBgCircle(lon,lat,radius){
@@ -1215,7 +1214,8 @@ export default {
 
             this.showTrafficInfoPop = false;
             if(e=='self'){
-                this.$emit("setPointer",{bool: false}); 
+                this.$emit("setPointer",{bool: false});
+                //this.$emit('TemporaryClearPubMsg',{bool:false,getData:true}); 
             }
             //this.removeClickEvent(); 
            
@@ -1235,7 +1235,6 @@ export default {
         },
        
         mapClick:function(mevent){
-
             if(this.mapStatus == 'normal'){
                 this.$emit("MapClick",this,mevent);
                 this.removeClickEvent();        // 移除点击事件
