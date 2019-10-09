@@ -8,10 +8,10 @@
                 <span>{{'序列号： ' + item.serialNum}}</span>
               </div>
               <div class="c-video-mask">
-                <i class="el-icon-video-play" @click="playVideo"></i>
+                <i class="el-icon-video-play" @click="playVideo(item)"></i>
               </div>
             </div>
-            <video-player v-if="visiblePlay" :visiblePlay="visiblePlay" :vcrData="item" @cancleFunc="cancleFunc"></video-player>
+            <video-player v-if="item.isActive" :visiblePlay="item.isActive" :vcrData="item" @cancleFunc="cancleFunc"></video-player>
           </div>
         </li>
       </template>
@@ -38,17 +38,17 @@ export default {
     },
     data() {
       return {
-        visiblePlay: false,
         vcrData: null
       };
     },
-    mounted() {},
     methods: {
-      playVideo(data) {
-        this.visiblePlay = true;
+      playVideo(item) {
+        item.isActive = true;
+        this.$forceUpdate();
       },
-      cancleFunc() {
-        this.visiblePlay = false;
+      cancleFunc(item) {
+        item.isActive = false;
+        this.$forceUpdate();
       }
     }
 };
