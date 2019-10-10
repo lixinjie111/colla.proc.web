@@ -184,6 +184,7 @@ export default {
             // ,endIcon: '@/assets/images/end.png'
             ,popupDatas:{}
             ,overlays:{},
+            isOpen:{},
 
             // 交通信息发布系统
             showTrafficInfoPop: false,
@@ -1103,6 +1104,7 @@ export default {
         },
 
         addMyInfoWindow: function(obj, flag){
+            this.isOpen[obj.id]=true;
             this.updateLoading = false;
             this.publishLoading = false;
             this.invalidLoading = false;
@@ -1153,10 +1155,11 @@ export default {
 
                 
 
-            //if(!obj.isEdit){
+            if(flag){
+                //if(!obj.isEdit){
                 this.pubMsgIconID = 'pub_msg_ico_' + obj.id;
                 this.drawPubMsgIcon(obj.lon,obj.lat,obj.icon);
-            //}
+            }
         },
         // 画圆形背景图片
         drawBgCircle(lon,lat,radius){
@@ -1210,6 +1213,7 @@ export default {
             let overlayid = 'traffic-info-release';
             let overlay = this.$data.overlays[overlayid];
             this.$data.map.removeOverlay(overlay);
+            this.isOpen={};
             // e.target.blur();
 
             this.showTrafficInfoPop = false;
