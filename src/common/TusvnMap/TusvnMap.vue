@@ -1775,14 +1775,14 @@ export default {
         //     // this.pageResize();
         // }
         this.initMap();
-        this.$emit("MapInitComplete",this);
+        //this.$emit("MapInitComplete",this);
         //初始化地图
-        // setTimeout(() => {
-        //     this.initMap();
-        //     this.$emit("MapInitComplete",this);
+        setTimeout(() => {
+            //this.initMap();
+            this.$emit("MapInitComplete",this);
 
             
-        // }, 100);
+        }, 100);
     },
     destroyed(){
 
