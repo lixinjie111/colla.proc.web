@@ -500,45 +500,49 @@ export default {
                             });
                             // this.addPathIcoBtn(startLon,startLat);
                             // this.$emit('TemporaryClearPubMsg',{bool:false});
+                             this.closeClick();   
                             return;
-                        }
-                        if(pointList.length > 32) {
+                        }else if(pointList.length > 32) {
                             this.$message({
                                 type: 'error',
                                 duration: '1500',
                                 message: "选择的影响路线太长，请重新选择！",
                                 showClose: true
                             });
+                             this.closeClick();   
                             // this.addPathIcoBtn(startLon,startLat);
                             // this.$emit('TemporaryClearPubMsg',{bool:false});
                             return;
-                        }
+                        }else{
 
-                        let points = [];
-                        for(let i=0;i<pointList.length;i++){
-                            let temp = pointList[i];
-                            points.push([temp.x,temp.y]);
-                        }
-                        // if(points){
-                            this.pathPoint.pointList = this.pathPoint.pointList.concat(points);    
-                        // }
-                        // console.log(points);
+                            let points = [];
+                            for(let i=0;i<pointList.length;i++){
+                                let temp = pointList[i];
+                                points.push([temp.x,temp.y]);
+                            }
+                            // if(points){
+                                this.pathPoint.pointList = this.pathPoint.pointList.concat(points);    
+                            // }
+                            // console.log(points);
 
-                        // console.log(response.data.data);
-                        // console.log(this.pathPoint.pointList);
-                        let coordinates = points;
-                        let id = 'TempLine_' + (new Date()).getTime();
-                        let color = 'red';
-                        let lineGap = 'round';
-                        let lineJoin = 'round';
-                        let lineDash = [0,5];
-                        let lineDashOffset = 0;
-                        let miterLimit = 10;
-                        let width = 5;
-                        let layerId = this.TempIcoLayer;
-				
-                        // coordinates, id, color, lineCap, lineJoin, lineDash, lineDashOffset, miterLimit, width, layerId
-                        this.addLineString(coordinates, id, "red", "round", "round", [5,0], [-14,0], 10, 5, layerId);  
+                            // console.log(response.data.data);
+                            // console.log(this.pathPoint.pointList);
+                            let coordinates = points;
+                            let id = 'TempLine_' + (new Date()).getTime();
+                            let color = 'red';
+                            let lineGap = 'round';
+                            let lineJoin = 'round';
+                            let lineDash = [0,5];
+                            let lineDashOffset = 0;
+                            let miterLimit = 10;
+                            let width = 5;
+                            let layerId = this.TempIcoLayer;
+                    
+                            // coordinates, id, color, lineCap, lineJoin, lineDash, lineDashOffset, miterLimit, width, layerId
+                            this.addLineString(coordinates, id, "red", "round", "round", [5,0], [-14,0], 10, 5, layerId); 
+                            this.addPathIcoBtn(startLon,startLat); 
+                            this.$emit("setPointer",{bool: false, flag: true}); 
+                        }
                     }else {
                         this.$message({
                             type: 'error',
@@ -546,13 +550,13 @@ export default {
                             message: response.data.message || "未获取到数据，请重新选择！",
                             showClose: true
                         });
-                            
+                        this.closeClick();   
 
                     }  
 
                     // 画按钮
-                    this.addPathIcoBtn(startLon,startLat);
-                    this.$emit("setPointer",{bool: false, flag: true}); 
+                   
+                    //this.$emit("setPointer",{bool: false, flag: true}); 
                 }).catch((error) => {
                     this.isLoading = false;
                     this.$message({
@@ -561,8 +565,9 @@ export default {
                         message: "取到数据失败，请重试！",
                         showClose: true
                     });
-                    this.addPathIcoBtn(startLon,startLat);
-                    this.$emit("setPointer",{bool: false, flag: true});
+                    //this.addPathIcoBtn(startLon,startLat);
+                    //this.$emit("setPointer",{bool: false, flag: true});
+                    this.closeClick();   
                 }
             );
             
