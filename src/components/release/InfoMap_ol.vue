@@ -98,7 +98,9 @@
 				let taskList = _realData.taskList;
 				if(this.webSocketFlag){
 					this.$emit('PubMsgChange', statistics);
-					this.addPubMsg(taskList);
+					this.$nextTick(() => {
+						this.addPubMsg(taskList);
+					})
 				}
 				
 				
@@ -212,6 +214,7 @@
 				}
 				for(let id in _filterData) {
 					if(!_this.prevData[id]) { //表示新增该点，做add
+					console.log(this.$refs.refTusvnMap)
 						this.$refs.refTusvnMap.addImg(_filterData[id].lon, _filterData[id].lat, _filterData[id].bgImgId, this.mapLayer.messageBg, _filterData[id].bgImgSrc, _filterData[id].bgImgSize, 0, true, 1, _filterData[id].bgImgOffset, 1, [0.5, 1]);
 						this.$refs.refTusvnMap.addImgOverlay(_filterData[id].id, _filterData[id].icon, null, _filterData[id].lon, _filterData[id].lat, _filterData[id].id, _filterData[id].imgOffset, (e) => {
 							e.preventDefault();
