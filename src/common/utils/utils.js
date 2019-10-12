@@ -2,7 +2,7 @@
  * 工具类，简化页面逻辑处理，提取公共方法放在这个工具类中
  */
 import MenuList from '@/assets/menu.json'
-
+import TDate from "@/common/date.js";
 class Utils{
 
     constructor(){

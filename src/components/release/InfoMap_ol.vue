@@ -98,7 +98,9 @@
 				let taskList = _realData.taskList;
 				if(this.webSocketFlag){
 					this.$emit('PubMsgChange', statistics);
-					this.addPubMsg(taskList);
+					this.$nextTick(() => {
+						this.addPubMsg(taskList);
+					})
 				}
 				
 				
@@ -156,8 +158,8 @@
 				if(_result) {
 					_result.forEach((item, index) => {
 						_filterData[item.taskCode] = {
-							lon: item.longitude,
-							lat: item.latitude,
+							lon: item.longitude?item.longitude:'',
+							lat: item.latitude?item.latitude:'',
 							id: item.taskCode,
 							icon: item.icon ? this.iconPath + item.icon : 'static/images/position.png',
 							bgImgId: 'bg_' + item.taskCode,
@@ -174,28 +176,36 @@
 						};
 					});
 				}
+				//console.log(_this.prevData)
+				//console.log(_filterData)
 				for(let id in _this.prevData) {
 					if(_filterData[id]) { //表示有该点，
 					
 						if(_filterData[id].lon == _this.prevData[id].lon && _filterData[id].lat == _this.prevData[id].lat) {
 							//console.log(1111111)
 						} else { //表示有该点，做setPosition
-							if(this.$refs.refTusvnMap.getOverlayById(_this.prevData[id].id)) {
-								this.$refs.refTusvnMap.removeOverlayById(_this.prevData[id].id);
+							if(this.$refs.refTusvnMap.getOverlayById(id)) {
+								this.$refs.refTusvnMap.removeOverlayById(id);
 								this.$refs.refTusvnMap.removeFeature(_this.prevData[id].bgImgId, this.mapLayer.messageBg);
-								//this.$refs.refTusvnMap.closeInforWindow();
+								if(this.$refs.refTusvnMap.isOpen[id]){
+									this.$refs.refTusvnMap.closeInforWindow();
+								}
 								delete _this.prevData[id];
 							}
 						}
 					} else { //表示没有该点，做remove
-						if(this.$refs.refTusvnMap.getOverlayById(_this.prevData[id].id)) {
-							this.$refs.refTusvnMap.removeOverlayById(_this.prevData[id].id);
+						if(this.$refs.refTusvnMap.getOverlayById(id)) {
+							this.$refs.refTusvnMap.removeOverlayById(id);
 							this.$refs.refTusvnMap.removeFeature(_this.prevData[id].bgImgId, this.mapLayer.messageBg);
-							//  let infoWindow=this.$refs.refTusvnMap.$data.overlays[_this.prevData[id].id];
+							//  let infoWindow=this.$refs.refTusvnMap.$data.overlays[id];
+							//  console.log(this.$refs.refTusvnMap.$data.overlays);
 							// if(infoWindow){
 							// 	this.$refs.refTusvnMap.$data.map.removeOverlay(infoWindow);
-							// 	delete this.$refs.refTusvnMap.$data.overlays[_this.prevData[id].id];
+							// 	//delete this.$refs.refTusvnMap.$data.overlays[id];
 							// }
+							if(this.$refs.refTusvnMap.isOpen[id]){
+								this.$refs.refTusvnMap.closeInforWindow();
+							}
 							delete _this.prevData[id];
 
 						}
@@ -209,7 +219,7 @@
 							e.preventDefault();
 							e.stopPropagation();
 							let marker = {
-								id: _filterData[id].id,
+								id: id,
 								lon: _filterData[id].lon,
 								lat: _filterData[id].lat,
 								isEdit: true,
@@ -485,7 +495,7 @@
 					isEdit: false,
 					icon: this.iconPath + this.msgTypeInfo.icon,
 				};
-				this.$refs.refTusvnMap.addMyInfoWindow(marker);
+				this.$refs.refTusvnMap.addMyInfoWindow(marker,true);
 			},
 
 			mapInitComplete: function(tusvnmap) {
