@@ -1,11 +1,11 @@
-import Vue from 'vue'
-import VueX from 'vuex'
+// import Vue from 'vue'
+// import Vuex from 'vuex'
 
 import { Utils } from '@/common/utils/utils.js'
 
-Vue.use(VueX)
+// Vue.use(Vuex)
 
-const store = new VueX.Store({
+const store = new Vuex.Store({
     state: {
         login: false,
         user: {
