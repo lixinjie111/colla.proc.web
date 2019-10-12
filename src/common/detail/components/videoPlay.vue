@@ -18,10 +18,16 @@
 </template>
 
 <script>
+import { videoPlayer }  from 'vue-video-player'
+import 'video.js/dist/video-js.css'
+import 'vue-video-player/src/custom-theme.css'
 export default {
     props: {
         visiblePlay: Boolean,
         vcrData: Object
+    },
+    components: {
+        videoPlayer
     },
     data() {
         return {
