@@ -98,7 +98,9 @@
 				let taskList = _realData.taskList;
 				if(this.webSocketFlag){
 					this.$emit('PubMsgChange', statistics);
-					this.addPubMsg(taskList);
+					this.$nextTick(() => {
+						this.addPubMsg(taskList);
+					})
 				}
 				
 				
@@ -156,8 +158,8 @@
 				if(_result) {
 					_result.forEach((item, index) => {
 						_filterData[item.taskCode] = {
-							lon: item.longitude,
-							lat: item.latitude,
+							lon: item.longitude?item.longitude:'',
+							lat: item.latitude?item.latitude:'',
 							id: item.taskCode,
 							icon: item.icon ? this.iconPath + item.icon : 'static/images/position.png',
 							bgImgId: 'bg_' + item.taskCode,
