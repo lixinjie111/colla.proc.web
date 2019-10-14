@@ -95,9 +95,9 @@
 			onmessage(mesasge) {
 				let _data = JSON.parse(mesasge.data);
 				let _realData = _data.result;
-				this.$nextTick(() => {
+				setTimeout(()=>{
 					this.processData(_realData);
-				})
+				},100)
 			},
 			onclose(data) {
 				console.log("结束连接");
@@ -179,7 +179,10 @@
 							delete this.prevData[_result.eventTask.taskCode];
 						}
 					}else{
-						console.log(this.$refs.refTusvnMap)
+						console.log(this.$refs.refTusvnMap);
+						this.$nextTick(() => {
+							console.log(this.$refs.refTusvnMap)
+						})
 					}
 				};
 				if(_result.optType == "add"){//新增
@@ -233,6 +236,9 @@
 							});
 						}else{
 							console.log(this.$refs.refTusvnMap)
+							this.$nextTick(() => {
+								console.log(this.$refs.refTusvnMap)
+							})
 						}
 					}
 					this.prevData[_result.eventTask.taskCode]=_filterData[_result.eventTask.taskCode];
@@ -283,20 +289,23 @@
 
 						});
 					}else{
-						console.log(this.$refs.refTusvnMap)
+						console.log(this.$refs.refTusvnMap);
+						this.$nextTick(() => {
+							console.log(this.$refs.refTusvnMap)
+						})
 					}
 				}
 				_this.prevData = _filterData;
 			},
 			temporaryClearPubMsg(e) {
 				if(e.bool) { //true:删除地图上的点;关掉webscoket;
-					//this.webSocketFlag=false;
 					this.webSocket && this.webSocket.close(); 
 					this.clearPubMsg();
 				}else{ //打开webscoket,并且获取数据
 					if(e.getData){
 						this.clearPubMsg();
-						//this.webSocketFlag=true;
+						this.initPubMsgList();
+						this.$emit('initStatisics');
 						this.webSocket && this.webSocket.close(); 
 						this.initWebSocket();
 					}else{//false ,表示什么也不敢
