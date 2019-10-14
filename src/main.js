@@ -5,13 +5,14 @@
 // import Vue from 'vue'
 import App from './App'
 import router from './router'
-
-// import ElementUI from 'element-ui'
 import store from './store/index.js'
-
 import Api from './api/index.js';
-
 import SessionUtil from '@/store/session.js'
+
+// Element-ui
+import ElementUI from 'element-ui';  //加载优化
+import 'element-ui/lib/theme-chalk/index.css';  //加载优化
+Vue.use(ElementUI);  //加载优化
 
 Vue.config.productionTip = false
 
