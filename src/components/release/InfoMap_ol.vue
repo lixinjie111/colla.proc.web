@@ -313,6 +313,8 @@
 				this.initWebSocket(); 
 			},
 			updateInfo(e) { //更新不需要操作
+				this.initPubMsgList();
+				this.$emit('initStatisics');
 				this.webSocket && this.webSocket.close(); 
 				this.initWebSocket();
 			},
