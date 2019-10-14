@@ -65,6 +65,9 @@ export default {
       this.$api.post(url, params, res => {
         if (res.data.status === 200) {
             this.videoData = res.data.data.videoList;
+            this.videoData.forEach(item=>{
+              item.isActive=false;
+            })
             this.isShowVideo = true;
         } else {
           if(res.data.message) {

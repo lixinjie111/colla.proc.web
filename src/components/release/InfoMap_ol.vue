@@ -69,6 +69,7 @@
 				dyHeight: 'yk-dy-height',
 				isOk: false,
 				webSocket: null,
+				webSocketFlag:true,
 				webSocketData: {
 					action: "event_efficient",
 				}
@@ -76,7 +77,7 @@
 		},
 		methods: {
 			setPointer(e) {
-				this.isPointerIco = e.bool;
+				this.isPointerIco = e.bool;//false表示地图的图标
 				if(!e.flag) {
 					this.removeMapClickEvent();
 				}
@@ -95,8 +96,14 @@
 				let _realData = _data.result;
 				let statistics = _realData.statistics;
 				let taskList = _realData.taskList;
-				this.$emit('PubMsgChange', statistics);
-				this.addPubMsg(taskList);
+				if(this.webSocketFlag){
+					this.$emit('PubMsgChange', statistics);
+					this.$nextTick(() => {
+						this.addPubMsg(taskList);
+					})
+				}
+				
+				
 			},
 			onclose(data) {
 				console.log("结束连接");
@@ -151,8 +158,8 @@
 				if(_result) {
 					_result.forEach((item, index) => {
 						_filterData[item.taskCode] = {
-							lon: item.longitude,
-							lat: item.latitude,
+							lon: item.longitude?item.longitude:'',
+							lat: item.latitude?item.latitude:'',
 							id: item.taskCode,
 							icon: item.icon ? this.iconPath + item.icon : 'static/images/position.png',
 							bgImgId: 'bg_' + item.taskCode,
@@ -169,29 +176,42 @@
 						};
 					});
 				}
+				//console.log(_this.prevData)
+				//console.log(_filterData)
 				for(let id in _this.prevData) {
 					if(_filterData[id]) { //表示有该点，
+					
 						if(_filterData[id].lon == _this.prevData[id].lon && _filterData[id].lat == _this.prevData[id].lat) {
-
+							//console.log(1111111)
 						} else { //表示有该点，做setPosition
-							if(this.$refs.refTusvnMap.getOverlayById(_this.prevData[id].id)) {
-								this.$refs.refTusvnMap.removeOverlayById(_this.prevData[id].id);
+							if(this.$refs.refTusvnMap.getOverlayById(id)) {
+								this.$refs.refTusvnMap.removeOverlayById(id);
 								this.$refs.refTusvnMap.removeFeature(_this.prevData[id].bgImgId, this.mapLayer.messageBg);
-								this.$refs.refTusvnMap.closeInforWindow();
+								if(this.$refs.refTusvnMap.isOpen[id]){
+									this.$refs.refTusvnMap.closeInforWindow();
+								}
 								delete _this.prevData[id];
 							}
 						}
 					} else { //表示没有该点，做remove
-						if(this.$refs.refTusvnMap.getOverlayById(_this.prevData[id].id)) {
-							this.$refs.refTusvnMap.removeOverlayById(_this.prevData[id].id);
+						if(this.$refs.refTusvnMap.getOverlayById(id)) {
+							this.$refs.refTusvnMap.removeOverlayById(id);
 							this.$refs.refTusvnMap.removeFeature(_this.prevData[id].bgImgId, this.mapLayer.messageBg);
-							this.$refs.refTusvnMap.closeInforWindow();
+							//  let infoWindow=this.$refs.refTusvnMap.$data.overlays[id];
+							//  console.log(this.$refs.refTusvnMap.$data.overlays);
+							// if(infoWindow){
+							// 	this.$refs.refTusvnMap.$data.map.removeOverlay(infoWindow);
+							// 	//delete this.$refs.refTusvnMap.$data.overlays[id];
+							// }
+							if(this.$refs.refTusvnMap.isOpen[id]){
+								this.$refs.refTusvnMap.closeInforWindow();
+							}
 							delete _this.prevData[id];
+
 						}
 
 					}
 				}
-
 				for(let id in _filterData) {
 					if(!_this.prevData[id]) { //表示新增该点，做add
 						this.$refs.refTusvnMap.addImg(_filterData[id].lon, _filterData[id].lat, _filterData[id].bgImgId, this.mapLayer.messageBg, _filterData[id].bgImgSrc, _filterData[id].bgImgSize, 0, true, 1, _filterData[id].bgImgOffset, 1, [0.5, 1]);
@@ -199,11 +219,11 @@
 							e.preventDefault();
 							e.stopPropagation();
 							let marker = {
-								id: _filterData[id].id,
+								id: id,
 								lon: _filterData[id].lon,
 								lat: _filterData[id].lat,
 								isEdit: true,
-								icon: this.iconPath + this.msgTypeInfo.icon,
+								icon: _filterData[id].icon,
 								trafficInfo: this.trafficInfo,
 							};
 							this.cricleID = 'icon_' + _filterData[id].id;
@@ -215,13 +235,18 @@
 				_this.prevData = _filterData;
 			},
 			temporaryClearPubMsg(e) {
-				if(e.bool) { //删除地图上的点;关掉webscoket;
-					this.webscoket && this.webscoket.close();
+				if(e.bool) { //true:删除地图上的点;关掉webscoket;
+					this.webSocketFlag=false;
+					//this.webSocket && this.webSocket.close(); 
 					this.clearPubMsg();
-				}else{
+				}else{ //打开webscoket,并且获取数据
 					if(e.getData){
 						this.clearPubMsg();
+						this.webSocketFlag=true;
+						this.webSocket && this.webSocket.close(); 
 						this.initWebSocket();
+					}else{//false ,表示什么也不敢
+
 					}
 				}
 			},
@@ -239,16 +264,18 @@
 				this.prevData = {};
 			},
 			publishInfo(e) { //发布成功后：建立webscoket连接；清空数据
-				this.clearPubMsg();
-				this.initWebSocket();
+				//this.clearPubMsg();
+				this.webSocketFlag=true;
 			},
 			updateInfo(e) { //更新不需要操作
-				this.clearPubMsg();
+				//this.clearPubMsg();
+				this.webSocketFlag=true;
+				this.webSocket && this.webSocket.close(); 
 				this.initWebSocket();
 			},
 			destroyInfo(e) { //手动失效也不需要操作
-				this.clearPubMsg();
-				this.initWebSocket();
+				//this.clearPubMsg();
+				this.webSocketFlag=true;
 			},
 			showMarker(type, bool) {
 				switch(type) {
@@ -468,7 +495,7 @@
 					isEdit: false,
 					icon: this.iconPath + this.msgTypeInfo.icon,
 				};
-				this.$refs.refTusvnMap.addMyInfoWindow(marker);
+				this.$refs.refTusvnMap.addMyInfoWindow(marker,true);
 			},
 
 			mapInitComplete: function(tusvnmap) {

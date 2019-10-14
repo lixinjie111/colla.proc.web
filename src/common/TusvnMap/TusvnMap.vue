@@ -184,6 +184,7 @@ export default {
             // ,endIcon: '@/assets/images/end.png'
             ,popupDatas:{}
             ,overlays:{},
+            isOpen:{},
 
             // 交通信息发布系统
             showTrafficInfoPop: false,
@@ -499,45 +500,49 @@ export default {
                             });
                             // this.addPathIcoBtn(startLon,startLat);
                             // this.$emit('TemporaryClearPubMsg',{bool:false});
+                             this.closeClick();   
                             return;
-                        }
-                        if(pointList.length > 32) {
+                        }else if(pointList.length > 32) {
                             this.$message({
                                 type: 'error',
                                 duration: '1500',
                                 message: "选择的影响路线太长，请重新选择！",
                                 showClose: true
                             });
+                             this.closeClick();   
                             // this.addPathIcoBtn(startLon,startLat);
                             // this.$emit('TemporaryClearPubMsg',{bool:false});
                             return;
-                        }
+                        }else{
 
-                        let points = [];
-                        for(let i=0;i<pointList.length;i++){
-                            let temp = pointList[i];
-                            points.push([temp.x,temp.y]);
-                        }
-                        // if(points){
-                            this.pathPoint.pointList = this.pathPoint.pointList.concat(points);    
-                        // }
-                        // console.log(points);
+                            let points = [];
+                            for(let i=0;i<pointList.length;i++){
+                                let temp = pointList[i];
+                                points.push([temp.x,temp.y]);
+                            }
+                            // if(points){
+                                this.pathPoint.pointList = this.pathPoint.pointList.concat(points);    
+                            // }
+                            // console.log(points);
 
-                        // console.log(response.data.data);
-                        // console.log(this.pathPoint.pointList);
-                        let coordinates = points;
-                        let id = 'TempLine_' + (new Date()).getTime();
-                        let color = 'red';
-                        let lineGap = 'round';
-                        let lineJoin = 'round';
-                        let lineDash = [0,5];
-                        let lineDashOffset = 0;
-                        let miterLimit = 10;
-                        let width = 5;
-                        let layerId = this.TempIcoLayer;
-				
-                        // coordinates, id, color, lineCap, lineJoin, lineDash, lineDashOffset, miterLimit, width, layerId
-                        this.addLineString(coordinates, id, "red", "round", "round", [5,0], [-14,0], 10, 5, layerId);  
+                            // console.log(response.data.data);
+                            // console.log(this.pathPoint.pointList);
+                            let coordinates = points;
+                            let id = 'TempLine_' + (new Date()).getTime();
+                            let color = 'red';
+                            let lineGap = 'round';
+                            let lineJoin = 'round';
+                            let lineDash = [0,5];
+                            let lineDashOffset = 0;
+                            let miterLimit = 10;
+                            let width = 5;
+                            let layerId = this.TempIcoLayer;
+                    
+                            // coordinates, id, color, lineCap, lineJoin, lineDash, lineDashOffset, miterLimit, width, layerId
+                            this.addLineString(coordinates, id, "red", "round", "round", [5,0], [-14,0], 10, 5, layerId); 
+                            this.addPathIcoBtn(startLon,startLat); 
+                            this.$emit("setPointer",{bool: false, flag: true}); 
+                        }
                     }else {
                         this.$message({
                             type: 'error',
@@ -545,13 +550,13 @@ export default {
                             message: response.data.message || "未获取到数据，请重新选择！",
                             showClose: true
                         });
-                            
+                        this.closeClick();   
 
                     }  
 
                     // 画按钮
-                    this.addPathIcoBtn(startLon,startLat);
-                    this.$emit("setPointer",{bool: false, flag: true}); 
+                   
+                    //this.$emit("setPointer",{bool: false, flag: true}); 
                 }).catch((error) => {
                     this.isLoading = false;
                     this.$message({
@@ -560,8 +565,9 @@ export default {
                         message: "取到数据失败，请重试！",
                         showClose: true
                     });
-                    this.addPathIcoBtn(startLon,startLat);
-                    this.$emit("setPointer",{bool: false, flag: true});
+                    //this.addPathIcoBtn(startLon,startLat);
+                    //this.$emit("setPointer",{bool: false, flag: true});
+                    this.closeClick();   
                 }
             );
             
@@ -777,7 +783,8 @@ export default {
             this.closeMyInfoWindow();
             this.initSelect();
             this.initTrafficInof();
-            this.$emit("setPointer",{bool: false, flag: true}); 
+            this.$emit("setPointer",{bool: false, flag: true});
+            //this.$emit('TemporaryClearPubMsg',{bool:false,getData:true}); 
             this.updateLoading = false;
             this.publishLoading = false;
             this.invalidLoading = false;
@@ -1063,7 +1070,6 @@ export default {
         addClickEvent(item){
             if(item) {
                 // console.log("------------------------");
-                // console.log(item);
                 this.trafficInfo.alertRadius = item.alertRadius;
                 this.trafficInfo.alertCategory = item.alertCategory;
             }
@@ -1085,8 +1091,7 @@ export default {
          *     lat:39  //纬度
          * }
          */
-        addInfoWindow:function(obj){           
-
+        addInfoWindow:function(obj){  
             this.$set(this.$data.popupDatas, obj.id, obj);
             this.$nextTick(function(){
                 let container = document.getElementById(obj.id+'-popup');
@@ -1104,6 +1109,7 @@ export default {
         },
 
         addMyInfoWindow: function(obj, flag){
+            this.isOpen[obj.id]=true;
             this.updateLoading = false;
             this.publishLoading = false;
             this.invalidLoading = false;
@@ -1154,7 +1160,8 @@ export default {
 
                 
 
-            if(!obj.isEdit){
+            if(flag){
+                //if(!obj.isEdit){
                 this.pubMsgIconID = 'pub_msg_ico_' + obj.id;
                 this.drawPubMsgIcon(obj.lon,obj.lat,obj.icon);
             }
@@ -1211,11 +1218,13 @@ export default {
             let overlayid = 'traffic-info-release';
             let overlay = this.$data.overlays[overlayid];
             this.$data.map.removeOverlay(overlay);
+            this.isOpen={};
             // e.target.blur();
 
             this.showTrafficInfoPop = false;
             if(e=='self'){
-                this.$emit("setPointer",{bool: false}); 
+                this.$emit("setPointer",{bool: false});
+                //this.$emit('TemporaryClearPubMsg',{bool:false,getData:true}); 
             }
             //this.removeClickEvent(); 
            
@@ -1235,7 +1244,6 @@ export default {
         },
        
         mapClick:function(mevent){
-
             if(this.mapStatus == 'normal'){
                 this.$emit("MapClick",this,mevent);
                 this.removeClickEvent();        // 移除点击事件
@@ -1772,14 +1780,14 @@ export default {
         //     // this.pageResize();
         // }
         this.initMap();
-        this.$emit("MapInitComplete",this);
+        //this.$emit("MapInitComplete",this);
         //初始化地图
-        // setTimeout(() => {
-        //     this.initMap();
-        //     this.$emit("MapInitComplete",this);
+        setTimeout(() => {
+            //this.initMap();
+            this.$emit("MapInitComplete",this);
 
             
-        // }, 100);
+        }, 100);
     },
     destroyed(){
 
