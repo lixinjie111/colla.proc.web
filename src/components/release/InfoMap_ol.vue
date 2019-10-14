@@ -95,16 +95,9 @@
 			onmessage(mesasge) {
 				let _data = JSON.parse(mesasge.data);
 				let _realData = _data.result;
-				// let statistics = _realData.statistics;
-				// let taskList = _realData.taskList;
-				//if(this.webSocketFlag){
-					this.$emit('initStatisics');
-					this.$nextTick(() => {
-						this.processData(_realData);
-					})
-				//}
-				
-				
+				this.$nextTick(() => {
+					this.processData(_realData);
+				})
 			},
 			onclose(data) {
 				console.log("结束连接");
@@ -153,7 +146,7 @@
 				);
 			},
 			processData(_result){
-				//console.log(1111111)
+				console.log(this.$refs.refTusvnMap)
 				let pubMsgList=JSON.parse(localStorage.pubMsgList);
 				let code=_result.eventTask.taskCode.substring(0,_result.eventTask.taskCode.lastIndexOf("_"));
 				let statisticsTask={};
@@ -168,18 +161,16 @@
 				});
 				let _filterData={};
 				if(_result.optType=="cancel"){
-					// this.staticData.forEach((item,index)=>{
-					// 	if(item.icon==statisticsTask.icon){
-					// 		if(item.num==1){
-					// 			this.staticData.splice(index, 1);
-					// 		}else{
-					// 			item.num--;
-					// 		}
-							
-					// 	}
-					// });
+					this.staticData.forEach((item,index)=>{
+						if(item.icon==statisticsTask.icon){
+							if(item.num==1){
+								this.staticData.splice(index, 1);
+							}else{
+								item.num--;
+							}
+						}
+					});
 					if(this.$refs.refTusvnMap.getOverlayById(_result.eventTask.taskCode)) {
-						console.log(_result.eventTask.taskCode)
 						this.$refs.refTusvnMap.removeOverlayById(_result.eventTask.taskCode);
 						this.$refs.refTusvnMap.removeFeature(this.prevData[_result.eventTask.taskCode].bgImgId, this.mapLayer.messageBg);
 						if(this.$refs.refTusvnMap.isOpen[_result.eventTask.taskCode]){
@@ -187,37 +178,21 @@
 						}
 						delete this.prevData[_result.eventTask.taskCode];
 					}
-
 				};
 				if(_result.optType == "add"){//新增
-					// this.staticData.forEach(item=>{
-					// 	if(item.icon==statisticsTask.icon){
-					// 		item.num++;
-					// 		console.log(item.icon)
-					// 	 }
-					// 	 //else{
-					// 	// 	this.staticData.push({
-					// 	// 		icon:statisticsTask.icon,
-					// 	// 		name:statisticsTask.name,
-					// 	// 		num:1
-					// 	// 	})
-					// 	// }
-					// });
-					// let flag=this.staticData.filter(item=>{
-					// 	if(item.icon==statisticsTask.icon){
-					// 		item.num++
-					// 		return true;
-					// 	 }
-					// });
-					// if(flag){
-					// 	//item.num++;
-					// }else{
-					// 	this.staticData.push({
-					// 		icon:statisticsTask.icon,
-					// 		name:statisticsTask.name,
-					// 		num:1
-					// 	})
-					// }
+					let flag=this.staticData.find(item=>{
+						if(item.icon==statisticsTask.icon){
+							item.num++;
+							return true;
+						 }
+					});
+					if(!flag){
+						this.staticData.push({
+							icon:statisticsTask.icon,
+							name:statisticsTask.name,
+							num:1
+						})
+					}
 					_filterData[_result.eventTask.taskCode] = {
 						lon: _result.eventTask.longitude?_result.eventTask.longitude:'',
 						lat: _result.eventTask.latitude?_result.eventTask.latitude:'',
@@ -255,8 +230,7 @@
 					}
 					this.prevData[_result.eventTask.taskCode]=_filterData[_result.eventTask.taskCode];
 				};
-				//console.log(this.staticData)
-				//this.$emit('PubMsgChange', this.staticData);
+				this.$emit('PubMsgChange', this.staticData);
 
 			},
 			addPubMsg(_result) {
@@ -333,24 +307,20 @@
 				this.prevData = {};
 			},
 			publishInfo(e) { //发布成功后：建立webscoket连接；清空数据
-				//this.clearPubMsg();
-				//this.webSocketFlag=true;
 				this.initPubMsgList();
 				this.$emit('initStatisics');
-				//this.initWebSocket(); 
+				this.webSocket && this.webSocket.close(); 
+				this.initWebSocket(); 
 			},
 			updateInfo(e) { //更新不需要操作
-				//this.clearPubMsg();
-				//this.webSocketFlag=true;
 				this.webSocket && this.webSocket.close(); 
 				this.initWebSocket();
 			},
 			destroyInfo(e) { //手动失效也不需要操作
-				//this.clearPubMsg();
-				//this.webSocketFlag=true;
 				this.initPubMsgList();
 				this.$emit('initStatisics');
-				//this.initWebSocket(); 
+				this.webSocket && this.webSocket.close(); 
+				this.initWebSocket(); 
 			},
 			showMarker(type, bool) {
 				switch(type) {
