@@ -146,7 +146,6 @@
 				);
 			},
 			processData(_result){
-				console.log(this.$refs.refTusvnMap)
 				let pubMsgList=JSON.parse(localStorage.pubMsgList);
 				let code=_result.eventTask.taskCode.substring(0,_result.eventTask.taskCode.lastIndexOf("_"));
 				let statisticsTask={};
@@ -170,13 +169,17 @@
 							}
 						}
 					});
-					if(this.$refs.refTusvnMap.getOverlayById(_result.eventTask.taskCode)) {
-						this.$refs.refTusvnMap.removeOverlayById(_result.eventTask.taskCode);
-						this.$refs.refTusvnMap.removeFeature(this.prevData[_result.eventTask.taskCode].bgImgId, this.mapLayer.messageBg);
-						if(this.$refs.refTusvnMap.isOpen[_result.eventTask.taskCode]){
-							this.$refs.refTusvnMap.closeInforWindow();
+					if(this.$refs.refTusvnMap){
+						if(this.$refs.refTusvnMap.getOverlayById(_result.eventTask.taskCode)) {
+							this.$refs.refTusvnMap.removeOverlayById(_result.eventTask.taskCode);
+							this.$refs.refTusvnMap.removeFeature(this.prevData[_result.eventTask.taskCode].bgImgId, this.mapLayer.messageBg);
+							if(this.$refs.refTusvnMap.isOpen[_result.eventTask.taskCode]){
+								this.$refs.refTusvnMap.closeInforWindow();
+							}
+							delete this.prevData[_result.eventTask.taskCode];
 						}
-						delete this.prevData[_result.eventTask.taskCode];
+					}else{
+						console.log(this.$refs.refTusvnMap)
 					}
 				};
 				if(_result.optType == "add"){//新增
@@ -211,22 +214,26 @@
 						eventType: _result.eventTask.eventType,
 					};
 					for(let id in _filterData) {
-						this.$refs.refTusvnMap.addImg(_filterData[id].lon, _filterData[id].lat, _filterData[id].bgImgId, this.mapLayer.messageBg, _filterData[id].bgImgSrc, _filterData[id].bgImgSize, 0, true, 1, _filterData[id].bgImgOffset, 1, [0.5, 1]);
-						this.$refs.refTusvnMap.addImgOverlay(_filterData[id].id, _filterData[id].icon, null, _filterData[id].lon, _filterData[id].lat, _filterData[id].id, _filterData[id].imgOffset, (e) => {
-							e.preventDefault();
-							e.stopPropagation();
-							let marker = {
-								id: id,
-								lon: _filterData[id].lon,
-								lat: _filterData[id].lat,
-								isEdit: true,
-								icon: _filterData[id].icon,
-								trafficInfo: this.trafficInfo,
-							};
-							this.cricleID = 'icon_' + _filterData[id].id;
-							this.$refs.refTusvnMap.addMyInfoWindow(marker);
+						if(this.$refs.refTusvnMap){
+							this.$refs.refTusvnMap.addImg(_filterData[id].lon, _filterData[id].lat, _filterData[id].bgImgId, this.mapLayer.messageBg, _filterData[id].bgImgSrc, _filterData[id].bgImgSize, 0, true, 1, _filterData[id].bgImgOffset, 1, [0.5, 1]);
+							this.$refs.refTusvnMap.addImgOverlay(_filterData[id].id, _filterData[id].icon, null, _filterData[id].lon, _filterData[id].lat, _filterData[id].id, _filterData[id].imgOffset, (e) => {
+								e.preventDefault();
+								e.stopPropagation();
+								let marker = {
+									id: id,
+									lon: _filterData[id].lon,
+									lat: _filterData[id].lat,
+									isEdit: true,
+									icon: _filterData[id].icon,
+									trafficInfo: this.trafficInfo,
+								};
+								this.cricleID = 'icon_' + _filterData[id].id;
+								this.$refs.refTusvnMap.addMyInfoWindow(marker);
 
-						});
+							});
+						}else{
+							console.log(this.$refs.refTusvnMap)
+						}
 					}
 					this.prevData[_result.eventTask.taskCode]=_filterData[_result.eventTask.taskCode];
 				};
@@ -258,22 +265,26 @@
 					});
 				}
 				for(let id in _filterData) {
-					this.$refs.refTusvnMap.addImg(_filterData[id].lon, _filterData[id].lat, _filterData[id].bgImgId, this.mapLayer.messageBg, _filterData[id].bgImgSrc, _filterData[id].bgImgSize, 0, true, 1, _filterData[id].bgImgOffset, 1, [0.5, 1]);
-					this.$refs.refTusvnMap.addImgOverlay(_filterData[id].id, _filterData[id].icon, null, _filterData[id].lon, _filterData[id].lat, _filterData[id].id, _filterData[id].imgOffset, (e) => {
-						e.preventDefault();
-						e.stopPropagation();
-						let marker = {
-							id: id,
-							lon: _filterData[id].lon,
-							lat: _filterData[id].lat,
-							isEdit: true,
-							icon: _filterData[id].icon,
-							trafficInfo: this.trafficInfo,
-						};
-						this.cricleID = 'icon_' + _filterData[id].id;
-						this.$refs.refTusvnMap.addMyInfoWindow(marker);
+					if(this.$refs.refTusvnMap){
+						this.$refs.refTusvnMap.addImg(_filterData[id].lon, _filterData[id].lat, _filterData[id].bgImgId, this.mapLayer.messageBg, _filterData[id].bgImgSrc, _filterData[id].bgImgSize, 0, true, 1, _filterData[id].bgImgOffset, 1, [0.5, 1]);
+						this.$refs.refTusvnMap.addImgOverlay(_filterData[id].id, _filterData[id].icon, null, _filterData[id].lon, _filterData[id].lat, _filterData[id].id, _filterData[id].imgOffset, (e) => {
+							e.preventDefault();
+							e.stopPropagation();
+							let marker = {
+								id: id,
+								lon: _filterData[id].lon,
+								lat: _filterData[id].lat,
+								isEdit: true,
+								icon: _filterData[id].icon,
+								trafficInfo: this.trafficInfo,
+							};
+							this.cricleID = 'icon_' + _filterData[id].id;
+							this.$refs.refTusvnMap.addMyInfoWindow(marker);
 
-					});
+						});
+					}else{
+						console.log(this.$refs.refTusvnMap)
+					}
 				}
 				_this.prevData = _filterData;
 			},
