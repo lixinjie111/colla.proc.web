@@ -210,7 +210,7 @@ export default {
 
 .el-menu{
   color: #ffffff!important;
-  background: #1a1d20;
+  background: #1a1d20!important;
   border-right: 0px;
   text-align: center;
 }
