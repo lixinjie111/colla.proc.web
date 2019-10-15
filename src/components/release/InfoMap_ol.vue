@@ -95,9 +95,9 @@
 			onmessage(mesasge) {
 				let _data = JSON.parse(mesasge.data);
 				let _realData = _data.result;
-				setTimeout(()=>{
+				//setTimeout(()=>{
 					this.processData(_realData);
-				},100)
+				//},100)
 			},
 			onclose(data) {
 				console.log("结束连接");
@@ -179,10 +179,10 @@
 							delete this.prevData[_result.eventTask.taskCode];
 						}
 					}else{
-						console.log(this.$refs.refTusvnMap);
-						this.$nextTick(() => {
-							console.log(this.$refs.refTusvnMap)
-						})
+						// console.log(this.$refs.refTusvnMap);
+						// this.$nextTick(() => {
+						// 	console.log(this.$refs.refTusvnMap)
+						// })
 					}
 				};
 				if(_result.optType == "add"){//新增
@@ -235,10 +235,10 @@
 
 							});
 						}else{
-							console.log(this.$refs.refTusvnMap)
-							this.$nextTick(() => {
-								console.log(this.$refs.refTusvnMap)
-							})
+							// console.log(this.$refs.refTusvnMap)
+							// this.$nextTick(() => {
+							// 	console.log(this.$refs.refTusvnMap)
+							// })
 						}
 					}
 					this.prevData[_result.eventTask.taskCode]=_filterData[_result.eventTask.taskCode];
@@ -289,10 +289,10 @@
 
 						});
 					}else{
-						console.log(this.$refs.refTusvnMap);
-						this.$nextTick(() => {
-							console.log(this.$refs.refTusvnMap)
-						})
+						// console.log(this.$refs.refTusvnMap);
+						// this.$nextTick(() => {
+						// 	console.log(this.$refs.refTusvnMap)
+						// })
 					}
 				}
 				_this.prevData = _filterData;
