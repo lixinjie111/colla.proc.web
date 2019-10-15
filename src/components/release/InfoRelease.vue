@@ -4,7 +4,7 @@
        
         <!-- openlayer地图 -->
         <div>
-            <InfoMapOL ref="refInfoMap" :mapHeight="pageHeight" :msgTypeInfo="search.pubMsg" @PubMsgChange="pubMsgChange" @initStatisics="initStatisics"></InfoMapOL>
+            <InfoMapOL ref="refInfoMap" :mapHeight="pageHeight" :statisicsData="statisicsData" :msgTypeInfo="search.pubMsg" @PubMsgChange="pubMsgChange" @initStatisics="initStatisics"></InfoMapOL>
         </div>
 
         <!-- 左侧信息 -->
@@ -118,6 +118,8 @@ export default {
                     if (response.status >= 200 && response.status < 300) {
 
                         this.statisicsData = response.data ? response.data : [];
+                       
+
 
                     } else {                     
                         this.$message("获取信息列表失败 ！"); 
@@ -126,8 +128,8 @@ export default {
             );
         },  
         pubMsgChange(data){
+           // console.log(data)
            this.statisicsData=data;
-           //this.initStatisics();
         },
 
         initPubMsgList(){
@@ -137,7 +139,7 @@ export default {
                 response => {
                     if (response.status >= 200 && response.status < 300) {
                         this.pubMsgList = response.data ? response.data : []; 
-                        
+                        localStorage.pubMsgList=JSON.stringify(this.pubMsgList);
                     } else {                     
                         this.$message({
                             type: 'error',
