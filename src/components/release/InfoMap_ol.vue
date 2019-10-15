@@ -13,7 +13,7 @@
 		components: {
 			TusvnMap
 		},
-		props: ['msgTypeInfo', 'mapHeight'],
+		props: ['msgTypeInfo', 'mapHeight','statisicsData'],
 		data() {
 			return {
 				mapInitOk: false,
@@ -72,7 +72,8 @@
 				webSocketFlag:true,
 				webSocketData: {
 					action: "event_efficient",
-				}
+				},
+				staticData:null
 			}
 		},
 		methods: {
@@ -94,16 +95,9 @@
 			onmessage(mesasge) {
 				let _data = JSON.parse(mesasge.data);
 				let _realData = _data.result;
-				let statistics = _realData.statistics;
-				let taskList = _realData.taskList;
-				if(this.webSocketFlag){
-					this.$emit('PubMsgChange', statistics);
-					this.$nextTick(() => {
-						this.addPubMsg(taskList);
-					})
-				}
-				
-				
+				//setTimeout(()=>{
+					this.processData(_realData);
+				//},100)
 			},
 			onclose(data) {
 				console.log("结束连接");
@@ -139,7 +133,6 @@
 						if(response.status >= 200 && response.status < 300) {
 							this.pubMsgList = response.data ? response.data : [];
 							this.addPubMsg(this.pubMsgList);
-							this.initWebSocket();
 						} else {
 							this.$message({
 								type: 'error',
@@ -147,13 +140,114 @@
 								message: "获取信息列表失败 ！",
 								showClose: true
 							});
-							this.initWebSocket();
+							
 						}
 					}
 				);
 			},
+			processData(_result){
+				let pubMsgList=JSON.parse(localStorage.pubMsgList);
+				let code=_result.eventTask.taskCode.substring(0,_result.eventTask.taskCode.lastIndexOf("_"));
+				let statisticsTask={};
+				this.staticData=this.statisicsData;
+				pubMsgList.forEach(item=>{
+					if(item.code==code){
+						statisticsTask={
+							icon:item.icon,
+							name:item.name
+						}
+					}
+				});
+				let _filterData={};
+				if(_result.optType=="cancel"){
+					this.staticData.forEach((item,index)=>{
+						if(item.icon==statisticsTask.icon){
+							if(item.num==1){
+								this.staticData.splice(index, 1);
+							}else{
+								item.num--;
+							}
+						}
+					});
+					if(this.$refs.refTusvnMap){
+						if(this.$refs.refTusvnMap.getOverlayById(_result.eventTask.taskCode)) {
+							this.$refs.refTusvnMap.removeOverlayById(_result.eventTask.taskCode);
+							this.$refs.refTusvnMap.removeFeature(this.prevData[_result.eventTask.taskCode].bgImgId, this.mapLayer.messageBg);
+							if(this.$refs.refTusvnMap.isOpen[_result.eventTask.taskCode]){
+								this.$refs.refTusvnMap.closeInforWindow();
+							}
+							delete this.prevData[_result.eventTask.taskCode];
+						}
+					}else{
+						// console.log(this.$refs.refTusvnMap);
+						// this.$nextTick(() => {
+						// 	console.log(this.$refs.refTusvnMap)
+						// })
+					}
+				};
+				if(_result.optType == "add"){//新增
+					let flag=this.staticData.find(item=>{
+						if(item.icon==statisticsTask.icon){
+							item.num++;
+							return true;
+						 }
+					});
+					if(!flag){
+						this.staticData.push({
+							icon:statisticsTask.icon,
+							name:statisticsTask.name,
+							num:1
+						})
+					}
+					_filterData[_result.eventTask.taskCode] = {
+						lon: _result.eventTask.longitude?_result.eventTask.longitude:'',
+						lat: _result.eventTask.latitude?_result.eventTask.latitude:'',
+						id: _result.eventTask.taskCode,
+						icon: this.iconPath+statisticsTask.icon,
+						bgImgId: 'bg_' + _result.eventTask.taskCode,
+						bgImgSrc: 'static/images/ico-bg2.png',
+						bgImgSize: [44, 58],
+						bgImgOffset: [0, 0],
+						size: [30, 30],
+						imgOffset: [0, -34],
+						alertCategory: _result.eventTask.alertCategory,
+						beginTime: _result.eventTask.beginTime,
+						cameraId: _result.eventTask.cameraId ? _result.eventTask.cameraId:'',
+						endTime: _result.eventTask.endTime,
+						eventType: _result.eventTask.eventType,
+					};
+					for(let id in _filterData) {
+						if(this.$refs.refTusvnMap){
+							this.$refs.refTusvnMap.addImg(_filterData[id].lon, _filterData[id].lat, _filterData[id].bgImgId, this.mapLayer.messageBg, _filterData[id].bgImgSrc, _filterData[id].bgImgSize, 0, true, 1, _filterData[id].bgImgOffset, 1, [0.5, 1]);
+							this.$refs.refTusvnMap.addImgOverlay(_filterData[id].id, _filterData[id].icon, null, _filterData[id].lon, _filterData[id].lat, _filterData[id].id, _filterData[id].imgOffset, (e) => {
+								e.preventDefault();
+								e.stopPropagation();
+								let marker = {
+									id: id,
+									lon: _filterData[id].lon,
+									lat: _filterData[id].lat,
+									isEdit: true,
+									icon: _filterData[id].icon,
+									trafficInfo: this.trafficInfo,
+								};
+								this.cricleID = 'icon_' + _filterData[id].id;
+								this.$refs.refTusvnMap.addMyInfoWindow(marker);
+
+							});
+						}else{
+							// console.log(this.$refs.refTusvnMap)
+							// this.$nextTick(() => {
+							// 	console.log(this.$refs.refTusvnMap)
+							// })
+						}
+					}
+					this.prevData[_result.eventTask.taskCode]=_filterData[_result.eventTask.taskCode];
+				};
+				this.$emit('PubMsgChange', this.staticData);
+
+			},
 			addPubMsg(_result) {
-				let _this = this;
+				let  _this = this;
 				let _filterData = {};
 				if(_result) {
 					_result.forEach((item, index) => {
@@ -176,44 +270,8 @@
 						};
 					});
 				}
-				//console.log(_this.prevData)
-				//console.log(_filterData)
-				for(let id in _this.prevData) {
-					if(_filterData[id]) { //表示有该点，
-					
-						if(_filterData[id].lon == _this.prevData[id].lon && _filterData[id].lat == _this.prevData[id].lat) {
-							//console.log(1111111)
-						} else { //表示有该点，做setPosition
-							if(this.$refs.refTusvnMap.getOverlayById(id)) {
-								this.$refs.refTusvnMap.removeOverlayById(id);
-								this.$refs.refTusvnMap.removeFeature(_this.prevData[id].bgImgId, this.mapLayer.messageBg);
-								if(this.$refs.refTusvnMap.isOpen[id]){
-									this.$refs.refTusvnMap.closeInforWindow();
-								}
-								delete _this.prevData[id];
-							}
-						}
-					} else { //表示没有该点，做remove
-						if(this.$refs.refTusvnMap.getOverlayById(id)) {
-							this.$refs.refTusvnMap.removeOverlayById(id);
-							this.$refs.refTusvnMap.removeFeature(_this.prevData[id].bgImgId, this.mapLayer.messageBg);
-							//  let infoWindow=this.$refs.refTusvnMap.$data.overlays[id];
-							//  console.log(this.$refs.refTusvnMap.$data.overlays);
-							// if(infoWindow){
-							// 	this.$refs.refTusvnMap.$data.map.removeOverlay(infoWindow);
-							// 	//delete this.$refs.refTusvnMap.$data.overlays[id];
-							// }
-							if(this.$refs.refTusvnMap.isOpen[id]){
-								this.$refs.refTusvnMap.closeInforWindow();
-							}
-							delete _this.prevData[id];
-
-						}
-
-					}
-				}
 				for(let id in _filterData) {
-					if(!_this.prevData[id]) { //表示新增该点，做add
+					if(this.$refs.refTusvnMap){
 						this.$refs.refTusvnMap.addImg(_filterData[id].lon, _filterData[id].lat, _filterData[id].bgImgId, this.mapLayer.messageBg, _filterData[id].bgImgSrc, _filterData[id].bgImgSize, 0, true, 1, _filterData[id].bgImgOffset, 1, [0.5, 1]);
 						this.$refs.refTusvnMap.addImgOverlay(_filterData[id].id, _filterData[id].icon, null, _filterData[id].lon, _filterData[id].lat, _filterData[id].id, _filterData[id].imgOffset, (e) => {
 							e.preventDefault();
@@ -230,19 +288,24 @@
 							this.$refs.refTusvnMap.addMyInfoWindow(marker);
 
 						});
+					}else{
+						// console.log(this.$refs.refTusvnMap);
+						// this.$nextTick(() => {
+						// 	console.log(this.$refs.refTusvnMap)
+						// })
 					}
 				}
 				_this.prevData = _filterData;
 			},
 			temporaryClearPubMsg(e) {
 				if(e.bool) { //true:删除地图上的点;关掉webscoket;
-					this.webSocketFlag=false;
-					//this.webSocket && this.webSocket.close(); 
+					this.webSocket && this.webSocket.close(); 
 					this.clearPubMsg();
 				}else{ //打开webscoket,并且获取数据
 					if(e.getData){
 						this.clearPubMsg();
-						this.webSocketFlag=true;
+						this.initPubMsgList();
+						this.$emit('initStatisics');
 						this.webSocket && this.webSocket.close(); 
 						this.initWebSocket();
 					}else{//false ,表示什么也不敢
@@ -264,18 +327,22 @@
 				this.prevData = {};
 			},
 			publishInfo(e) { //发布成功后：建立webscoket连接；清空数据
-				//this.clearPubMsg();
-				this.webSocketFlag=true;
+				this.initPubMsgList();
+				this.$emit('initStatisics');
+				this.webSocket && this.webSocket.close(); 
+				this.initWebSocket(); 
 			},
 			updateInfo(e) { //更新不需要操作
-				//this.clearPubMsg();
-				this.webSocketFlag=true;
+				this.initPubMsgList();
+				this.$emit('initStatisics');
 				this.webSocket && this.webSocket.close(); 
 				this.initWebSocket();
 			},
 			destroyInfo(e) { //手动失效也不需要操作
-				//this.clearPubMsg();
-				this.webSocketFlag=true;
+				this.initPubMsgList();
+				this.$emit('initStatisics');
+				this.webSocket && this.webSocket.close(); 
+				this.initWebSocket(); 
 			},
 			showMarker(type, bool) {
 				switch(type) {
@@ -508,6 +575,7 @@
 				this.$refs.refTusvnMap.centerAt(window.defaultMapOption.center[0], window.defaultMapOption.center[1]);
 				this.$refs.refTusvnMap.zoomTo(window.defaultMapOption.zoom);
 				this.initPubMsgList();
+				this.initWebSocket();
 			},
 			viewLevelChange: function(tusvnmap, mevent) {
 				this.mapLevel.value = mevent;
