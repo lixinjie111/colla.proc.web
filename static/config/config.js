@@ -1,5 +1,6 @@
 window.config = {  
     //望京 内网
+    // staticUrl: "http://172.17.1.16:9090/", //静态文件路径
     // url:'http://172.17.1.16:9094/collaProcApp/',                    //望京环境 
     // operateUrl: 'http://172.17.1.16:9090/operateApp/',	//运营平台
     // iconPath:'http://172.17.1.16:9090/file/pic/trafficType/',       // 图片服务器地址
@@ -9,6 +10,7 @@ window.config = {
     // dlWmsUrl: 'http://10.0.1.22:8080/', //迪路
     
     //望京 外网
+    staticUrl: "http://120.133.21.14:9090/", //静态文件路径
     url:'http://120.133.21.14:9094/collaProcApp/',                  //望京环境 
     operateUrl: 'http://120.133.21.14:9090/operateApp/',	//运营平台
     iconPath:'http://120.133.21.14:9090/file/pic/trafficType/',       // 图片服务器地址
@@ -17,25 +19,8 @@ window.config = {
     dlUrl: 'http://117.114.144.227:8085/', //迪路
     dlWmsUrl: 'http://117.114.144.227:8080/', //迪路
 
-    //上海正式环境 内网-IP
-    // url:'http://172.16.1.197:9094/collaProcApp/',  // 交通平台
-    // operateUrl: 'http://172.16.1.197:9090/operateApp/', //运营平台登陆
-    // iconPath:'http://172.16.1.197:9090/file/pic/trafficType/',  // 图片服务器地址
-    // mapWaPianPath:'http://172.16.1.197:8086/',   //地图瓦片
-    // websocketUrl:'ws://172.16.1.197:9996/colla',
-    // dlUrl: 'http://172.16.1.197:8085/', //迪路
-    // dlWmsUrl: 'http://172.16.1.197:8080/', //迪路
-
-    //上海正式环境 内网-主机名
-    // url:'http://app01:9094/collaProcApp/',  // 交通平台
-    // operateUrl: 'http://app01:9090/operateApp/', //运营平台登陆
-    // iconPath:'http://app01:9090/file/pic/trafficType/',  // 图片服务器地址
-    // mapWaPianPath:'http://app01:8086/',   //地图瓦片
-    // websocketUrl:'ws://app01:9996/colla',
-    // dlUrl: 'http://app01:8085/', //迪路
-    // dlWmsUrl: 'http://app01:8080/', //迪路
-
     //上海正式环境 外网
+    // staticUrl: "http://116.236.72.204:49090/", //静态文件路径
     // url:'http://116.236.72.204:49094/collaProcApp/',  // 交通平台
     // operateUrl: 'http://116.236.72.204:49090/operateApp/', //运营平台登陆
     // iconPath:'http://116.236.72.204:49090/file/pic/trafficType/',  // 图片服务器地址
