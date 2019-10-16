@@ -6,46 +6,18 @@
     <!-- 加图标 -->
     <link rel="shortcut icon" href="./static/images/favicon.ico" type="image/x-icon">
     <title>信息协同中心</title>
-
-    <!-- <link rel="stylesheet" href="static/css/normalize.css">    -->
     <link rel="stylesheet" href="static/css/style.css">
-    <!-- <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css"> -->
     <script> 
       document.write('<script src="./static/config/config.js?v='+ new Date().getTime() +'"><\/script>');
     </script>
   </head>
   <body>
     <div id="app"></div>
-    <!-- built files will be auto injected -->
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.2/vue.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue-router/3.0.1/vue-router.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vuex/3.1.0/vuex.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
-    <script src="https://unpkg.com/element-ui/lib/index.js"></script> -->
-    <script src="http://120.133.21.14:9090/frontStatic/vue/vue.min.js"></script>
-    <script src="http://120.133.21.14:9090/frontStatic/vue-router/vue-router.min.js"></script>
-    <script src="http://120.133.21.14:9090/frontStatic/vuex/vuex.min.js"></script>
-    <script src="http://120.133.21.14:9090/frontStatic/axios/axios.min.js"></script>
-    <!--  -->
     <script>
-    //   window.onload = ()=>{
-    //     console.log('window.onload');
-    //     this.pageResize();
-    // }
-    // window.onresize = function(){
-    //     console.log('window.onresize');
-    //     this.pageResize();
-    // }
-    // function pageResize(){
-    //         const borwserHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
-    //         this.pageHeight = borwserHeight;
-    //         console.log('pageHeight : ' + this.pageHeight)
-
-    //         // const offsetWidth = window.documentElement.offsetWidth || document.body.offsetWidth;
-    //         // const offsetHeight = window.documentElement.offsetHeight ||document.body.offsetHeight;
-
-    //         // console.log('offset width == ' + offsetWidth + ' --- offset height == ' + offsetHeight);
-    //     }
+      document.write('<script src="'+ window.config.staticUrl +'frontStatic/vue/vue.min.js"><\/script>');
+      document.write('<script src="'+ window.config.staticUrl +'frontStatic/vue-router/vue-router.min.js"><\/script>');
+      document.write('<script src="'+ window.config.staticUrl +'frontStatic/vuex/vuex.min.js"><\/script>');
+      document.write('<script src="'+ window.config.staticUrl +'frontStatic/axios/axios.min.js"><\/script>');
     </script>
   </body>
 </html>
