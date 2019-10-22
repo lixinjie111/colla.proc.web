@@ -221,6 +221,7 @@ export default {
     position: absolute;
     top: 50%;
     left: 50%;
+    z-index: 2;
     transform: translate(-50%, -50%);
     padding: 10px 0;
     .login-title {
