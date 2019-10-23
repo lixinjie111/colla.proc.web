@@ -68,7 +68,7 @@
       </el-table-column>
 
       <el-table-column prop="longitude,latitude " label="中心位置" min-width="15%">
-        <template slot-scope="scope">{{parseFloat(scope.row.longitude).toFixed(8)}} , {{parseFloat(scope.row.latitude).toFixed(8)}}</template>
+        <template slot-scope="scope">{{scope.row.longitude ? parseFloat(scope.row.longitude).toFixed(8) : '--'}} , {{scope.row.latitude ? parseFloat(scope.row.latitude).toFixed(8) : '--'}}</template>
       </el-table-column>
 
       <el-table-column label="发布开始时间" min-width="12%">
@@ -111,7 +111,7 @@
         @current-change="pagingChange"
       ></el-pagination>
     </el-row>
-    <info-history-detail v-if="isShow" :taskCode="taskCode" :detailData="detailData" :infoData="infoData" @infoHistoryBack="infoHistoryBack"></info-history-detail>
+    <info-history-detail v-if="isShow" :taskCode="taskCode" :detailData="detailData" @infoHistoryBack="infoHistoryBack"></info-history-detail>
   </div>
 </template>
 <script>
@@ -149,7 +149,6 @@ export default {
       isLoading: false,
       detailData: [],
       isShow: false,
-      infoData: '',
       taskCode: ''
     };
   },
@@ -273,18 +272,18 @@ export default {
     },
     // 查看详情
     checkDetail(scope) {
-      scope.beginTime=TDate.formatTime(scope.beginTime);
-      scope.createTime=TDate.formatTime(scope.createTime);
-      scope.endTime=TDate.formatTime(scope.endTime);
-      scope.expirationTime=TDate.formatTime(scope.expirationTime);//updateTime
+      let info = Object.assign({},scope);
+      info.beginTime=TDate.formatTime(info.beginTime);
+      info.createTime=TDate.formatTime(info.createTime);
+      info.endTime=TDate.formatTime(info.endTime);
+      info.expirationTime=info.expirationTime==0?"--":TDate.formatTime(info.expirationTime);//updateTime
       let newArr;
       let longlat;
-      let info = scope;
+      
       newArr = [info];
       longlat = newArr.map(x =>(parseFloat(x.longitude).toFixed(8) + ',' + parseFloat(x.latitude).toFixed(8)));
       this.isShow = true;
       let arr = [];
-      this.infoData = info.content;
       Object.keys(info).forEach(x => {
         arr.push({
           'name': (_ => {
@@ -319,7 +318,7 @@ export default {
       });
       arr = arr.filter(x => x.name !== undefined);
       this.splitArr(arr);
-      this.taskCode = scope.taskCode;
+      this.taskCode = info.taskCode;
     },
     splitArr(data) {
         let proportion = 3;
