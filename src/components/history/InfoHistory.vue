@@ -68,7 +68,7 @@
       </el-table-column>
 
       <el-table-column prop="longitude,latitude " label="中心位置" min-width="15%">
-        <template slot-scope="scope">{{parseFloat(scope.row.longitude).toFixed(8)}} , {{parseFloat(scope.row.latitude).toFixed(8)}}</template>
+        <template slot-scope="scope">{{scope.row.longitude ? parseFloat(scope.row.longitude).toFixed(8) : '--'}} , {{scope.row.latitude ? parseFloat(scope.row.latitude).toFixed(8) : '--'}}</template>
       </el-table-column>
 
       <el-table-column label="发布开始时间" min-width="12%">
