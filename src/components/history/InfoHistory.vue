@@ -79,7 +79,9 @@
         <template slot-scope="scope">{{scope.row.expirationTime==0?"--":TDate.formatTime(scope.row.expirationTime)}}</template>
       </el-table-column>
 
-      <el-table-column prop="content" label="信息内容" min-width="15%"></el-table-column>
+      <el-table-column label="信息内容" min-width="15%">
+        <template slot-scope="scope">{{scope.row.content ? scope.row.content : '--'}}</template>
+      </el-table-column>
 
       <el-table-column prop="sendNumber" label="下发次数" min-width="6%"></el-table-column>
 
