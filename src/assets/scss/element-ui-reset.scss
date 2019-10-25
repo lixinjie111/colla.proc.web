@@ -147,6 +147,9 @@
 		    background: rgba(0, 0, 0, 0.2);
 		}
 	}
+	.cell {
+		text-overflow: clip !important;
+	}
 }
 .el-table__empty-text {
 	position: relative;
