@@ -32,6 +32,7 @@ import HistoryVideo from '../../../common/detail/historyVideo';
 export default {
   props: {
     detailData: Array,
+    content: String,
     taskCode: String
   },
   components: {
@@ -42,8 +43,7 @@ export default {
     return {
       isScaleMap: false,
       isShowVideo: false,
-      videoData: [],
-      content: ""
+      videoData: []
     };
   },
   mounted() {
@@ -64,7 +64,6 @@ export default {
       }
       this.$api.post(url, params, res => {
         if (res.data.status === 200) {
-            this.content = res.data.data.eventTask.content;
             this.videoData = res.data.data.videoList;
             this.videoData.forEach(item=>{
               item.isActive=false;
