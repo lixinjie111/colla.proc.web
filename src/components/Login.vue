@@ -326,5 +326,11 @@ export default {
     -webkit-box-shadow: 0 0 0 1000px #041d44 inset;
     -webkit-text-fill-color: #fff;
   }
+  .el-button{
+      i, span{
+          line-height: 0;
+          vertical-align: middle;
+      }
+  }
 }
 </style>
