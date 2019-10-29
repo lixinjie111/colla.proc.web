@@ -51,6 +51,7 @@
 <script>
 import LocalStorageUtil from "@/store/localstorage.js";
 
+import md5 from 'js-md5'
 import SessionUtil from '@/store/session.js'
 
 export default {
@@ -112,29 +113,36 @@ export default {
     handleLogin() {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
-          this.loading = true;
-          if (this.checked === true) {
-            this.setCookie(this.loginForm.userNo, this.loginForm.password, 7);
-          } else {
-            this.clearCookie();
-          }
-          this.loginFunc(this.loginForm);
+            this.loading = true;
+            let _password = this.loginForm.password.length > 20 ? this.loginForm.password : md5(this.loginForm.password);
+            let _param = Object.assign({}, this.loginForm, {
+                password: _password
+            });
+            this.loginFunc(_param);
+            // this.loginFunc(this.loginForm);
         } else {
           this.loading = false;
         }
       });
     },
     loginFunc(params) {
-        this.$api.post('openApi/user/login',params,response => {
+        this.$api.post('openApi/v2/user/login',params,response => {
             this.loading = false;
             if(response.status >= 200 && response.status < 300){
                 if(response.data.status == 200){
+                    
+                    if(params.password) {
+                        if (this.checked == true) {
+                            this.setCookie(this.loginForm.userNo, params.password, 7);
+                        }else {
+                            this.clearCookie();
+                        }
+                    }
                     let temp = response.data.data;
                     SessionUtil.setItem('login',JSON.parse(temp));
                     // SessionUtil.setItem('currentMenu','/infoRelease');
                     // SessionUtil.setItem('currentMenuId','1');
-                    localStorage.setItem('yk-token', JSON.stringify({data: JSON.parse(temp).token, 'time': new Date().getTime()}));                          
-                    
+                    localStorage.setItem('yk-token', JSON.stringify({data: JSON.parse(temp).token, 'time': new Date().getTime()}));        
                     this.$router.push('/infoRelease');
                 }else {
                     this.$message({
