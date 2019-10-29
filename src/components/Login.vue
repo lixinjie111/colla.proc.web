@@ -126,7 +126,7 @@ export default {
       });
     },
     loginFunc(params) {
-        this.$api.post('openApi/v2/user/login',params,response => {
+        this.$api.post('openApi/user/login',params,response => {
             this.loading = false;
             if(response.status >= 200 && response.status < 300){
                 if(response.data.status == 200){
