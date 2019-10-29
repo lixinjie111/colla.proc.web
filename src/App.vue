@@ -70,6 +70,7 @@ export default {
   name: 'App',
   data(){
     return {
+      loginInfo: JSON.parse(SessionUtil.getItem('login')),
       openedItems: ['0','1','2'],
       menuList: [],
       collapse: true,
@@ -108,11 +109,22 @@ export default {
 //      this.$forceUpdate()
     },
     logoutClick(){
-      this.$router.push('/login');
-      this.$store.dispatch('logout');
-      this.$store.dispatch('showSubMenu',false);
-      SessionUtil.clearItems();
-      localStorage.removeItem("yk-token");
+      this.$api.post('openApi/user/logout',{
+        token: this.loginInfo.token
+      },response => {
+        this.$router.push('/login');
+        this.$store.dispatch('logout');
+        this.$store.dispatch('showSubMenu',false);
+        SessionUtil.clearItems();
+        localStorage.removeItem("yk-token");
+      },err => {
+        this.$router.push('/login');
+        this.$store.dispatch('logout');
+        this.$store.dispatch('showSubMenu',false);
+        SessionUtil.clearItems();
+        localStorage.removeItem("yk-token");
+      }, "login");
+      
     },
     showSubMenu(){
         let bool = !this.$store.state.isSubMenu;        
