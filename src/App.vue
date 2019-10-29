@@ -70,7 +70,6 @@ export default {
   name: 'App',
   data(){
     return {
-      loginInfo: JSON.parse(SessionUtil.getItem('login')),
       openedItems: ['0','1','2'],
       menuList: [],
       collapse: true,
@@ -110,7 +109,7 @@ export default {
     },
     logoutClick(){
       this.$api.post('openApi/user/logout',{
-        token: this.loginInfo.token
+        token: JSON.parse(SessionUtil.getItem('login')).token
       },response => {
         this.$router.push('/login');
         this.$store.dispatch('logout');
