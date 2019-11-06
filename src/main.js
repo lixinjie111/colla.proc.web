@@ -26,7 +26,6 @@ import '@/assets/scss/reset.scss';
 import '@/assets/scss/public.scss';
 import '@/assets/scss/element-ui-reset.scss';
 import '@/assets/icon-font/iconfont.css';
-import '@/assets/scss/map.scss';
 
 // 路由拦截器
 router.beforeEach((to, from, next) => {
