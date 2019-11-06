@@ -177,6 +177,10 @@ export default {
             line-height: 28px;
             color: #fff;
             letter-spacing: 3px;
+            margin-right: 10px;
+        }
+        .logo-title {
+            height: 22px;
         }
     }
 }
