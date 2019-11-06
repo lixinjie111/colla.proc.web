@@ -3,7 +3,7 @@ window.config = {
     //雄安 外网地址
     staticUrl: "http://144.7.122.89:9090/", //静态文件路径
     url:'http://144.7.122.89:9094/collaProcApp/',                  //望京环境 
-    operateUrl: 'http://144.7.122.89:9090/operateApp/',	//运营平台
+    operateUrl: 'http://144.7.122.89:9090/operateApp/', //运营平台
     iconPath:'http://144.7.122.89:9090/file/pic/trafficType/',       // 图片服务器地址
     websocketUrl:'ws://144.7.122.89:9995/colla', 
     mapWaPianPath:'http://144.7.127.19:8086/',   //地图瓦片
