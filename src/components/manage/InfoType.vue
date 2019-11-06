@@ -184,7 +184,7 @@ export default {
                         this.$message({
                             type: 'error',
                             duration: '1500',
-                            message: "获取信息类型列表失败  ！",
+                            message: "获取信息类型列表失败！",
                             showClose: true
                         });    
                     }
@@ -209,7 +209,7 @@ export default {
                         this.$message({
                             type: 'error',
                             duration: '1500',
-                            message: "获取类型失败  ！",
+                            message: "获取类型失败！",
                             showClose: true
                         });     
                     }
@@ -261,19 +261,26 @@ export default {
                             this.$message({
                                 type: 'success',
                                 duration: '1500',
-                                message: "删除信息类型成功  ！",
+                                message: "删除信息类型成功！",
                                 showClose: true
                             });      
                         } else {                     
                             this.$message({
                                 type: 'success',
                                 duration: '1500',
-                                message: "删除信息类型失败  ！",
+                                message: "删除信息类型失败！",
                                 showClose: true
                             });       
                         }
                     }
                 ); 
+            }).catch(() => {
+                // this.$message({
+                //     type: 'info',
+                //     duration: '1500',
+                //     message: "已取消删除！",
+                //     showClose: true
+                // });  
             });
         },
         handleCheck(index,item){
