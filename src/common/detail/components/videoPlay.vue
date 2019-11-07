@@ -7,7 +7,7 @@
         :close-on-click-modal="false"
         width="50%">
         <live-player 
-            :requestVideoUrl="url"
+            :requestVideoUrl="videoUrl"
             :autoplay="true"
             :refreshFlag="false"
             :liveFlag="false"
