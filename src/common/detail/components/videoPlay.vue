@@ -44,12 +44,13 @@ export default {
     computed: {
         videoUrl() {
             // console.log(this.vcrData.url);
-            let _url = this.vcrData.url;
+            // let _url = this.vcrData.url;
             // let _url = "http://218.76.44.22:10080/record/video/hls/EasyGBS3402000005132000005634020000051320000056/20191105134237/20191105134253/video.m3u8?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NzM0NjgyODcsInB3IjoiOTU2N2VmNDQ3NWVhMmRlYjg4MmQxMDljZmNjY2VlYmEiLCJ0bSI6MTU3Mjg2MzQ4NywidW4iOiJhZG1pbiJ9.U6zB83QU5_PUyt9yUUCQhVSQ1blRutApmIS0a4Fq62Q";
             // let _reg=/218\.76\.44\.22/;
             // let _newUrl = _url.replace(_reg,"10.3.2.110");
             // console.log(_newUrl);
-            return _newUrl;
+            // return _newUrl;
+            return this.vcrData.url;
         }
     },
     methods: {
