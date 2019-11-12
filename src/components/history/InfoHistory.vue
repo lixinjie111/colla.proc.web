@@ -68,18 +68,20 @@
       </el-table-column>
 
       <el-table-column prop="longitude,latitude " label="中心位置" min-width="15%">
-        <template slot-scope="scope">{{parseFloat(scope.row.longitude).toFixed(8)}} , {{parseFloat(scope.row.latitude).toFixed(8)}}</template>
+        <template slot-scope="scope">{{scope.row.longitude ? parseFloat(scope.row.longitude).toFixed(8) : '--'}} , {{scope.row.latitude ? parseFloat(scope.row.latitude).toFixed(8) : '--'}}</template>
       </el-table-column>
 
-      <el-table-column label="发布开始时间" min-width="12%">
+      <el-table-column label="实际开始时间" min-width="12%">
         <template slot-scope="scope">{{TDate.formatTime(scope.row.beginTime)}}</template>
       </el-table-column>
 
-      <el-table-column label="发布结束时间" min-width="12%">
+      <el-table-column label="实际结束时间" min-width="12%">
         <template slot-scope="scope">{{scope.row.expirationTime==0?"--":TDate.formatTime(scope.row.expirationTime)}}</template>
       </el-table-column>
 
-      <el-table-column prop="content" label="信息内容" min-width="15%"></el-table-column>
+      <el-table-column label="信息内容" min-width="15%">
+        <template slot-scope="scope">{{scope.row.content ? scope.row.content : '--'}}</template>
+      </el-table-column>
 
       <el-table-column prop="sendNumber" label="下发次数" min-width="6%"></el-table-column>
 
@@ -111,7 +113,7 @@
         @current-change="pagingChange"
       ></el-pagination>
     </el-row>
-    <info-history-detail v-if="isShow" :taskCode="taskCode" :detailData="detailData" @infoHistoryBack="infoHistoryBack"></info-history-detail>
+    <info-history-detail v-if="isShow" :taskCode="taskCode" :detailData="detailData" :content="detailContent" @infoHistoryBack="infoHistoryBack"></info-history-detail>
   </div>
 </template>
 <script>
@@ -148,6 +150,7 @@ export default {
       timeInterval: 400,
       isLoading: false,
       detailData: [],
+      detailContent: '',
       isShow: false,
       taskCode: ''
     };
@@ -283,6 +286,7 @@ export default {
       newArr = [info];
       longlat = newArr.map(x =>(parseFloat(x.longitude).toFixed(8) + ',' + parseFloat(x.latitude).toFixed(8)));
       this.isShow = true;
+      this.detailContent = info.content;
       let arr = [];
       Object.keys(info).forEach(x => {
         arr.push({
@@ -293,19 +297,19 @@ export default {
                 return '信息类型';
               } else if (x === 'eventCode') {
                 return '事件编号';
-              } else if (x === 'beginTime') {
-                return '事件发生时间';
-              } else if (x === 'endTime') {
-                return '事件结束时间';
+              } else if (x === 'createTime') {
+                return '创建时间';
               } else if (x === 'longitude') {
                 return '事件发生位置';
-              } else if (x === 'createTime') {
-                return '发布开始时间';
-              } else if (x === 'expirationTime') {//updateTime
-                return '发布结束时间';
               } else if (x === 'sendNumber') {
                 return '累计发送次数';
-              }
+              } else if (x === 'beginTime') {
+                return '实际开始时间';
+              } else if (x === 'expirationTime') {//updateTime
+                return '实际结束时间';
+              } else if (x === 'endTime') {
+                return '计划结束时间';
+              } 
           })(),
           'value': (_ => {
             if (x === 'longitude') {

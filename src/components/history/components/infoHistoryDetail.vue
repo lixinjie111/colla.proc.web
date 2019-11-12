@@ -14,7 +14,7 @@
         <!-- 内容详情 -->
         <div class="c-wrapper-20 c-detail-box m-desc c-flex">
           <span class="title">内容详情</span>
-          <span class="desc" :title="detailData.content || '--'">{{detailData.content || '--'}}</span>
+          <span class="desc" :title="content || '--'">{{content || '--'}}</span>
         </div>
         <!-- 视频内容 -->
 
@@ -32,6 +32,7 @@ import HistoryVideo from '../../../common/detail/historyVideo';
 export default {
   props: {
     detailData: Array,
+    content: String,
     taskCode: String
   },
   components: {

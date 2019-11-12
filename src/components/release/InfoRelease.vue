@@ -424,11 +424,12 @@ export default {
     .el-select-group__title{
         display: none;
     }
-    .el-popper[x-placement^=bottom] .popper__arrow {
+    .el-popper[x-placement^=bottom-start] .popper__arrow {
         left:100px !important;
         border-bottom-color: #7d7c7c!important;
+        filter: none !important;
     }
-    .el-popper[x-placement^=bottom] .popper__arrow::after{
+    .el-popper[x-placement^=bottom-start] .popper__arrow::after{
         border-bottom-color: #7d7c7c!important;
     }
 
