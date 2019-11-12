@@ -175,7 +175,7 @@ export default {
         onPlayerTimeupdate(player) {
             console.log("timeupdate", player);
             this.setVideoOptionClose();
-            this.videoTimerReload();
+            // this.videoTimerReload();
             this.$emit("videoTimeupdate",player);
         },
         onPlayerPause() {
