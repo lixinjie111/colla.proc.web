@@ -108,11 +108,22 @@ export default {
 //      this.$forceUpdate()
     },
     logoutClick(){
-      this.$router.push('/login');
-      this.$store.dispatch('logout');
-      this.$store.dispatch('showSubMenu',false);
-      SessionUtil.clearItems();
-      localStorage.removeItem("yk-token");
+      this.$api.post('openApi/user/logout',{
+        token: JSON.parse(SessionUtil.getItem('login')).token
+      },response => {
+        this.$router.push('/login');
+        this.$store.dispatch('logout');
+        this.$store.dispatch('showSubMenu',false);
+        SessionUtil.clearItems();
+        localStorage.removeItem("yk-token");
+      },err => {
+        this.$router.push('/login');
+        this.$store.dispatch('logout');
+        this.$store.dispatch('showSubMenu',false);
+        SessionUtil.clearItems();
+        localStorage.removeItem("yk-token");
+      }, "login");
+      
     },
     showSubMenu(){
         let bool = !this.$store.state.isSubMenu;        
@@ -166,6 +177,10 @@ export default {
             line-height: 28px;
             color: #fff;
             letter-spacing: 3px;
+            margin-right: 10px;
+        }
+        .logo-title {
+            height: 22px;
         }
     }
 }

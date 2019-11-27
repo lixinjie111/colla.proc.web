@@ -103,8 +103,8 @@
 				console.log("结束连接");
 			},
 			onerror(data) {
-				this.$emit('initStatisics');
-				this.initPubMsgList();
+				//this.$emit('initStatisics');
+				//this.initPubMsgList();
 			},
 			onopen(data) {
 				var _traffic = JSON.stringify(this.webSocketData);
@@ -133,6 +133,7 @@
 						if(response.status >= 200 && response.status < 300) {
 							this.pubMsgList = response.data ? response.data : [];
 							this.addPubMsg(this.pubMsgList);
+							this.initWebSocket();
 						} else {
 							this.$message({
 								type: 'error',
@@ -140,7 +141,7 @@
 								message: "获取信息列表失败 ！",
 								showClose: true
 							});
-							
+							this.initWebSocket();
 						}
 					}
 				);
@@ -304,10 +305,10 @@
 				}else{ //打开webscoket,并且获取数据
 					if(e.getData){
 						this.clearPubMsg();
-						this.initPubMsgList();
 						this.$emit('initStatisics');
-						this.webSocket && this.webSocket.close(); 
-						this.initWebSocket();
+						this.webSocket && this.webSocket.close();
+						this.initPubMsgList(); 
+						//this.initWebSocket();
 					}else{//false ,表示什么也不敢
 
 					}
@@ -327,22 +328,22 @@
 				this.prevData = {};
 			},
 			publishInfo(e) { //发布成功后：建立webscoket连接；清空数据
+				this.webSocket && this.webSocket.close();
 				this.initPubMsgList();
-				this.$emit('initStatisics');
-				this.webSocket && this.webSocket.close(); 
-				this.initWebSocket(); 
+				this.$emit('initStatisics'); 
+				//this.initWebSocket(); 
 			},
 			updateInfo(e) { //更新不需要操作
+				this.webSocket && this.webSocket.close();
 				this.initPubMsgList();
-				this.$emit('initStatisics');
-				this.webSocket && this.webSocket.close(); 
-				this.initWebSocket();
+				this.$emit('initStatisics'); 
+				//this.initWebSocket();
 			},
 			destroyInfo(e) { //手动失效也不需要操作
+				this.webSocket && this.webSocket.close();
 				this.initPubMsgList();
-				this.$emit('initStatisics');
-				this.webSocket && this.webSocket.close(); 
-				this.initWebSocket(); 
+				this.$emit('initStatisics'); 
+				//this.initWebSocket(); 
 			},
 			showMarker(type, bool) {
 				switch(type) {
@@ -575,7 +576,7 @@
 				this.$refs.refTusvnMap.centerAt(window.defaultMapOption.center[0], window.defaultMapOption.center[1]);
 				this.$refs.refTusvnMap.zoomTo(window.defaultMapOption.zoom);
 				this.initPubMsgList();
-				this.initWebSocket();
+				//this.initWebSocket();
 			},
 			viewLevelChange: function(tusvnmap, mevent) {
 				this.mapLevel.value = mevent;

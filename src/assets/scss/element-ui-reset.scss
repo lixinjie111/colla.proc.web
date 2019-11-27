@@ -44,6 +44,9 @@
 		.el-date-editor.el-input, .el-date-editor.el-input__inner {
 			width: 200px;
 		}
+		.el-date-editor--daterange.el-input, .el-date-editor--daterange.el-input__inner {
+			width: 240px;
+		}
 		.el-date-editor--datetimerange.el-input, .el-date-editor--datetimerange.el-input__inner {
 			width: 350px;
 		}
@@ -90,9 +93,11 @@
 	[class^=el-icon-] {
 		font-size: 18px;
 		vertical-align: middle;
+		line-height: 0;
 	}
 	span {
 		vertical-align: middle;
+		line-height: 0;
 	}
 	&.el-button--mini, 
 	&.el-button--small {
@@ -126,6 +131,7 @@
 			padding: 12px 0;
 			border-right: none;
 			background-color: #e6e6e6;
+			position: relative;
 		}
 	}
 	.current-row {
@@ -136,6 +142,7 @@
 	.el-table__body-wrapper {
 		&::-webkit-scrollbar {
 			width: 10px;
+			height: 10px;
 		}
 		&::-webkit-scrollbar-track { 
 			-webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
@@ -146,6 +153,9 @@
 		    -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
 		    background: rgba(0, 0, 0, 0.2);
 		}
+	}
+	.cell {
+		text-overflow: clip !important;
 	}
 }
 .el-table__empty-text {
@@ -175,6 +185,13 @@
 	&:after {
 		width: 0;
 		overflow: hidden;
+	}
+}
+
+//下拉框箭头
+.el-popper {
+	.popper__arrow {
+		filter: none !important;
 	}
 }
 
