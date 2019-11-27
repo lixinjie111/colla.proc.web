@@ -208,6 +208,9 @@ export default {
         color: #F59307!important;
         background: #666!important;
     }
+    .el-select-dropdown__item.hover, .el-select-dropdown__item:hover {
+        background-color: transparent !important;
+    }
    
 
     .el-card{
@@ -432,6 +435,7 @@ export default {
     .el-popper[x-placement^=bottom-start] .popper__arrow::after{
         border-bottom-color: #7d7c7c!important;
     }
+   
 
 
 

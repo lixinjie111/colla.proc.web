@@ -24,6 +24,7 @@
 					trafficSignalIds: [],
 					message: 'MessageLayer', // 发布信息 图层
 					messageBg: 'MessageBgLayer', // 信息的背景图片 图层
+					messageBg1: 'MessageBgLayer1', // 信息的背景图片 图层
 				},
 				mapMarker: {
 					rsu: false, // rsu
@@ -171,19 +172,12 @@
 						}
 					});
 					if(this.$refs.refTusvnMap){
-						if(this.$refs.refTusvnMap.getOverlayById(_result.eventTask.taskCode)) {
-							this.$refs.refTusvnMap.removeOverlayById(_result.eventTask.taskCode);
+							this.$refs.refTusvnMap.removeFeature(this.prevData[_result.eventTask.taskCode].id, this.mapLayer.messageBg1);
 							this.$refs.refTusvnMap.removeFeature(this.prevData[_result.eventTask.taskCode].bgImgId, this.mapLayer.messageBg);
 							if(this.$refs.refTusvnMap.isOpen[_result.eventTask.taskCode]){
 								this.$refs.refTusvnMap.closeInforWindow();
 							}
 							delete this.prevData[_result.eventTask.taskCode];
-						}
-					}else{
-						// console.log(this.$refs.refTusvnMap);
-						// this.$nextTick(() => {
-						// 	console.log(this.$refs.refTusvnMap)
-						// })
 					}
 				};
 				if(_result.optType == "add"){//新增
@@ -209,7 +203,7 @@
 						bgImgSrc: 'static/images/ico-bg2.png',
 						bgImgSize: [44, 58],
 						bgImgOffset: [0, 0],
-						size: [30, 30],
+						size: [28, 28],
 						imgOffset: [0, -34],
 						alertCategory: _result.eventTask.alertCategory,
 						beginTime: _result.eventTask.beginTime,
@@ -219,27 +213,16 @@
 					};
 					for(let id in _filterData) {
 						if(this.$refs.refTusvnMap){
-							this.$refs.refTusvnMap.addImg(_filterData[id].lon, _filterData[id].lat, _filterData[id].bgImgId, this.mapLayer.messageBg, _filterData[id].bgImgSrc, _filterData[id].bgImgSize, 0, true, 1, _filterData[id].bgImgOffset, 1, [0.5, 1]);
-							this.$refs.refTusvnMap.addImgOverlay(_filterData[id].id, _filterData[id].icon, null, _filterData[id].lon, _filterData[id].lat, _filterData[id].id, _filterData[id].imgOffset, (e) => {
-								e.preventDefault();
-								e.stopPropagation();
-								let marker = {
-									id: id,
-									lon: _filterData[id].lon,
-									lat: _filterData[id].lat,
-									isEdit: true,
-									icon: _filterData[id].icon,
-									trafficInfo: this.trafficInfo,
-								};
-								this.cricleID = 'icon_' + _filterData[id].id;
-								this.$refs.refTusvnMap.addMyInfoWindow(marker);
-
-							});
-						}else{
-							// console.log(this.$refs.refTusvnMap)
-							// this.$nextTick(() => {
-							// 	console.log(this.$refs.refTusvnMap)
-							// })
+							let marker = {
+								id: id,
+								lon: _filterData[id].lon,
+								lat: _filterData[id].lat,
+								isEdit: true,
+								icon: _filterData[id].icon,
+								trafficInfo: this.trafficInfo,
+							};
+							this.$refs.refTusvnMap.addImg(_filterData[id].lon, _filterData[id].lat, _filterData[id].bgImgId, this.mapLayer.messageBg, _filterData[id].bgImgSrc, _filterData[id].bgImgSize, null, true, null, _filterData[id].bgImgOffset, null, [0.5, 1],marker);
+							this.$refs.refTusvnMap.addImg(_filterData[id].lon, _filterData[id].lat, _filterData[id].id,      this.mapLayer.messageBg1, _filterData[id].icon,     _filterData[id].size,      null, null, null,  [0,0],                      null, [0.5, 1.7],marker);
 						}
 					}
 					this.prevData[_result.eventTask.taskCode]=_filterData[_result.eventTask.taskCode];
@@ -261,7 +244,7 @@
 							bgImgSrc: 'static/images/ico-bg2.png',
 							bgImgSize: [44, 58],
 							bgImgOffset: [0, 0],
-							size: [30, 30],
+							size: [28, 28],
 							imgOffset: [0, -34],
 							alertCategory: item.alertCategory,
 							beginTime: item.beginTime,
@@ -273,27 +256,16 @@
 				}
 				for(let id in _filterData) {
 					if(this.$refs.refTusvnMap){
-						this.$refs.refTusvnMap.addImg(_filterData[id].lon, _filterData[id].lat, _filterData[id].bgImgId, this.mapLayer.messageBg, _filterData[id].bgImgSrc, _filterData[id].bgImgSize, 0, true, 1, _filterData[id].bgImgOffset, 1, [0.5, 1]);
-						this.$refs.refTusvnMap.addImgOverlay(_filterData[id].id, _filterData[id].icon, null, _filterData[id].lon, _filterData[id].lat, _filterData[id].id, _filterData[id].imgOffset, (e) => {
-							e.preventDefault();
-							e.stopPropagation();
-							let marker = {
-								id: id,
-								lon: _filterData[id].lon,
-								lat: _filterData[id].lat,
-								isEdit: true,
-								icon: _filterData[id].icon,
-								trafficInfo: this.trafficInfo,
-							};
-							this.cricleID = 'icon_' + _filterData[id].id;
-							this.$refs.refTusvnMap.addMyInfoWindow(marker);
-
-						});
-					}else{
-						// console.log(this.$refs.refTusvnMap);
-						// this.$nextTick(() => {
-						// 	console.log(this.$refs.refTusvnMap)
-						// })
+						let marker = {
+							id: id,
+							lon: _filterData[id].lon,
+							lat: _filterData[id].lat,
+							isEdit: true,
+							icon: _filterData[id].icon,
+							trafficInfo: this.trafficInfo,
+						};
+						this.$refs.refTusvnMap.addImg(_filterData[id].lon, _filterData[id].lat, _filterData[id].bgImgId, this.mapLayer.messageBg, _filterData[id].bgImgSrc, _filterData[id].bgImgSize, null, true, null, _filterData[id].bgImgOffset, null, [0.5, 1],marker);
+						this.$refs.refTusvnMap.addImg(_filterData[id].lon, _filterData[id].lat, _filterData[id].id,      this.mapLayer.messageBg1, _filterData[id].icon,     _filterData[id].size,      null, null, null,  [0,0],                      null, [0.5, 1.7],marker);
 					}
 				}
 				_this.prevData = _filterData;
@@ -316,12 +288,7 @@
 			},
 			clearPubMsgIco() {
 				this.$refs.refTusvnMap.removeAllFeature(this.mapLayer.messageBg);
-				if(Object.keys(this.prevData).length < 1) {
-					return;
-				}
-				for(let item in this.prevData) {
-					this.$refs.refTusvnMap.removeOverlayById(this.prevData[item].id);
-				}
+				this.$refs.refTusvnMap.removeAllFeature(this.mapLayer.messageBg1);
 			},
 			clearPubMsg() {
 				this.clearPubMsgIco();
@@ -515,55 +482,68 @@
 			removeMapClickEvent() {
 				this.$refs.refTusvnMap.removeClickEvent();
 			},
-			mapClick: function(map, evt) {
-				this.isPointerIco = false;
-				if(!this.msgTypeInfo) {
-					this.$message({
-						type: 'warning',
-						duration: '1500',
-						message: "请选择信息类型 ！",
-						showClose: true
-					});
-					return;
-				}
-				let lon = evt.coordinate[0];
-				let lat = evt.coordinate[1];
+			mapClick: function(map, evt, selectFlag) {
+				if(selectFlag){//
+					var feature = map.forEachFeatureAtPixel(evt.pixel,
+					    function(feature) {
+					    	return feature;
+					    });
+					if (feature) {
+						let marker = JSON.parse(feature.get('name'))
+						this.$refs.refTusvnMap.addMyInfoWindow(marker);
+					}
+				}else{
+					this.isPointerIco = false;
+					if(!this.msgTypeInfo) {
+						this.$message({
+							type: 'warning',
+							duration: '1500',
+							message: "请选择信息类型 ！",
+							showClose: true
+						});
+						return;
+					}
+					let lon = evt.coordinate[0];
+					let lat = evt.coordinate[1];
 
-				// 生效时间 当前时间
-				let beginTime = new Date().getTime();
-				// 失效时间 当前时间 +24 小时
-				let endTime = (new Date()).getTime() + 24 * 60 * 60 * 1000;
-				this.trafficInfo = {
-					title: '信息发布',
-					isEdit: false,
-					eventName: this.msgTypeInfo.name,
-					eventType: this.msgTypeInfo.code,
-					taskCode: this.msgTypeInfo.taskCode,
-					longitude: lon,
-					latitude: lat,
-					affectRange: 1000,
-					content: this.msgTypeInfo.content,
-					frequency: this.msgTypeInfo.frequency,
-					frequencyUnit: this.msgTypeInfo.frequencyUnit,
-					beginTime: beginTime,
-					endTime: endTime,
-					datasource: '',
-					infoType: this.msgTypeInfo.infoType,
-					sendChannel: this.msgTypeInfo.sendChannel,
-					alertRadius: this.msgTypeInfo.alertRadius,
-					alertPath: '', //格式 "[[12.333,23.333],[12.444,23,444]]"，转换显示为 12.333,23.333;12.444,23,444
-					alertCategory: '' //告警类型
-				};
-				//console.log('this.msgTypeInfo.icon', this.iconPath + this.msgTypeInfo.icon);
-				let marker = {
-					id: 'marker' + (new Date()).getTime(),
-					lon: lon,
-					lat: lat,
-					trafficInfo: this.trafficInfo,
-					isEdit: false,
-					icon: this.iconPath + this.msgTypeInfo.icon,
-				};
-				this.$refs.refTusvnMap.addMyInfoWindow(marker,true);
+					// 生效时间 当前时间
+					let beginTime = new Date().getTime();
+					// 失效时间 当前时间 +24 小时
+					let endTime = (new Date()).getTime() + 24 * 60 * 60 * 1000;
+					this.trafficInfo = {
+						title: '信息发布',
+						isEdit: false,
+						eventName: this.msgTypeInfo.name,
+						eventType: this.msgTypeInfo.code,
+						taskCode: this.msgTypeInfo.taskCode,
+						longitude: lon,
+						latitude: lat,
+						affectRange: 1000,
+						content: this.msgTypeInfo.content,
+						frequency: this.msgTypeInfo.frequency,
+						frequencyUnit: this.msgTypeInfo.frequencyUnit,
+						beginTime: beginTime,
+						endTime: endTime,
+						datasource: '',
+						infoType: this.msgTypeInfo.infoType,
+						sendChannel: this.msgTypeInfo.sendChannel,
+						alertRadius: this.msgTypeInfo.alertRadius,
+						alertPath: '', //格式 "[[12.333,23.333],[12.444,23,444]]"，转换显示为 12.333,23.333;12.444,23,444
+						alertCategory: '' //告警类型
+					};
+					//console.log('this.msgTypeInfo.icon', this.iconPath + this.msgTypeInfo.icon);
+					let marker = {
+						id: 'marker' + (new Date()).getTime(),
+						lon: lon,
+						lat: lat,
+						trafficInfo: this.trafficInfo,
+						isEdit: false,
+						icon: this.iconPath + this.msgTypeInfo.icon,
+					};
+					this.$refs.refTusvnMap.addMyInfoWindow(marker,true);
+
+				}
+				
 			},
 
 			mapInitComplete: function(tusvnmap) {
@@ -571,6 +551,7 @@
 				this.$refs.refTusvnMap.addVectorLayer(this.mapLayer.tabLayer);
 				this.$refs.refTusvnMap.addVectorLayer(this.mapLayer.message);
 				this.$refs.refTusvnMap.addVectorLayer(this.mapLayer.messageBg);
+				this.$refs.refTusvnMap.addVectorLayer(this.mapLayer.messageBg1);
 				this.mapInitOk = true;
 				// 设置地图中心点及级别
 				this.$refs.refTusvnMap.centerAt(window.defaultMapOption.center[0], window.defaultMapOption.center[1]);
