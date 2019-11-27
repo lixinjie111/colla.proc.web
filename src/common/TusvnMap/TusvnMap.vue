@@ -166,6 +166,7 @@ export default {
     props:["targetId","overlayContainerId",], //'trafficInfo'
     data(){
         return {
+            selectFlag:true,
             slideFlag:true,
             isLoading: false,
             pointerFlag:false,
@@ -390,7 +391,8 @@ export default {
 
             this.$emit('TemporaryClearPubMsg',{bool:false});
 
-            this.$emit("setPointer",{bool: false, flag: true}); 
+            this.$emit("setPointer",{bool: false, flag: true});
+            // this.addClickEvent();   
 
         },
         // 关闭窗口
@@ -1012,7 +1014,9 @@ export default {
             // this.addWms("shanghai_qcc:dl_shcsq_wgs84",window.config.dlWmsUrl+"geoserver/shanghai_qcc/wms","shanghai_qcc:dl_shcsq_wgs84","",1,true,null); // 上海汽车城
             this.addWms(window.dlWmsDefaultOption.LAYERS,window.dlWmsDefaultOption.url,window.dlWmsDefaultOption.LAYERS,"",1,true,null); // 上海汽车城
 
-            // this.clickEventKey = this.$data.map.on("click",this.mapClick);
+            this.$data.map.on("click",this.mapClick);
+           
+           // console.log(this.$data.map.on("click",this.mapClick))
             this.$data.map.getView().on("change:resolution",this.viewLevelChange);
             this.$data.map.on("moveend",this.moveEnd);
             this.$data.map.on("contextmenu", e=>{
@@ -1030,7 +1034,7 @@ export default {
     // 书写事件触发后的函数
 
             
-            this.removeClickEvent();
+            //this.removeClickEvent();
             // unByKey(this.clickEventKey);
 
             //测试用
@@ -1058,6 +1062,7 @@ export default {
             //     5,
             //     "vectorLayer_01"
             // );
+            
         },
         
         showRoadNet(){
@@ -1069,10 +1074,14 @@ export default {
 
         addClickEvent(item){
             if(item) {
+                this.selectFlag=false;
                 // console.log("------------------------");
                 this.trafficInfo.alertRadius = item.alertRadius;
                 this.trafficInfo.alertCategory = item.alertCategory;
+            }else{
+                 this.selectFlag=true;
             }
+            
             this.clickEventKey = this.$data.map.on("click",this.mapClick);
         },
         removeClickEvent(){
@@ -1245,8 +1254,10 @@ export default {
        
         mapClick:function(mevent){
             if(this.mapStatus == 'normal'){
-                this.$emit("MapClick",this,mevent);
-                this.removeClickEvent();        // 移除点击事件
+                this.$emit("MapClick",this.$data.map,mevent,this.selectFlag);
+                if(!this.selectFlag){
+                    this.removeClickEvent();        // 移除点击事件
+                }
 
             }else if(this.mapStatus == 'TempLayerInteraction'){
                 
@@ -1503,11 +1514,11 @@ export default {
         * @param {number} scale 图片缩放，默认为1
         * @param {Array.<number>} anchor Anchor. Default value is the icon center.
         */
-        addImg:function(lon,lat,id,layerId,carImgUrl,size,rotation,rotateWithView,opacity,offset,scale,anchor){
+        addImg:function(lon,lat,id,layerId,carImgUrl,size,rotation,rotateWithView,opacity,offset,scale,anchor,marker){
             let carStyle = new Style({
                 image:mapInit.generateIcon(carImgUrl||"../../static/assets/images/geolocation_marker_heading.png",size||[22,37],rotation||0,rotateWithView||true,opacity||1,offset||[0,0],scale,anchor)
             });
-            mapInit.addPoint(lon,lat,id,carStyle,this.getLayerById(layerId));
+            mapInit.addPoint(lon,lat,id,carStyle,this.getLayerById(layerId),marker);
         },       
 
         /**                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
