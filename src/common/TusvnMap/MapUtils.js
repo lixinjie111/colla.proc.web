@@ -253,8 +253,11 @@ export function addMultiPolygon(coords, id, style, layer) {
  *  @param {module:ol/Style} style Openlayers的Style对象
  *  @param {module:ol/Layer} layer Openlayers的Layer对象
  */
-export function addPoint(lon, lat, id, style, layer) {
-    let pointFeature = new Feature(new Point([lon, lat]));
+export function addPoint(lon, lat, id, style, layer, marker) {
+    let pointFeature = new Feature({
+        geometry: new Point([lon, lat]),
+        name: JSON.stringify(marker),
+    });
     pointFeature.setId(id);
     pointFeature.setStyle(style);
 
