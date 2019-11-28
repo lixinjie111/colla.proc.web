@@ -392,7 +392,7 @@ export default {
             this.$emit('TemporaryClearPubMsg',{bool:false});
 
             this.$emit("setPointer",{bool: false, flag: true});
-            // this.addClickEvent();   
+            this.addClickEvent();   
 
         },
         // 关闭窗口
@@ -1029,6 +1029,7 @@ export default {
                 }else{
                 	this.$emit("setPointer",{bool: false}); 
                 }
+                this.addClickEvent();
                 
             });
     // 书写事件触发后的函数
