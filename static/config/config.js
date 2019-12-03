@@ -21,11 +21,11 @@ window.config = {
     
     //测试环境 内网
     // staticUrl: "http://10.0.1.181:9090/", //静态文件路径
-    // url:'http://10.0.1.181:9094/collaProcApp/',                  //望京环境 
+    // url:'http://10.0.1.184:9094/collaProcApp/',                  //望京环境 
     // operateUrl: 'http://10.0.1.181:9090/operateApp/',    //运营平台
     // iconPath:'http://10.0.1.181:9090/file/pic/trafficType/',       // 图片服务器地址
     // mapWaPianPath:'http://10.0.1.181:8086/',   //地图瓦片
-    // websocketUrl:'ws://10.0.1.181:49996/colla', 
+    // websocketUrl:'ws://10.0.1.184:49996/colla', 
     // dlUrl: 'http://10.0.1.199:8085/', //迪路
     // dlWmsUrl: 'http://10.0.1.199:8080/', //迪路
 
