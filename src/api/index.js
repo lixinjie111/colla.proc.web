@@ -36,6 +36,14 @@ let http = axios.create({
         // return newData;
     }]
 });
+function cancelRequest(){
+    sourceArr.forEach(item=>{
+        if(typeof item ==='function'){
+            item('终止请求')  //取消上一次请求啦
+        }
+    });
+    sourceArr = [];
+}
 
 function apiAxios(method, url, params, response, err = function(){} ,type) {
 
@@ -54,13 +62,29 @@ function apiAxios(method, url, params, response, err = function(){} ,type) {
         headers: headers,
         url: url,
         data: method === 'POST' || method === 'PUT' ? params : null,
-        params: method === 'GET' || method === 'DELETE' ? params : null
+        params: method === 'GET' || method === 'DELETE' ? params : null,
+        cancelToken: new axios.CancelToken(function executor(c) {
+            let CancelToken = axios.CancelToken;
+            let source = CancelToken.source();
+            source = c;
+            sourceArr.push(source);
+        })
     }).then(function(res) {
          // console.log('success !!! ------------- ' + res.status);
 
         response(res);       
 
     }).catch(function(err) {
+        if (axios.isCancel(err)) {
+            console.log("请求被取消"+err); //请求如果被取消，这里是返回取消的message
+        } else {
+            window.vm.$message({
+                type: 'error',
+                duration: '1500',
+                message: '网络异常,请稍候重试!',
+                showClose: true
+            });
+        }
         if(typeof err == 'function') {
             err();
         }
@@ -150,5 +174,8 @@ export default {
         // return downLoadApiAxios222(url,params);
         // return downLoadApiAxios(url,params);
         return downloadFile(url,params);
-    }
+    },
+    cancelRequest:function(){
+        return cancelRequest();
+    },
 }
