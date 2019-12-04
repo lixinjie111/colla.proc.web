@@ -27,8 +27,11 @@ import '@/assets/scss/public.scss';
 import '@/assets/scss/element-ui-reset.scss';
 import '@/assets/icon-font/iconfont.css';
 
+//取消请求的对象
+window.sourceArr=[];
 // 路由拦截器
 router.beforeEach((to, from, next) => {
+    Api.cancelRequest();
   if (to.meta.requireAuth) {  // 判断该路由是否需要登录权限
       if (SessionUtil.getItem('login')) {  // 通过vuex state获取当前的token是否存在
           next();
