@@ -11,7 +11,7 @@
                     <div class="login-header">
                         <div class="login-title">信息协同中心</div>
                     </div>
-                    <div class="login-item-box">
+                    <div class="login-item-box" v-show="!dragFlag">
                         <el-form :model="loginForm" :rules="loginRules" ref="loginForm" label-position="right" label-width="105px" class="login-form">
                             <el-form-item prop="userNo" label="用户名" class="login-item">
                                 <el-input type="text" v-model.trim="loginForm.userNo" :maxlength="40" placeholder="请输入用户名"></el-input>
@@ -22,11 +22,20 @@
                         </el-form>
                         <el-button class="login-button" type="primary" :loading="loading" @click.native.prevent="handleLogin">登 录</el-button>
                     </div>
+                    <div class="login-item-box" v-if="dragFlag">
+                        <slide-verify 
+                            :l="42"
+                            :r="10"
+                            :w="310"
+                            :h="155"
+                            :loginForm="loginForm"
+                            @success="onSuccess">
+                        </slide-verify>
+                    </div>
                 </div>
             </div>
         </div>
          <!-- 登录 -->
-    
         <div class="login-bottom">
             <span>建议浏览器：Chrome</span>
             <span>建议分辨率：1920x1080</span>
@@ -37,9 +46,13 @@
 
 import md5 from 'js-md5'
 import SessionUtil from '@/store/session.js'
+import SlideVerify from './components/slideVerify.vue';                         
 
 export default {
     name: 'Login',
+    components: {
+        SlideVerify
+    },
     data() {
          let checkAdminName = (rule, value, callback) => {
             if (!value) {
@@ -56,10 +69,12 @@ export default {
             }
         };
         return {
+            dragFlag:false,
             loginForm: {
                 userNo: '',
                 password: '',
-                platform: '40000'
+                platform: '40000',
+                authToken:''
             },
             loginRules: {
                 userNo: [
@@ -123,6 +138,13 @@ export default {
                         
                         this.$router.push('/infoRelease');
                     }else {
+                        if(response.data.status == -200){
+                            if(response.data.data.errorCount) {
+                                if(response.data.data.errorCount>=5){
+                                    this.dragFlag=true;
+                                }
+                            }
+                        }
                         this.$message({
                             type: 'error',
                             duration: '1500',
@@ -143,6 +165,12 @@ export default {
             SessionUtil.clearItems();
             localStorage.removeItem("yk-token");
             this.visibleFlag = true;
+        },
+        onSuccess(authToken){
+            console.log(authToken)
+            this.dragFlag=false;
+            this.loginForm.authToken=authToken;
+          
         }
     }
 }
