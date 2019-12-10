@@ -4,7 +4,7 @@
     <!-- 登录 -->
     <div class="login-card">
       <div class="login-title">智能网联汽车信息协同中心</div>
-      <div class="login-item-box">
+      <div class="login-item-box" v-show="!dragFlag">
         <el-form
           :model="loginForm"
           :rules="loginRules"
@@ -44,6 +44,9 @@
           @click.native.prevent="handleLogin"
         >登 录</el-button>
       </div>
+      <div class="login-item-box" v-if="dragFlag">
+        <slide-verify :l="42" :r="10" :w="310" :h="155" :loginForm="loginForm" @success="onSuccess"></slide-verify>
+      </div>
     </div>
     <img class="footer-info" src="static/images/login-bottom-logo.png" />
   </div>
@@ -51,11 +54,15 @@
 <script>
 import LocalStorageUtil from "@/store/localstorage.js";
 
-import md5 from 'js-md5'
-import SessionUtil from '@/store/session.js'
+import md5 from "js-md5";
+import SessionUtil from "@/store/session.js";
+import SlideVerify from "./components/slideVerify.vue";
 
 export default {
   name: "Login",
+  components: {
+    SlideVerify
+  },
   data() {
     let checkAdminName = (rule, value, callback) => {
       if (!value) {
@@ -72,11 +79,13 @@ export default {
       }
     };
     return {
+      dragFlag: false,
       checked: true,
       loginForm: {
         userNo: "",
         password: "",
-        platform: "40000"
+        platform: "40000",
+        authToken: ""
       },
       loginRules: {
         userNo: [{ validator: checkAdminName, trigger: "blur" }],
@@ -87,24 +96,24 @@ export default {
     };
   },
   created() {
-      let _data = localStorage.getItem("yk-token");
-      if(_data) {
-          let _dataObj = JSON.parse(_data),
-              _delayTime = 1000 * 60 * 60 * 24;
-          if (new Date().getTime() - _dataObj.time > _delayTime) {
-              console.log('信息已过期');
-              this.removeStorage();
-          }else{
-              // 直接调用登录接口
-              let _params = {
-                  token: _dataObj.data,
-                  platform: '40000'
-              };
-              this.loginFunc(_params);
-          }
+    let _data = localStorage.getItem("yk-token");
+    if (_data) {
+      let _dataObj = JSON.parse(_data),
+        _delayTime = 1000 * 60 * 60 * 24;
+      if (new Date().getTime() - _dataObj.time > _delayTime) {
+        console.log("信息已过期");
+        this.removeStorage();
       } else {
-          this.removeStorage();
+        // 直接调用登录接口
+        let _params = {
+          token: _dataObj.data,
+          platform: "40000"
+        };
+        this.loginFunc(_params);
       }
+    } else {
+      this.removeStorage();
+    }
   },
   mounted() {
     this.getCookie();
@@ -113,58 +122,79 @@ export default {
     handleLogin() {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
-            this.loading = true;
-            let _password = this.loginForm.password.length > 20 ? this.loginForm.password : md5(md5(this.loginForm.password));
-            let _param = Object.assign({}, this.loginForm, {
-                password: _password
-            });
-            this.loginFunc(_param);
-            // this.loginFunc(this.loginForm);
+          this.loading = true;
+          let _password =
+            this.loginForm.password.length > 20
+              ? this.loginForm.password
+              : md5(md5(this.loginForm.password));
+          let _param = Object.assign({}, this.loginForm, {
+            password: _password
+          });
+          this.loginFunc(_param);
+          // this.loginFunc(this.loginForm);
         } else {
           this.loading = false;
         }
       });
     },
     loginFunc(params) {
-        this.$api.post('openApi/user/login',params,response => {
-            this.loading = false;
-            if(response.status >= 200 && response.status < 300){
-                if(response.data.status == 200){
-                    
-                    if(params.password) {
-                        if (this.checked == true) {
-                            this.setCookie(this.loginForm.userNo, params.password, 7);
-                        }else {
-                            this.clearCookie();
+      this.$api.post(
+        "openApi/user/login",
+        params,
+        response => {
+          this.loading = false;
+          if (response.status >= 200 && response.status < 300) {
+            if (response.data.status == 200) {
+              if (params.password) {
+                if (this.checked == true) {
+                  this.setCookie(this.loginForm.userNo, params.password, 7);
+                } else {
+                  this.clearCookie();
+                }
+              }
+              let temp = response.data.data;
+              SessionUtil.setItem("login", JSON.parse(temp));
+              // SessionUtil.setItem('currentMenu','/infoRelease');
+              // SessionUtil.setItem('currentMenuId','1');
+              localStorage.setItem(
+                "yk-token",
+                JSON.stringify({
+                  data: JSON.parse(temp).token,
+                  time: new Date().getTime()
+                })
+              );
+              this.$router.push("/infoRelease");
+            } else {
+                if(response.status == -200){
+                    if(res.data.data.errorCount) {
+                        if(res.data.data.errorCount>=5){
+                            this.dragFlag=true;
                         }
                     }
-                    let temp = response.data.data;
-                    SessionUtil.setItem('login',JSON.parse(temp));
-                    // SessionUtil.setItem('currentMenu','/infoRelease');
-                    // SessionUtil.setItem('currentMenuId','1');
-                    localStorage.setItem('yk-token', JSON.stringify({data: JSON.parse(temp).token, 'time': new Date().getTime()}));        
-                    this.$router.push('/infoRelease');
-                }else {
-                    this.$message({
-                        type: 'error',
-                        duration: '1500',
-                        message: response.data.message,
-                        showClose: true
-                    });
-                    this.removeStorage();
                 }
-            }else {
-                this.removeStorage();
+              this.$message({
+                type: "error",
+                duration: "1500",
+                message: response.data.message,
+                showClose: true
+              });
+              this.removeStorage();
             }
-        },err => {
-            this.loading = false;
+          } else {
             this.removeStorage();
-        }, "login");
+          }
+        },
+        err => {
+          this.loading = false;
+          this.removeStorage();
+        },
+        "login"
+      );
     },
     removeStorage() {
-        SessionUtil.clearItems();
-        localStorage.removeItem("yk-token");
-        this.visibleFlag = true;
+      SessionUtil.clearItems();
+      localStorage.removeItem("yk-token");
+      this.visibleFlag = true;
     },
     //设置cookie
     setCookie(c_name, c_pwd, exdays) {
@@ -207,15 +237,20 @@ export default {
     //清除cookie
     clearCookie: function() {
       this.setCookie("", "", -1); //修改2值都为空，天数为负1天就好了
+    },
+    onSuccess(authToken){
+        this.dragFlag=false;
+        this.loginForm.authToken=authToken;
     }
   },
   destroyed() {}
+ 
 };
 </script>
 <style lang="scss" scoped>
 #login-warpper {
   height: 100%;
-  background-image: url("../../static/images/login-bg.jpg");
+  background-image: url("../../../static/images/login-bg.jpg");
   background-repeat: no-repeat;
   background-position: center bottom;
   background-size: cover;
@@ -334,11 +369,12 @@ export default {
     -webkit-box-shadow: 0 0 0 1000px #041d44 inset;
     -webkit-text-fill-color: #fff;
   }
-  .el-button{
-      i, span{
-          line-height: 0;
-          vertical-align: middle;
-      }
+  .el-button {
+    i,
+    span {
+      line-height: 0;
+      vertical-align: middle;
+    }
   }
 }
 </style>
