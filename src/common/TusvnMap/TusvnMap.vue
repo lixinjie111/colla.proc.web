@@ -104,7 +104,7 @@
                                 </el-form-item>
 
                                 <el-form-item v-if="trafficInfo.isEdit" prop="datasource" label="信息来源" class="yk-bottom-12  yk-txt">                                    
-                                    <select class="yk-select" v-model="select.datasource">
+                                    <select class="yk-select" v-model="select.datasource" disabled>
                                         <option v-for="(item,index) in datasourceList" :key="index" :value="item">{{item.name}}</option>                                        
                                     </select>
                                 </el-form-item>
@@ -940,9 +940,9 @@ export default {
                 this.select.frequencyUnit = this.frequencyUnitList[0];
             }
             // console.log('this.datasourceList', this.datasourceList);
-            if(Array.isArray(this.datasourceList) && this.datasourceList.length){
-                this.select.datasource = this.datasourceList[0];
-            }
+            // if(Array.isArray(this.datasourceList) && this.datasourceList.length){
+            //     this.select.datasource = this.datasourceList[0];
+            // }
         },
         initTrafficInof(){
             this.trafficInfo = {
