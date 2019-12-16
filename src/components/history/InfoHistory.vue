@@ -87,7 +87,9 @@
 
       <el-table-column prop="datasource" label="信息来源" min-width="8%">
         <template slot-scope="scope">
-          <span>{{scope.row.datasource === 1 ? '平台运营人员' : '融合计算'}}</span>
+          <span v-for="item in datasourceList" :key="item.key">
+             <span v-if="item.key==scope.row.datasource">{{item.name}}</span>
+          </span>
         </template>
       </el-table-column>
       <el-table-column min-width="5%" label="操作">
@@ -224,6 +226,15 @@ export default {
       this.$api.post(url, params, response => {
         if (response.status >= 200 && response.status < 300) {
           this.datasourceList = response.data ? response.data : [];
+          if(isEdit){
+            this.datasourceList.forEach(item => {
+             if(item.key==datasource){
+               console.log(item.name)
+               return item.name;
+             }
+           })
+          }
+           
         } else {
           this.$message({
               type: 'error',
