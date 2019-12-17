@@ -218,7 +218,7 @@ export default {
         this.isLoading = false;
       });
     },
-    initDatasourceList(isEdit = false, datasource) {
+    initDatasourceList() {
       let url = "common/queryDictionary";
       let params = {
         parentCode: "trafficSource"
@@ -226,15 +226,6 @@ export default {
       this.$api.post(url, params, response => {
         if (response.status >= 200 && response.status < 300) {
           this.datasourceList = response.data ? response.data : [];
-          if(isEdit){
-            this.datasourceList.forEach(item => {
-             if(item.key==datasource){
-               console.log(item.name)
-               return item.name;
-             }
-           })
-          }
-           
         } else {
           this.$message({
               type: 'error',
