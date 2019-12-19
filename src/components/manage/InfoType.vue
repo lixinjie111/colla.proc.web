@@ -135,6 +135,11 @@ export default {
         }
     },
     methods: {
+        initPaging() {
+            this.paging.index = 0;
+            this.paging.total = 0;
+            this.paging.size = 10;
+        },
         closeDialog() {
             this.infoTypePopFlag = false;
             this.infoTypeDetailFlag = false;
@@ -225,6 +230,7 @@ export default {
             }
         },
         handleSearch(){
+            this.initPaging();
             this.initData();
         },
         handleFlush(){

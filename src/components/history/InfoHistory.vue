@@ -243,7 +243,7 @@ export default {
         this.search.startTime = TDate.dateToMs(start);
         this.search.endTime = TDate.dateToMs(end);
       }
-
+      this.initPaging();
       this.initData();
     },
     handleFlush() {
