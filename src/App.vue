@@ -13,8 +13,8 @@
                           <i class="icon iconfont el-icon-mc-yonghuzhongxin_f c-vertical-middle"></i>
                           <em class="name c-vertical-middle">{{$store.state.userName}}</em>
                       </span>
-                      <el-dropdown-menu slot="dropdown">
-                          <el-dropdown-item divided>版本v1.0</el-dropdown-item>
+                      <el-dropdown-menu slot="dropdown" class="c-header-dropdown">
+                          <el-dropdown-item divided>版本V{{version}}</el-dropdown-item>
                           <el-dropdown-item divided @click.native="logoutClick">退出</el-dropdown-item>
                       </el-dropdown-menu>
                   </el-dropdown>
@@ -70,6 +70,7 @@ export default {
   name: 'App',
   data(){
     return {
+      version: window.config.version,
       openedItems: ['0','1','2'],
       menuList: [],
       collapse: true,

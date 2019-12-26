@@ -10,7 +10,7 @@ window.config = {
     dlUrl: 'http://144.7.127.19:8085/', //迪路
     dlWmsUrl: 'http://144.7.127.19:8080/', //迪路
 
-    version: 1.0,       // 版本号
+    version: "1.0",       // 版本号
 }
 //地图额外配置项添加
 window.defaultMapOption = {
