@@ -162,17 +162,17 @@
 				});
 				let _filterData={};
 				if(_result.optType=="cancel"){
-					this.staticData.forEach((item,index)=>{
-						if(item.icon==statisticsTask.icon){
-							if(item.num==1){
-								this.staticData.splice(index, 1);
-							}else{
-								item.num--;
+					if(this.prevData[_result.eventTask.taskCode]){
+						this.staticData.forEach((item,index)=>{
+							if(item.icon==statisticsTask.icon){
+								if(item.num==1){
+									this.staticData.splice(index, 1);
+								}else{
+									item.num--;
+								}
 							}
-						}
-					});
-					if(this.$refs.refTusvnMap){
-						if(this.prevData[_result.eventTask.taskCode]){
+						});
+						if(this.$refs.refTusvnMap){
 							this.$refs.refTusvnMap.removeFeature(this.prevData[_result.eventTask.taskCode].id, this.mapLayer.messageBg1);
 							this.$refs.refTusvnMap.removeFeature(this.prevData[_result.eventTask.taskCode].bgImgId, this.mapLayer.messageBg);
 							if(this.$refs.refTusvnMap.isOpen[_result.eventTask.taskCode]){
@@ -183,51 +183,53 @@
 					}
 				};
 				if(_result.optType == "add"){//新增
-					let flag=this.staticData.find(item=>{
-						if(item.icon==statisticsTask.icon){
-							item.num++;
-							return true;
-						 }
-					});
-					if(!flag){
-						this.staticData.push({
-							icon:statisticsTask.icon,
-							name:statisticsTask.name,
-							num:1
-						})
-					}
-					_filterData[_result.eventTask.taskCode] = {
-						lon: _result.eventTask.longitude?_result.eventTask.longitude:'',
-						lat: _result.eventTask.latitude?_result.eventTask.latitude:'',
-						id: _result.eventTask.taskCode,
-						icon: this.iconPath+statisticsTask.icon,
-						bgImgId: 'bg_' + _result.eventTask.taskCode,
-						bgImgSrc: 'static/images/ico-bg2.png',
-						bgImgSize: [44, 58],
-						bgImgOffset: [0, 0],
-						size: [28, 28],
-						imgOffset: [0, -34],
-						alertCategory: _result.eventTask.alertCategory,
-						beginTime: _result.eventTask.beginTime,
-						cameraId: _result.eventTask.cameraId ? _result.eventTask.cameraId:'',
-						endTime: _result.eventTask.endTime,
-						eventType: _result.eventTask.eventType,
-					};
-					for(let id in _filterData) {
-						if(this.$refs.refTusvnMap){
-							let marker = {
-								id: id,
-								lon: _filterData[id].lon,
-								lat: _filterData[id].lat,
-								isEdit: true,
-								icon: _filterData[id].icon,
-								trafficInfo: this.trafficInfo,
-							};
-							this.$refs.refTusvnMap.addImg(_filterData[id].lon, _filterData[id].lat, _filterData[id].bgImgId, this.mapLayer.messageBg, _filterData[id].bgImgSrc, _filterData[id].bgImgSize, null, true, null, _filterData[id].bgImgOffset, null, [0.5, 1],marker);
-							this.$refs.refTusvnMap.addImg(_filterData[id].lon, _filterData[id].lat, _filterData[id].id,      this.mapLayer.messageBg1, _filterData[id].icon,     _filterData[id].size,      null, null, null,  [0,0],                      null, [0.5, 1.7],marker);
+					if(!this.prevData[_result.eventTask.taskCode]){
+						let flag=this.staticData.find(item=>{
+							if(item.icon==statisticsTask.icon){
+								item.num++;
+								return true;
+							}
+						});
+						if(!flag){
+							this.staticData.push({
+								icon:statisticsTask.icon,
+								name:statisticsTask.name,
+								num:1
+							})
 						}
+						_filterData[_result.eventTask.taskCode] = {
+							lon: _result.eventTask.longitude?_result.eventTask.longitude:'',
+							lat: _result.eventTask.latitude?_result.eventTask.latitude:'',
+							id: _result.eventTask.taskCode,
+							icon: this.iconPath+statisticsTask.icon,
+							bgImgId: 'bg_' + _result.eventTask.taskCode,
+							bgImgSrc: 'static/images/ico-bg2.png',
+							bgImgSize: [44, 58],
+							bgImgOffset: [0, 0],
+							size: [28, 28],
+							imgOffset: [0, -34],
+							alertCategory: _result.eventTask.alertCategory,
+							beginTime: _result.eventTask.beginTime,
+							cameraId: _result.eventTask.cameraId ? _result.eventTask.cameraId:'',
+							endTime: _result.eventTask.endTime,
+							eventType: _result.eventTask.eventType,
+						};
+						for(let id in _filterData) {
+							if(this.$refs.refTusvnMap){
+								let marker = {
+									id: id,
+									lon: _filterData[id].lon,
+									lat: _filterData[id].lat,
+									isEdit: true,
+									icon: _filterData[id].icon,
+									trafficInfo: this.trafficInfo,
+								};
+								this.$refs.refTusvnMap.addImg(_filterData[id].lon, _filterData[id].lat, _filterData[id].bgImgId, this.mapLayer.messageBg, _filterData[id].bgImgSrc, _filterData[id].bgImgSize, null, true, null, _filterData[id].bgImgOffset, null, [0.5, 1],marker);
+								this.$refs.refTusvnMap.addImg(_filterData[id].lon, _filterData[id].lat, _filterData[id].id,      this.mapLayer.messageBg1, _filterData[id].icon,     _filterData[id].size,      null, null, null,  [0,0],                      null, [0.5, 1.7],marker);
+							}
+						}
+						this.prevData[_result.eventTask.taskCode]=_filterData[_result.eventTask.taskCode];
 					}
-					this.prevData[_result.eventTask.taskCode]=_filterData[_result.eventTask.taskCode];
 				};
 				this.$emit('PubMsgChange', this.staticData);
 
