@@ -80,7 +80,7 @@
 		methods: {
 			setPointer(e) {
 				this.isPointerIco = e.bool;//false表示地图的图标
-				if(!e.flag) {
+				if(e.flag&&!e.flag) {
 					this.removeMapClickEvent();
 				}
 			},
