@@ -110,22 +110,26 @@ export default {
 //      this.$forceUpdate()
     },
     logoutClick(){
-      this.$api.post('openApi/user/logout',{
-        token: JSON.parse(SessionUtil.getItem('login')).token
-      },response => {
-        this.$router.push('/login');
-        this.$store.dispatch('logout');
-        this.$store.dispatch('showSubMenu',false);
-        SessionUtil.clearItems();
-        localStorage.removeItem("yk-token");
-      },err => {
-        this.$router.push('/login');
-        this.$store.dispatch('logout');
-        this.$store.dispatch('showSubMenu',false);
-        SessionUtil.clearItems();
-        localStorage.removeItem("yk-token");
-      }, "login");
-      
+      this.$confirm('确认退出吗?', '提示', {
+      }).then(() => {
+          this.$api.post('openApi/user/logout',{
+          token: JSON.parse(SessionUtil.getItem('login')).token
+        },response => {
+          this.$router.push('/login');
+          this.$store.dispatch('logout');
+          this.$store.dispatch('showSubMenu',false);
+          SessionUtil.clearItems();
+          localStorage.removeItem("yk-token");
+        },err => {
+          this.$router.push('/login');
+          this.$store.dispatch('logout');
+          this.$store.dispatch('showSubMenu',false);
+          SessionUtil.clearItems();
+          localStorage.removeItem("yk-token");
+        }, "login");
+      }).catch(err => {
+          console.log("取消退出！");
+      });
     },
     showSubMenu(){
         let bool = !this.$store.state.isSubMenu;        
