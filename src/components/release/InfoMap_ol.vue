@@ -172,12 +172,14 @@
 						}
 					});
 					if(this.$refs.refTusvnMap){
+						if(this.prevData[_result.eventTask.taskCode]){
 							this.$refs.refTusvnMap.removeFeature(this.prevData[_result.eventTask.taskCode].id, this.mapLayer.messageBg1);
 							this.$refs.refTusvnMap.removeFeature(this.prevData[_result.eventTask.taskCode].bgImgId, this.mapLayer.messageBg);
 							if(this.$refs.refTusvnMap.isOpen[_result.eventTask.taskCode]){
 								this.$refs.refTusvnMap.closeInforWindow();
 							}
 							delete this.prevData[_result.eventTask.taskCode];
+						}
 					}
 				};
 				if(_result.optType == "add"){//新增
@@ -268,7 +270,7 @@
 						this.$refs.refTusvnMap.addImg(_filterData[id].lon, _filterData[id].lat, _filterData[id].id,      this.mapLayer.messageBg1, _filterData[id].icon,     _filterData[id].size,      null, null, null,  [0,0],                      null, [0.5, 1.7],marker);
 					}
 				}
-				_this.prevData = _filterData;
+				_this.prevData = Object.assign({}, _filterData);
 			},
 			temporaryClearPubMsg(e) {
 				if(e.bool) { //true:删除地图上的点;关掉webscoket;
