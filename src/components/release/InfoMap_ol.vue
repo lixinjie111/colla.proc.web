@@ -172,12 +172,14 @@
 						}
 					});
 					if(this.$refs.refTusvnMap){
+						if(this.prevData[_result.eventTask.taskCode]){
 							this.$refs.refTusvnMap.removeFeature(this.prevData[_result.eventTask.taskCode].id, this.mapLayer.messageBg1);
 							this.$refs.refTusvnMap.removeFeature(this.prevData[_result.eventTask.taskCode].bgImgId, this.mapLayer.messageBg);
 							if(this.$refs.refTusvnMap.isOpen[_result.eventTask.taskCode]){
 								this.$refs.refTusvnMap.closeInforWindow();
 							}
 							delete this.prevData[_result.eventTask.taskCode];
+						}
 					}
 				};
 				if(_result.optType == "add"){//新增
