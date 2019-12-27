@@ -493,8 +493,11 @@
 					    	return feature;
 					    });
 					if (feature) {
-						let marker = JSON.parse(feature.get('name'))
-						this.$refs.refTusvnMap.addMyInfoWindow(marker);
+						if(feature.get('name')){
+							let marker = JSON.parse(feature.get('name'))
+							this.$refs.refTusvnMap.addMyInfoWindow(marker);
+						}
+						
 					}
 				}else{
 					this.isPointerIco = false;
