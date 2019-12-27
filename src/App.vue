@@ -5,7 +5,6 @@
               <div class="logo">
                   <img src="static/images/logo.png" class="logo-img"/>
                   <em class="name">信息协同中心</em>
-                  <img src="static/images/logo-title.png" class="logo-title"/>
               </div>
 
               <div class="userinfo">
