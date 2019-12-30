@@ -21,6 +21,7 @@
     </div>
 </template>
 <script>
+import { requestCreateCode, requestAuthCode} from '@/api/login';
     const PI = Math.PI;
     function sum(x, y) {
         return x + y
@@ -117,19 +118,15 @@
                         end:this.h - (this.L + 10)
                     }
                 }
-                this.$api.post('openApi/user/createCode',_params,res => {
+                requestCreateCode(_params).then(res => {
                     if(res.status == 200) {
-                        if(res.data.status == 200){
-                            _this.block_x = Number(window.atob(res.data.data.x));
-                            _this.block_y = Number(window.atob(res.data.data.y));
-                            _this.draw(_this.canvasCtx, _this.block_x, _this.block_y, 'fill')
-                            _this.draw(_this.blockCtx, _this.block_x, _this.block_y, 'clip')
-                            callback();
-                        }
+                        _this.block_x = Number(window.atob(res.data.x));
+                        _this.block_y = Number(window.atob(res.data.y));
+                        _this.draw(_this.canvasCtx, _this.block_x, _this.block_y, 'fill')
+                        _this.draw(_this.blockCtx, _this.block_x, _this.block_y, 'clip')
+                        callback();
                     }
-                },err => {
-
-                }, "login");
+                })
             },
             draw(ctx, x, y, operation) {
                 let { l,r} = this;
@@ -271,26 +268,22 @@
                     userNo:this.loginForm.userNo,
                     slideX:left
                 }
-                this.$api.post('openApi/user/authCode',_params,res => {
+                requestAuthCode(_params).then(res => {
                     if(res.status == 200) {
-                        if(res.data.status == 200){
-                            let authToken=res.data.data.authToken;
-                            callback({
-                                spliced: true,
-                                TuringTest: average !== stddev, // equal => not person operate
-                                authToken:authToken
-                            })
-                        }else {
-                            callback({
-                                spliced: false,
-                                TuringTest: average !== stddev, // equal => not person operate
-                            })
+                        let authToken=res.data.authToken;
+                        callback({
+                            spliced: true,
+                            TuringTest: average !== stddev, // equal => not person operate
+                            authToken:authToken
+                        })
+                    }else {
+                        callback({
+                            spliced: false,
+                            TuringTest: average !== stddev, // equal => not person operate
+                        })
 
-                        }
                     }
-                },err => {
-
-                },"login")
+                })
                 
             },
             reset() {

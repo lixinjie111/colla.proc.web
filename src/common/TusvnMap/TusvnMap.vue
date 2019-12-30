@@ -160,7 +160,7 @@ import * as mapInit from './MapUtils.js';
 import TDate from '@/common/date.js'
 
 import axios from 'axios'
-
+import { taskSave,taskUpdate,taskCancel,queryDictionary,findDetail,Coordinate} from '@/api/tusvnMap'; 
 export default {
     name:"TusvnMap",
     props:["targetId","overlayContainerId",], //'trafficInfo'
@@ -463,7 +463,6 @@ export default {
             // // ===============================================
 
             // 请求后台接口 
-            let url = window.config.dlUrl + 'route/getRoadCoornatesByCoordinate.do';
             let params = {
                 edgeTableName: 'dl_shcsq_wgs84_rc_withoutz',
                 vertexTableName: 'dl_shcsq_wgs84_rc_withoutz_vertices_pgr',
@@ -488,11 +487,10 @@ export default {
                 }
             }; //添加请求头
             this.isLoading = true;
-            axios.post(url, formData, config)
-                .then(response => {
+            Coordinate(formData,config).then(res => {
                     this.isLoading = false;
-                    if(response.data.data) {
-                        let pointList = response.data.data ? response.data.data : '';
+                    if(res.state == 1) {
+                        let pointList = res.data ? res.data : '';
                         if(pointList.length < 2) {
                             this.$message({
                                 type: 'error',
@@ -516,7 +514,6 @@ export default {
                             // this.$emit('TemporaryClearPubMsg',{bool:false});
                             return;
                         }else{
-
                             let points = [];
                             for(let i=0;i<pointList.length;i++){
                                 let temp = pointList[i];
@@ -527,7 +524,7 @@ export default {
                             // }
                             // console.log(points);
 
-                            // console.log(response.data.data);
+                            // console.log(res.data.data);
                             // console.log(this.pathPoint.pointList);
                             let coordinates = points;
                             let id = 'TempLine_' + (new Date()).getTime();
@@ -546,14 +543,7 @@ export default {
                             this.$emit("setPointer",{bool: false, flag: true}); 
                         }
                     }else {
-                        this.$message({
-                            type: 'error',
-                            duration: '1500',
-                            message: response.data.message || "未获取到数据，请重新选择！",
-                            showClose: true
-                        });
                         this.closeClick();   
-
                     }  
 
                     // 画按钮
@@ -561,12 +551,6 @@ export default {
                     //this.$emit("setPointer",{bool: false, flag: true}); 
                 }).catch((error) => {
                     this.isLoading = false;
-                    this.$message({
-                        type: 'error',
-                        duration: '1500',
-                        message: "取到数据失败，请重试！",
-                        showClose: true
-                    });
                     //this.addPathIcoBtn(startLon,startLat);
                     //this.$emit("setPointer",{bool: false, flag: true});
                     this.closeClick();   
@@ -604,8 +588,6 @@ export default {
             this.trafficInfo.frequencyUnit = this.select.frequencyUnit ? (this.select.frequencyUnit.key ? this.select.frequencyUnit.key : '') : '';
             // console.log(this.trafficInfo.alertCategory);
             if(!this.submitForm()) return; 
-
-            let url = 'event/task/save';
             let params = {
                 status: 1,
                 eventType: this.trafficInfo.eventType,      //信息类型
@@ -624,45 +606,24 @@ export default {
                 alertPath: this.trafficInfo.alertPath,
                 alertCategory: this.trafficInfo.alertCategory,
             };
-
-            this.$api.post( url,params,
-                response => {
-                    if (response.status >= 200 && response.status < 300) {
-                        
-                        if(response.data.status == 200){
-                            this.$message({
-                                type: 'success',
-                                duration: '1500',
-                                message: "发布成功！",
-                                showClose: true
-                            });
-                            this.$emit('PublishInfo',this.trafficInfo);
-                            this.closeMyInfoWindow();
-                            this.initSelect();
-                            this.initTrafficInof();
-                            this.publishLoading = false; 
-                        }else if(response.data.status == 500){
-                            let msg = response.data.message ? response.data.message : '发布失败 !';
-                            this.$message({
-                                type: 'error',
-                                duration: '1500',
-                                message: msg,
-                                showClose: true
-                            });
-                            this.publishLoading = false;
-                        }
-                        
-                    } else {                     
-                        this.$message({
-                            type: 'error',
-                            duration: '1500',
-                            message: "发布失败 ！",
-                            showClose: true
-                        }); 
-                        this.publishLoading = false;
-                    }
+            taskSave(params).then(res => {
+                if(res.status == 200){
+                    this.$message({
+                        type: 'success',
+                        duration: '1500',
+                        message: "发布成功！",
+                        showClose: true
+                    });
+                    this.$emit('PublishInfo',this.trafficInfo);
+                    this.closeMyInfoWindow();
+                    this.initSelect();
+                    this.initTrafficInof();
                 }
-            );
+                this.publishLoading = false;
+            }).catch(err => {
+               this.publishLoading = false;
+            });
+            
         },        
         updateInfo(e){
             this.updateLoading = true;
@@ -670,7 +631,6 @@ export default {
             this.trafficInfo.frequencyUnit = this.select.frequencyUnit ? (this.select.frequencyUnit.key ? this.select.frequencyUnit.key : '') : '';
             // console.log(this.trafficInfo.alertCategory);
            if(!this.submitForm()) return; 
-            let url = 'event/task/update';
             let params = {
                 id: this.trafficInfo.id,
                 "taskCode": this.trafficInfo.taskCode,
@@ -691,91 +651,51 @@ export default {
                 alertCategory: this.trafficInfo.alertCategory,
             };
 
-            this.$api.post( url,params,
-                response => {
-                    if (response.status >= 200 && response.status < 300) {                    
-                        
-                        if(response.data.status == 200){
-                            this.$message({
-                                type: 'success',
-                                duration: '1500',
-                                message: "更新成功！",
-                                showClose: true
-                            }); 
-                            this.$emit('UpdateInfo',this.trafficInfo);
-                            this.updateLoading = false;
-                            this.closeMyInfoWindow();
-                            this.initSelect();
-                            this.initTrafficInof();
-                        }else if(response.data.status == 500){
-                            let msg = response.data.message ? response.data.message : '更新失败 !';
-                            this.$message({
-                                type: 'error',
-                                duration: '1500',
-                                message: msg,
-                                showClose: true
-                            }); 
-                            this.updateLoading = false;
-                        }
-                    } else {                     
-                        this.$message({
-                            type: 'error',
-                            duration: '1500',
-                            message: "更新失败 ！",
-                            showClose: true
-                        });  
-                        this.updateLoading = false;
-                    }
+            taskUpdate(params).then(res => {
+                if(res.status == 200){
+                    this.$message({
+                        type: 'success',
+                        duration: '1500',
+                        message: "更新成功！",
+                        showClose: true
+                    }); 
+                    this.$emit('UpdateInfo',this.trafficInfo);
+                    this.closeMyInfoWindow();
+                    this.initSelect();
+                    this.initTrafficInof();
                 }
-            );
+                this.updateLoading = false;
+            }).catch(err => {
+               this.updateLoading = false;
+            });
+            
         },
         destroyInfo(e){ 
             this.invalidLoading = true;
-            let url = 'event/task/cancel';
-           // console.log(TDate.formatTime())
             let params = {
                 id: this.trafficInfo.id,
                 "taskCode": this.trafficInfo.taskCode,
                 "expirationTime": new Date().getTime(), 
                 "status": 2                
             };
-
-            this.$api.post( url,params,
-                response => {
-                    if (response.status >= 200 && response.status < 300) {
-                        
-                        if(response.data.status == 200){
-                            this.$message({
-                                type: 'success',
-                                duration: '1500',
-                                message: "手动失效成功！",
-                                showClose: true
-                            });  
-                            this.$emit('DestroyInfo',this.trafficInfo);
-                            this.closeMyInfoWindow(e);
-                            this.initSelect();
-                            this.initTrafficInof();
-                        }else if(response.data.status == 500){
-                            let msg = response.data.message ? response.data.message : '手动失效失败 !';
-                            this.$message({
-                                type: 'error',
-                                duration: '1500',
-                                message: msg,
-                                showClose: true
-                            });  
-                        }                         
-                        this.invalidLoading = false;
-                    } else {                     
-                        this.$message({
-                            type: 'error',
-                            duration: '1500',
-                            message: "手动失效失败 ！",
-                            showClose: true
-                        });   
-                        this.invalidLoading = false;
-                    }
-                }
-            );
+            taskCancel(params).then(res => {
+                if(res.status == 200){
+                    this.$message({
+                        type: 'success',
+                        duration: '1500',
+                        message: "手动失效成功！",
+                        showClose: true
+                    });  
+                    this.$emit('DestroyInfo',this.trafficInfo);
+                    this.closeMyInfoWindow(e);
+                    this.initSelect();
+                    this.initTrafficInof();
+                }                   
+                this.invalidLoading = false;
+            }).catch(err => {
+                this.invalidLoading = false;
+            });
+           
             // this.$emit('DestroyInfo',this.trafficInfo);
             // this.closeMyInfoWindow(e);
             // this.initSelect();
@@ -792,74 +712,48 @@ export default {
             this.invalidLoading = false;
         },
         initDatasourceList(isEdit=false,datasource){
-            let url = 'common/queryDictionary';
             let params = {
                 parentCode: 'trafficSource',
             };
-            this.$api.post( url,params,
-                response => {
-                    if (response.status >= 200 && response.status < 300) {
-                        this.datasourceList = response.data ? response.data : [];
-                        if(this.datasourceList.length){
-                            
-                            if (!isEdit) {
-                                this.select.datasource = this.datasourceList[0];
-                            }else{
-                             
-                                for(let item of this.datasourceList){
-                                    if(item.key == datasource){
-                                        this.select.datasource = item;
-                                        break;
-                                    }
+            queryDictionary(params).then(res => {
+                if (res.status == 200) {
+                    this.datasourceList = res.data ? res.data : [];
+                    if(this.datasourceList.length){
+                        if (!isEdit) {
+                            this.select.datasource = this.datasourceList[0];
+                        }else{
+                            for(let item of this.datasourceList){
+                                if(item.key == datasource){
+                                    this.select.datasource = item;
+                                    break;
                                 }
                             }
                         }
-                    
-                    } else {                     
-                        this.$message({
-                            type: 'error',
-                            duration: '1500',
-                            message: "获取单位失败 ！",
-                            showClose: true
-                        });   
                     }
-                }
-            );
+                } 
+            });
         },
         initUnintList(isEdit=false,frequencyUnit){
-            let url = 'common/queryDictionary';
             let params = {
                 parentCode: 'timeUnit',
             };
-            this.$api.post( url,params,
-                response => {
-                    if (response.status >= 200 && response.status < 300) {
-
-                        this.frequencyUnitList = response.data ? response.data : [];
-                     
-                        if(this.frequencyUnitList.length){
-                            if(!isEdit){
-                                this.select.frequencyUnit = this.frequencyUnitList[0];
-                            }else{
-                                for(let item of this.frequencyUnitList){
-                                    if(item.key == frequencyUnit){
-                                        this.select.frequencyUnit = item;
-                                        break;
-                                    }
+            queryDictionary(params).then(res => {
+                if (res.status == 200) {
+                    this.frequencyUnitList = res.data ? res.data : [];
+                    if(this.frequencyUnitList.length){
+                        if(!isEdit){
+                            this.select.frequencyUnit = this.frequencyUnitList[0];
+                        }else{
+                            for(let item of this.frequencyUnitList){
+                                if(item.key == frequencyUnit){
+                                    this.select.frequencyUnit = item;
+                                    break;
                                 }
                             }
-                        }                        
-                    
-                    } else {                     
-                        this.$message({
-                            type: 'error',
-                            duration: '1500',
-                            message: "获取单位失败 ！",
-                            showClose: true
-                        });   
-                    }
+                        }
+                    }                        
                 }
-            );
+            })
         },
         toFixedLen(num,length=7){
             if(num == ''){
@@ -871,65 +765,42 @@ export default {
             return num.toFixed(length);
         },
         initDetail(marker,flag) {
-            let url = 'event/task/findDetail';
             let params = {
                 taskCode: marker.id,
             };
-            this.$api.post( url,params,
-                response => {
-                    if (response.status >= 200 && response.status < 300) {
-                        // console.log("----------------------------");
-                        // console.log(response.data);
-                        this.trafficInfo.longitude = this.toFixedLen(this.trafficInfo.longitude);
-                        this.trafficInfo.latitude = this.toFixedLen(response.data.latitude);
-                        this.trafficInfo.id = response.data.id;
-                        this.trafficInfo.taskCode = response.data.taskCode;
-                        this.trafficInfo.eventName = response.data.eventName;
-                        this.trafficInfo.eventType = response.data.eventType;
-                        this.trafficInfo.longitude = this.toFixedLen(response.data.longitude);
-                        this.trafficInfo.latitude = this.toFixedLen(response.data.latitude);
-                        this.trafficInfo.affectRange = response.data.affectRange; 
-                        this.trafficInfo.content = response.data.content; 
-                        this.trafficInfo.frequency = response.data.frequency; 
-                        this.trafficInfo.frequencyUnit = response.data.frequencyUnit; 
-                        this.trafficInfo.beginTime = response.data.beginTime; 
-                        this.trafficInfo.endTime = response.data.endTime; 
-                        this.trafficInfo.datasource = response.data.datasource;     
-                        this.trafficInfo.infoType = response.data.infoType;
-                        this.trafficInfo.sendChannel = response.data.sendChannel; 
-                        if(!flag) {
-                            this.trafficInfo.alertPath = response.data.alertPath;   
-                            this.select.alertPath = response.data.alertPath;    
-                        }
-                        this.trafficInfo.alertRadius = response.data.alertRadius;
-                        this.trafficInfo.alertCategory = response.data.alertCategory;  
-                        const radius = response.data.affectRange;   
-
-                        this.circleLon = response.data.longitude;
-                        this.circleLat = response.data.latitude;
-                        this.drawBgCircle(response.data.longitude,response.data.latitude,radius);                                            
-
-                        if(response.data.status == 200){                            
-                            this.$message({
-                                type: 'success',
-                                duration: '1500',
-                                message: "获取详情成功！",
-                                showClose: true
-                            });   
-                        }
-                        this.initUnintList(true,this.trafficInfo.frequencyUnit);
-                        this.initDatasourceList(true,this.trafficInfo.datasource);
-                        
-                    } else {                     
-                        this.$message({
-                            type: 'error',
-                            duration: '1500',
-                            message: "获取详情失败 ！",
-                            showClose: true
-                        });    
+           findDetail(params).then(res => {
+                if (res.status == 200) {
+                    this.trafficInfo.longitude = this.toFixedLen(this.trafficInfo.longitude);
+                    this.trafficInfo.latitude = this.toFixedLen(res.data.latitude);
+                    this.trafficInfo.id = res.data.id;
+                    this.trafficInfo.taskCode = res.data.taskCode;
+                    this.trafficInfo.eventName = res.data.eventName;
+                    this.trafficInfo.eventType = res.data.eventType;
+                    this.trafficInfo.longitude = this.toFixedLen(res.data.longitude);
+                    this.trafficInfo.latitude = this.toFixedLen(res.data.latitude);
+                    this.trafficInfo.affectRange = res.data.affectRange; 
+                    this.trafficInfo.content = res.data.content; 
+                    this.trafficInfo.frequency = res.data.frequency; 
+                    this.trafficInfo.frequencyUnit = res.data.frequencyUnit; 
+                    this.trafficInfo.beginTime = res.data.beginTime; 
+                    this.trafficInfo.endTime = res.data.endTime; 
+                    this.trafficInfo.datasource = res.data.datasource;     
+                    this.trafficInfo.infoType = res.data.infoType;
+                    this.trafficInfo.sendChannel = res.data.sendChannel; 
+                    if(!flag) {
+                        this.trafficInfo.alertPath = res.data.alertPath;   
+                        this.select.alertPath = res.data.alertPath;    
                     }
-                }
-            );
+                    this.trafficInfo.alertRadius = res.data.alertRadius;
+                    this.trafficInfo.alertCategory = res.data.alertCategory;  
+                    const radius = res.data.affectRange;   
+                    this.circleLon = res.data.longitude;
+                    this.circleLat = res.data.latitude;
+                    this.drawBgCircle(res.data.longitude,res.data.latitude,radius);                                            
+                    this.initUnintList(true,this.trafficInfo.frequencyUnit);
+                    this.initDatasourceList(true,this.trafficInfo.datasource);
+                } 
+            });
         },
 
         initSelect(){
