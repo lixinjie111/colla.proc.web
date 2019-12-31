@@ -7,7 +7,7 @@
 <script>
 	import TusvnMap from '@/common/TusvnMap/TusvnMap.vue';
 	import TDate from '@/common/date.js'
-
+	import { findEffectiveList,queryRsu,queryRoadSide,queryLight} from '@/api/release'; 
 	export default {
 		name: 'InfoMapOL',
 		components: {
@@ -125,27 +125,17 @@
 			},
 			initPubMsgList() {
 				this.clearPubMsg();
-				let url = 'event/task/findEffectiveList';
 				let params = {
 					status: 1,
 				};
-				this.$api.post(url, params,
-					response => {
-						if(response.status >= 200 && response.status < 300) {
-							this.pubMsgList = response.data ? response.data : [];
-							this.addPubMsg(this.pubMsgList);
-							this.initWebSocket();
-						} else {
-							this.$message({
-								type: 'error',
-								duration: '1500',
-								message: "获取信息列表失败 ！",
-								showClose: true
-							});
-							this.initWebSocket();
-						}
-					}
-				);
+				findEffectiveList(params).then(res => {
+					this.pubMsgList = res.data ? res.data : [];
+					this.addPubMsg(this.pubMsgList);
+					this.initWebSocket();
+				}).catch(err => {
+					this.initWebSocket();
+				});
+				
 			},
 			processData(_result){
 				let pubMsgList=JSON.parse(localStorage.pubMsgList);
@@ -334,37 +324,26 @@
 			},
 			// 显示rsu
 			showRsu() {
-				let url = 'common/queryRsu';
 				let params = {
 					// "distcode": this.$store.state.region.code //"110108"
 				};
-				this.$api.post(url, params,
-					response => {
-						if(response.status >= 200 && response.status < 300) {
-
-							let rsuList = response.data ? response.data : [];
-							this.mapLayer.rsuIds = [];
-							for(let i = 0; i < rsuList.length; i++) {
-								let item = rsuList[i];
-								let lon = item.longitude;
-								let lat = item.latitude;
-								let id = this.generataIcoName('rsu', i);
-								let icon = "static/images/poi_2.png";
-								let size = [30, 30];
-								this.mapLayer.rsuIds.push(id);
-								this.$refs.refTusvnMap.addImg(lon, lat, id, this.mapLayer.tabLayer, icon, size);
-							}
-
-						} else {
-							this.$message({
-								type: 'error',
-								duration: '1500',
-								message: "获取设备列表失败 ！",
-								showClose: true
-							});
+				queryRsu(params).then(res=>{
+					if(res.status == 200) {
+						let rsuList = res.data ? res.data : [];
+						this.mapLayer.rsuIds = [];
+						for(let i = 0; i < rsuList.length; i++) {
+							let item = rsuList[i];
+							let lon = item.longitude;
+							let lat = item.latitude;
+							let id = this.generataIcoName('rsu', i);
+							let icon = "static/images/poi_2.png";
+							let size = [30, 30];
+							this.mapLayer.rsuIds.push(id);
+							this.$refs.refTusvnMap.addImg(lon, lat, id, this.mapLayer.tabLayer, icon, size);
 						}
 					}
-				);
+				});
+				
 			},
 			// 清除rsu
 			clearRsu() {
@@ -374,14 +353,12 @@
 			},
 			// 显示路侧单元
 			showRoadsideUnit() {
-				let url = 'common/queryRoadSide';
 				let params = {
 					// "distcode": this.$store.state.region.code //"110108"
 				};
-				this.$api.post(url, params,
-					response => {
-						if(response.status >= 200 && response.status < 300) {
-							let roadsideUnitList = response.data ? response.data : [];
+				queryRoadSide(params).then(res=>{
+						if(res.status == 200) {
+							let roadsideUnitList = res.data ? res.data : [];
 							this.mapLayer.roadsideUniIds = [];
 							for(let i = 0; i < roadsideUnitList.length; i++) {
 								let item = roadsideUnitList[i];
@@ -393,13 +370,6 @@
 								this.mapLayer.roadsideUniIds.push(id);
 								this.$refs.refTusvnMap.addImg(lon, lat, id, this.mapLayer.tabLayer, icon, size);
 							}
-						} else {
-							this.$message({
-								type: 'error',
-								duration: '1500',
-								message: "获取路侧单元失败 ！",
-								showClose: true
-							});
 						}
 					}
 				);
@@ -412,36 +382,26 @@
 			},
 			// 显示红绿灯
 			showTrafficSignal() {
-				let url = 'common/queryLight';
 				let params = {
 					// "distcode": this.$store.state.region.code//"310104"
 				};
-				this.$api.post(url, params,
-					response => {
-						if(response.status >= 200 && response.status < 300) {
-
-							let trafficSignalList = response.data ? response.data : [];
-							this.mapLayer.trafficSignalIds = [];
-							for(let i = 0; i < trafficSignalList.length; i++) {
-								let item = trafficSignalList[i];
-								let lon = item.longitude;
-								let lat = item.latitude;
-								let id = this.generataIcoName('trafficSignal', i);
-								let icon = "static/images/poi_3.png";
-								let size = [30, 30];
-								this.mapLayer.trafficSignalIds.push(id);
-								this.$refs.refTusvnMap.addImg(lon, lat, id, this.mapLayer.tabLayer, icon, size);
-							}
-						} else {
-							this.$message({
-								type: 'error',
-								duration: '1500',
-								message: "获取红绿灯失败 ！",
-								showClose: true
-							});
+				queryLight(params).then(res=>{
+					if(res.status == 200) {
+						let trafficSignalList = res.data ? res.data : [];
+						this.mapLayer.trafficSignalIds = [];
+						for(let i = 0; i < trafficSignalList.length; i++) {
+							let item = trafficSignalList[i];
+							let lon = item.longitude;
+							let lat = item.latitude;
+							let id = this.generataIcoName('trafficSignal', i);
+							let icon = "static/images/poi_3.png";
+							let size = [30, 30];
+							this.mapLayer.trafficSignalIds.push(id);
+							this.$refs.refTusvnMap.addImg(lon, lat, id, this.mapLayer.tabLayer, icon, size);
 						}
 					}
-				);
+				});
+				
 			},
 			// 清除红绿灯
 			clearTrafficSignal() {

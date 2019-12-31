@@ -29,6 +29,7 @@
 <script>
 import VehicleInfoTag from "../../../common/detail/vehicleInfoTag";
 import HistoryVideo from '../../../common/detail/historyVideo';
+import { getEventDetail} from '@/api/infoHistory'; 
 export default {
   props: {
     detailData: Array,
@@ -62,24 +63,14 @@ export default {
       let params = {
         'taskCode': this.taskCode
       }
-      this.$api.post(url, params, res => {
-        if (res.data.status === 200) {
-            this.videoData = res.data.data.videoList;
+      getEventDetail(params).then(res=>{
+        if (res.status === 200) {
+            this.videoData = res.data.videoList;
             this.videoData.forEach(item=>{
               item.isActive=false;
             })
-            this.isShowVideo = true;
-        } else {
-          if(res.data.message) {
-            this.$message({
-                type: 'error',
-                duration: '1500',
-                message: res.data.message,
-                showClose: true
-            });    
-          }
-          this.isShowVideo = true;
         }
+        this.isShowVideo = true;
       });
     },
     backClick() {
