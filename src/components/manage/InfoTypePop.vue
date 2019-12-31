@@ -86,7 +86,7 @@
 
 <script>
   import axios from 'axios'
-
+  import { uploadPic,queryDictionary,infoUpdate,infoSave } from '@/api/infoType'; 
   export default {
     props: {
       popData: Object
@@ -99,7 +99,6 @@
     data() {
       return {
         submitLoading: false,
-        uploadPath: window.config.url + 'event/info/uploadPic',
         fileList: [],
         typeList: [
           // { id: 1 ,name: '车辆异常',value: 1},
@@ -161,52 +160,27 @@
         this.initUnintList();
       },
       initTypeList(){
-        let url = 'common/queryDictionary';
         let params = {
           parentCode: 'trafficType',
         };
-        this.$api.post( url,params,
-            response => {
-                if (response.status >= 200 && response.status < 300) {
-
-                    this.typeList = response.data ? response.data : [];
-                    
-                } else {                     
-                    this.$message({
-                        type: 'error',
-                        duration: '1500',
-                        message: "获取类型失败 ！",
-                        showClose: true
-                    });        
-                }
+        queryDictionary(params).then(res=>{
+            if (res.status == 200) {
+                this.typeList = res.data ? res.data : [];
             }
-        );
+        });
       },
       initUnintList(){
-        let url = 'common/queryDictionary';
         let params = {
           parentCode: 'timeUnit',
         };
-        this.$api.post( url,params,
-            response => {
-                if (response.status >= 200 && response.status < 300) {
-
-                    this.frequencyUnitList = response.data ? response.data : [];
-                    if(this.frequencyUnitList.length){                                           
-                      this.select.frequencyUnit = this.frequencyUnitList[0];
-                    }
-                   
-                } else {                     
-                    this.$message({
-                        type: 'error',
-                        duration: '1500',
-                        message: "获取单位失败 ！",
-                        showClose: true
-                    });        
-                     
+        queryDictionary(params).then(res=>{
+            if (res.status == 200) {
+                this.frequencyUnitList = res.data ? res.data : [];
+                if(this.frequencyUnitList.length){                                           
+                  this.select.frequencyUnit = this.frequencyUnitList[0];
                 }
             }
-        );
+        });
       },
       selectFile(e){
         this.$refs.ruleForm.clearValidate('icon');
@@ -214,7 +188,7 @@
         this.ruleForm.icon = file.name;
         let param = new FormData(); //创建form对象
         param.append('upfile',file); //通过append向form对象添加数据
-        //  console.log('upload --------------- ' + this.param.get('upfile')); //FormData私有类对象，访问不到，可以通过get判断值是否传进去
+        //console.log(param.get('upfile')); //FormData私有类对象，访问不到，可以通过get判断值是否传进去
 
         // this.validator.isFile = true;
         this.uploadFile(param);
@@ -224,12 +198,10 @@
         let config = {
           headers:{'Content-Type':'multipart/form-data'}
         };
-        axios.post(url, formData, config)
-          .then(response=>{
+        uploadPic(formData,config).then(res => {
               //console.log('文件上传结果 ： -------------- ' + JSON.stringify(response.data) );              
-
-              if(response.data.status == '200'){
-                  this.ruleForm.icon = response.data.data;
+              if(res.status == '200'){
+                  this.ruleForm.icon = res.data;
                     // 隐藏批量导入面板
                   this.$message({
                       type: 'success',
@@ -238,23 +210,7 @@
                       showClose: true
                   });       
               }
-
-              if(response.data.status != '200'){              
-                  this.$message({
-                      type: 'error',
-                      duration: '1500',
-                      message: '上传失败！',
-                      showClose: true
-                  });      
-                  //console.log('error data --- ' + JSON.stringify(response.data.data))
-              }
-          }
-        ).catch( (error) => {
-
-            let msg =  '导入失败  ！' + error;
-            console.log(msg)
-
-        }) ; 
+          })
       },
   
       frequencyUnitChange(e){
@@ -278,18 +234,9 @@
         });
       },
       addFn(){
-          let url = 'event/info/save';
-          // let params = {
-          //     eventCategory: data.eventCategory,
-          //     name: data.name,
-
-          // };
           let params = this.ruleForm;
-          console.log(params);
-          this.$api.post( url,params,
-              response => {
-                  if (response.status >= 200 && response.status < 300) {
-
+          infoSave(params).then(res=>{
+            if (res.status == 200) {
                       this.$emit("successBack");
                       this.$message({
                           type: 'success',
@@ -298,19 +245,11 @@
                           showClose: true
                       });      
                       this.submitLoading = false;
-                  } else {                     
-                      this.$message({
-                          type: 'error',
-                          duration: '1500',
-                          message: "新增信息类型失败 ！",
-                          showClose: true
-                      });      
                   }
               }
           );
       },
       updateFn(){
-
           let url = 'event/info/update';
           let params = {
               id: this.ruleForm.id,
@@ -326,28 +265,18 @@
               alertRadius: this.ruleForm.alertRadius,
               alertCategory: this.ruleForm.alertCategory
           };
-          this.$api.post( url,params,
-              response => {
-                  if (response.status == 200) {
-
-                      this.$emit("successBack");
-                      this.$message({
-                          type: 'success',
-                          duration: '1500',
-                          message: "修改信息类型成功 ！",
-                          showClose: true
-                      });       
-                      this.submitLoading = false;
-                  } else {                     
-                      this.$message({
-                          type: 'error',
-                          duration: '1500',
-                          message: "修改信息类型失败 ！",
-                          showClose: true
-                      });        
-                  }
+          infoUpdate(params).then(res=>{
+              if (res.status == 200) {
+                  this.$emit("successBack");
+                  this.$message({
+                      type: 'success',
+                      duration: '1500',
+                      message: "修改信息类型成功 ！",
+                      showClose: true
+                  });       
+                  this.submitLoading = false;
               }
-          );
+          });
       }
     }
   }

@@ -104,7 +104,7 @@
 
 import InfoTypePop from "@/components/manage/InfoTypePop.vue"
 import InfoTypeDetail from "@/components/manage/InfoTypeDetail.vue"
-
+import { infoQueryPage,queryDictionary,deleteIds} from '@/api/infoType'; 
 export default {
     components: {
         InfoTypePop, InfoTypeDetail,
@@ -168,8 +168,6 @@ export default {
         initData(){
 
             this.isLoading = true;
-
-            let url = 'event/info/queryPage';
             let params = {
                 name: this.search.name,
                 "page": {    
@@ -177,50 +175,24 @@ export default {
                     "pageSize": this.paging.size,
                 },
             };
-            this.$api.post( url,params,
-                response => {
-                    if (response.status >= 200 && response.status < 300) {
-
-                        this.dataList = response.data.list;
-                        this.$refs.table.bodyWrapper.scrollTop = 0;
-                        this.paging.total = response.data.totalCount;
-                        
-                    } else {                     
-                        this.$message({
-                            type: 'error',
-                            duration: '1500',
-                            message: "获取信息类型列表失败！",
-                            showClose: true
-                        });    
-                    }
-
-                    this.isLoading = false;
+            infoQueryPage(params).then(res=>{
+                if (res.status == 200) {
+                    this.dataList = res.data.list;
+                    this.$refs.table.bodyWrapper.scrollTop = 0;
+                    this.paging.total = res.data.totalCount;
                 }
-                
-            );
+                this.isLoading = false;
+            });
         },
         initTypeList(){
-            let url = 'common/queryDictionary';
             let params = {
                 parentCode: 'trafficType',
             };
-            this.$api.post( url,params,
-                response => {
-                    if (response.status >= 200 && response.status < 300) {
-
-                        this.typeList = response.data ? response.data : [];
-                        
-                    } else {                     
-                        this.$message({
-                            type: 'error',
-                            duration: '1500',
-                            message: "获取类型失败！",
-                            showClose: true
-                        });     
-                    }
+            queryDictionary(params).then(res=>{
+                if (res.status == 200) {
+                    this.typeList = res.data ? res.data : [];
                 }
-            );
-
+            });
         },
         getTypeCnName(type){
             if(!this.typeList){
@@ -250,36 +222,26 @@ export default {
             this.infoTypePopFlag = true;
         },
         handleDelete(index,item){
-
             this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                let url = 'event/info/delete/ids';
                 let params = {
                     ids: [item.id]
                 };
-                this.$api.post( url,params,
-                    response => {
-                        if (response.status >= 200 && response.status < 300) {
-                            this.initData();
-                            this.$message({
-                                type: 'success',
-                                duration: '1500',
-                                message: "删除信息类型成功！",
-                                showClose: true
-                            });      
-                        } else {                     
-                            this.$message({
-                                type: 'success',
-                                duration: '1500',
-                                message: "删除信息类型失败！",
-                                showClose: true
-                            });       
-                        }
-                    }
-                ); 
+               deleteIds(params).then(res=>{
+                    if (res.status == 200) {
+                        this.initData();
+                        this.$message({
+                            type: 'success',
+                            duration: '1500',
+                            message: "删除信息类型成功！",
+                            showClose: true
+                        });      
+                    } 
+                }); 
+                
             }).catch(() => {
                 // this.$message({
                 //     type: 'info',

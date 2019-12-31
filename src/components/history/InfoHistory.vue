@@ -121,6 +121,7 @@
 <script>
 import TDate from "@/common/date.js";
 import InfoHistoryDetail from "./components/infoHistoryDetail";
+import { taskQueryPage,queryDictionary} from '@/api/infoHistory'; 
 export default {
   components: {
     InfoHistoryDetail
@@ -189,7 +190,6 @@ export default {
     },
     initData(type) {
       this.isLoading = true;
-      let url = "event/task/queryPage";
       let params = {
         // code: this.search.code,
         eventType: this.search.eventType,
@@ -202,37 +202,22 @@ export default {
           pageSize: this.paging.size
         }
       };
-      this.$api.post(url, params, response => {
-        if (response.status >= 200 && response.status < 300) {
-          this.dataList = response.data.list;
+     taskQueryPage(params).then(res => {
+        if (res.status == 200) {
+          this.dataList = res.data.list;
           this.$refs.table.bodyWrapper.scrollTop = 0;
-          this.paging.total = response.data.totalCount;
-        } else {
-          this.$message({
-              type: 'error',
-              duration: '1500',
-              message: "获取设备列表失败  ！",
-              showClose: true
-          });    
+          this.paging.total = res.data.totalCount;
         }
         this.isLoading = false;
       });
     },
     initDatasourceList() {
-      let url = "common/queryDictionary";
       let params = {
         parentCode: "trafficSource"
       };
-      this.$api.post(url, params, response => {
-        if (response.status >= 200 && response.status < 300) {
-          this.datasourceList = response.data ? response.data : [];
-        } else {
-          this.$message({
-              type: 'error',
-              duration: '1500',
-              message: "获取单位失败 ！",
-              showClose: true
-          });    
+      queryDictionary(params).then(res=>{
+        if (res.status == 200) {
+          this.datasourceList = res.data ? res.data : [];
         }
       });
     },
