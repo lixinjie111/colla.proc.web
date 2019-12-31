@@ -63,6 +63,7 @@
 import SessionUtil from '@/store/session.js'
 import MenuList from './assets/menu.json'
 import { Utils } from '@/common/utils/utils.js'
+import { requestLogout} from '@/api/login';  
 
 
 
@@ -109,25 +110,26 @@ export default {
 //      this.$forceUpdate()
     },
     logoutClick(){
+      let _params = {
+          token: JSON.parse(SessionUtil.getItem('login')).token
+      };
       this.$confirm('确认退出吗?', '提示', {
       }).then(() => {
-          this.$api.post('openApi/user/logout',{
-          token: JSON.parse(SessionUtil.getItem('login')).token
-        },response => {
+        requestLogout(_params).then(res => {
           this.$router.push('/login');
           this.$store.dispatch('logout');
           this.$store.dispatch('showSubMenu',false);
           SessionUtil.clearItems();
           localStorage.removeItem("yk-token");
-        },err => {
+        }).catch(err => {
           this.$router.push('/login');
           this.$store.dispatch('logout');
           this.$store.dispatch('showSubMenu',false);
           SessionUtil.clearItems();
           localStorage.removeItem("yk-token");
-        }, "login");
+        });
       }).catch(err => {
-          console.log("取消退出！");
+          console.log(err);
       });
     },
     showSubMenu(){

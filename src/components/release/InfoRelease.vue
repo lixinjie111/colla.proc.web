@@ -59,6 +59,7 @@
 
 import Vue from 'vue';
 import InfoMapOL from '@/components/release/InfoMap_ol.vue'
+import { statisticsTask,queryAll} from '@/api/release';   
 
 export default {
     components: {
@@ -109,23 +110,11 @@ export default {
     },
     methods: {
       	initStatisics(){
-            let url = 'event/task/statisticsTask';
-            let params = {                
-                
-            };
-            this.$api.post( url,params,
-                response => {
-                    if (response.status >= 200 && response.status < 300) {
-
-                        this.statisicsData = response.data ? response.data : [];
-                       
-
-
-                    } else {                     
-                        this.$message("获取信息列表失败 ！"); 
-                    }
-                }
-            );
+            statisticsTask({}).then(res => {
+                if (res.status == 200 ) {
+                    this.statisicsData = res.data ? res.data : [];
+                } 
+            });
         },  
         pubMsgChange(data){
            // console.log(data)
@@ -133,25 +122,13 @@ export default {
         },
 
         initPubMsgList(){
-            let url = 'event/info/queryAll';
-            let params = {};
-            this.$api.post( url,params,
-                response => {
-                    if (response.status >= 200 && response.status < 300) {
-                        this.pubMsgList = response.data ? response.data : []; 
-                        localStorage.pubMsgList=JSON.stringify(this.pubMsgList);
-                    } else {                     
-                        this.$message({
-                            type: 'error',
-                            duration: '1500',
-                            message: "获取信息类型列表失败  ！",
-                            showClose: true
-                        });       
-                    }
+            queryAll({}).then(res => {
+                if (res.status == 200) {
+                    this.pubMsgList = res.data ? res.data : []; 
+                    localStorage.pubMsgList=JSON.stringify(this.pubMsgList);
                 }
-            );
+            });
         },
-        
         poiClick(item){
             if(!item) return;
             item.isCheck = !item.isCheck;
@@ -159,12 +136,10 @@ export default {
             this.olMarker[type] = !this.olMarker[type];
             this.$refs.refInfoMap.showMarker(type,this.olMarker[type]);
         },
-
         removeTagClick(e){
             let temp = this.getItemByName(this.poiList,e);
             this.poiClick(temp);
         },
-
         getItemByName(list,name){
             for(let i=0;i<list.length;i++){
                 let temp = list[i];

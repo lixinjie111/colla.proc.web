@@ -46,7 +46,8 @@
 
 import md5 from 'js-md5'
 import SessionUtil from '@/store/session.js'
-import SlideVerify from './components/slideVerify.vue';                         
+import SlideVerify from './components/slideVerify.vue'; 
+import { requestLogin} from '@/api/login';                        
 
 export default {
     name: 'Login',
@@ -126,11 +127,10 @@ export default {
             
         },
         loginFunc(params) {
-            this.$api.post('openApi/user/login',params,response => {
+           requestLogin(params).then(res => {
                 this.loading = false;
-                if(response.status >= 200 && response.status < 300){
-                    if(response.data.status == 200){
-                        let temp = response.data.data;
+                    if(res.status == 200){
+                        let temp = res.data;
                         SessionUtil.setItem('login',JSON.parse(temp));
                         // SessionUtil.setItem('currentMenu','/infoRelease');
                         // SessionUtil.setItem('currentMenuId','1');
@@ -138,28 +138,19 @@ export default {
                         
                         this.$router.push('/infoRelease');
                     }else {
-                        if(response.data.status == -200){
-                            if(response.data.data.errorCount) {
-                                if(response.data.data.errorCount>=5){
+                        if(res.status == -200){
+                            if(res.data.errorCount) {
+                                if(res.data.errorCount>=5){
                                     this.dragFlag=true;
                                 }
                             }
                         }
-                        this.$message({
-                            type: 'error',
-                            duration: '1500',
-                            message: response.data.message,
-                            showClose: true
-                        });    
                         this.removeStorage();
                     }
-                }else {
-                    this.removeStorage();
-                }
-            },err => {
+			}).catch(err => {
                 this.loading = false;
                 this.removeStorage();
-            }, "login");
+            });
         },
         removeStorage() {
             SessionUtil.clearItems();

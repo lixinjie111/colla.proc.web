@@ -6,19 +6,21 @@
 import App from './App'
 import router from './router'
 import store from './store/index.js'
-import Api from './api/index.js';
+// import Api from './api/index.js';
 import SessionUtil from '@/store/session.js'
+
 
 // Element-ui
 import ElementUI from 'element-ui';  //加载优化
 import 'element-ui/lib/theme-chalk/index.css';  //加载优化
 Vue.use(ElementUI);  //加载优化
 
+
 Vue.config.productionTip = false
 
 // Vue.use(ElementUI)
 
-Vue.prototype.$api = Api;
+// Vue.prototype.$api = Api;
 // Vue.prototype.$TDate = TDate;
 
 // 全局静态资源
@@ -28,10 +30,15 @@ import '@/assets/scss/element-ui-reset.scss';
 import '@/assets/icon-font/iconfont.css';
 
 //取消请求的对象
-window.sourceArr=[];
+// axios 过滤器
+import  axiosFilter from './api/axiosConfig.js';
+//取消请求的对象
+window.cancleSource={};
+window.cancelToken = axios.CancelToken;
 // 路由拦截器
 router.beforeEach((to, from, next) => {
-    Api.cancelRequest();
+    window.cancleSource.cancel && window.cancleSource.cancel()
+    window.cancleSource = window.cancelToken.source()
   if (to.meta.requireAuth) {  // 判断该路由是否需要登录权限
       if (SessionUtil.getItem('login')) {  // 通过vuex state获取当前的token是否存在
           next();
@@ -49,10 +56,12 @@ router.beforeEach((to, from, next) => {
 })
 
 /* eslint-disable no-new */
-new Vue({
+const vm = new Vue({
   el: '#app',
   router,
   store,
   components: { App },
   template: '<App/>'
 })
+// axios 过滤器
+axiosFilter(vm);
