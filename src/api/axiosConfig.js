@@ -45,24 +45,33 @@ function axiosFilter(vm) {
     )
     // response
     axios.interceptors.response.use(function(response) {
-        let returnStatus = response.data.status || response.data.code || response.data.state;
-        switch (returnStatus+"") {
-            case '1': {
-                return Promise.resolve(response);
-                break;
-            }
-            case '200': {
-                return Promise.resolve(response);
-                break;
-            }
-            default: {
-                vm.$message({
-                    type: 'error',
-                    duration: '1500',
-                    message: response.data.message || '操作失败' || response.data,
-                    showClose: true
-                });
-                return Promise.resolve(response);
+        if(!response.data.status&&!response.data.state&&response.data.state==1){
+            let _data=response.data;
+            response.data={};
+            response.data.data=_data;
+            response.data.status=200;
+            response.data.message='';
+            return Promise.resolve(response);
+        }else{
+            let returnStatus = response.data.status || response.data.code || response.data.state;
+            switch (returnStatus+"") {
+                case '1': {
+                    return Promise.resolve(response);
+                    break;
+                }
+                case '200': {
+                    return Promise.resolve(response);
+                    break;
+                }
+                default: {
+                    vm.$message({
+                        type: 'error',
+                        duration: '1500',
+                        message: response.data.message || '操作失败' || response.data,
+                        showClose: true
+                    });
+                    return Promise.resolve(response);
+                }
             }
         }
     }, function(error) {
