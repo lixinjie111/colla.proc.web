@@ -19,7 +19,7 @@
         <template>
             <div v-show="showTrafficInfoPop" id="traffic-info-release-popup" class="ol-popup yk-pointer-normal" >
 
-                <img class="yk-close-btn" src="static/images/close.png" @click="closeMyInfoWindow('self')">
+                <img class="yk-close-btn" src="static/images/map/close.png" @click="closeMyInfoWindow('self')">
 
                 <div id="traffic-info-release-popup-content">                   
 
@@ -358,7 +358,7 @@ export default {
 
             // 确定按钮
             let id = this.tempElement.okBtnId;
-            let imgUrl = 'static/images/ok4.png';
+            let imgUrl = 'static/images/map/ok4.png';
             let courseAngle = null;
             let bdata = null;
             let offset = [50,0];
@@ -367,7 +367,7 @@ export default {
 
             // 关闭按钮
             let id2 = this.tempElement.closeBtnId;
-            let imgUrl2 = 'static/images/close4.png';
+            let imgUrl2 = 'static/images/map/close4.png';
             let courseAngle2 = null;
             let bdata2 = null;
             let offset2 = [-50,0];
@@ -435,8 +435,8 @@ export default {
             
             // id, imgUrl, courseAngle, lon, lat, bdata, offset, callback
             let id = this.tempElement.markerId;//'temp_' + (new Date()).getTime();
-            let imgUrl = 'static/images/circle112.png';    // 红色
-            let imgUrl2 = 'static/images/circle222.png';    // 绿色
+            let imgUrl = 'static/images/map/circle112.png';    // 红色
+            let imgUrl2 = 'static/images/map/circle222.png';    // 绿色
             let courseAngle = null;
             let bdata = null;
             let offset = [-32,-32];
@@ -1063,7 +1063,7 @@ export default {
         // 画 发布信息图标
         drawPubMsgIcon(lon,lat,icon){
             // lon,lat,id,layerId,carImgUrl,size,rotation,rotateWithView,opacity,offset,scale
-            let pubMsgBgIco = 'static/images/ico-bg2.png';
+            let pubMsgBgIco = 'static/images/map/ico-bg2.png';
             let pubMsgBgIcoID = 'bg_' + this.pubMsgIconID;
             // [44,58]
             this.addImg(lon,lat,pubMsgBgIcoID,this.MessageTempLayer,pubMsgBgIco,[44,87],null,null,null,[0,10]);

@@ -1,5 +1,6 @@
 <template>
   <div id="app">  
+    <router-view></router-view>
     <template v-if="$route.path != '/login' && $route.path != '/Login'">
         <div id="header">
               <div class="logo">
@@ -66,7 +67,13 @@ import { Utils } from '@/common/utils/utils.js'
 import { requestLogout} from '@/api/login';  
 
 
-
+export default {
+  	name: 'App',
+  	data() {
+      return {
+      }
+    },
+}
 export default {
   name: 'App',
   data(){
