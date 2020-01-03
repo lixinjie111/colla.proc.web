@@ -19,12 +19,11 @@
         <template>
             <div v-show="showTrafficInfoPop" id="traffic-info-release-popup" class="ol-popup yk-pointer-normal" >
 
-                <img class="yk-close-btn" src="static/images/map/close.png" @click="closeMyInfoWindow('self')">
+                <img class="close-btn" src="static/images/map/close.png" @click="closeMyInfoWindow('self')">
 
                 <div id="traffic-info-release-popup-content">                   
-
                     <div>
-                        <el-row class="yk-pad-10 yk-bottom-border">
+                        <el-row class="c-padding-10 yk-bottom-border">
                             <label class="yk-info-window-title">交通信息发布</label>                        
                         </el-row>
                         <el-row class="yk-pad-1020">
@@ -1679,6 +1678,14 @@ export default {
 }
 </script>
 <style scoped>
+    
+
+
+   
+
+
+
+
 
     #map {
         width: 100%;
@@ -1774,7 +1781,7 @@ export default {
         z-index: 3;
     }
 
-    .yk-close-btn{
+    .close-btn{
         top: 13px;
         right: 10px;
         position: absolute;
@@ -1782,7 +1789,7 @@ export default {
         cursor: pointer;
         z-index: 2001;
     }
-    .yk-close-btn:hover{
+    .close-btn:hover{
         opacity: 0.6;
     }
 
@@ -1816,6 +1823,86 @@ export default {
         }
     }
 
+
+
+
+
+
+.yk-info-window-title{
+        display:inline-block;
+        height: 15px;
+        line-height: 15px;
+        font-size: 15px;
+        color: #A6A6A6;          
+        font-weight: bold;
+    }
+
+    .yk-bottom-12 {
+        margin-bottom: 12px!important;
+        color: #EEEEEE!important;
+    }
+    .yk-bottom-16 {
+        margin-left: 5px!important;
+        margin-bottom: 16px!important;
+        color: #606266!important;
+    }
+    
+    .yk-pad-1020{
+        padding: 10px 20px!important;
+    }
+    .yk-pad-1060{
+        padding: 10px 60px!important;
+    }
+    .yk-bottom-border{
+        border-bottom: 1px solid #666666;
+    }
+    .yk-w-80{
+        width: 80px;
+    }
+    .yk-w-51{
+        width: 51px;
+    }
+    .yk-border-left-none{
+        border-left: 0px!important;
+        border-top-left-radius: 0px!important;
+        border-bottom-left-radius: 0px!important;
+    }
+
+    .yk-input-select{
+        height: 28px;
+        border: 1px solid #DCDFE6;
+        border-top-right-radius: 3px;
+        border-bottom-right-radius: 3px;
+        padding: 0 10px;
+    }
+    .yk-input-select-2{
+        height: 28px;
+        background: #666;
+        border: 1px solid #666;
+        border-left: 1px solid #555454;
+        border-top-left-radius: 0px!important;
+        border-bottom-left-radius: 0px!important;
+        color: #fff;
+        padding-left: 3px;
+        padding: 0 10px;
+    } 
+    
+    .yk-border-normal{
+        border-radius: 0px!important;
+        -webkit-border-radius: 0px!important;
+        -moz-border-radius: 0px!important;
+        -ms-border-radius: 0px!important;
+        -o-border-radius: 0px!important;
+    }
+
+    .yk-readonly{
+        pointer-events: none;
+        user-select: none!important;
+        -webkit-user-select: none!important;
+        -moz-user-select: none!important;
+        -ms-user-select: none!important;
+        cursor: default;
+    }
 </style>
 <style lang="scss">
 .path-view-popover {
@@ -1854,4 +1941,160 @@ export default {
         }
     }
 }
+    
+    .yk-readonly .el-input__inner{
+        pointer-events: none;
+        user-select: none!important;
+        -webkit-user-select: none!important;
+        -moz-user-select: none!important;
+        -ms-user-select: none!important;
+        cursor: default;
+    }
+
+    .yk-readonly .el-input-group__append{
+        pointer-events: fill;
+    }
+
+    .yk-select{
+        padding: 0px 15px;
+        height: 28px;
+        line-height: 28px;
+        width: 100%;
+        background: #666;
+        color: #fff;
+        border: 0px;
+    }
+
+    .yk-btn-append{          
+        margin-left: 0!important;
+        margin-right: 0!important;
+        padding: 0px 6px!important;
+        background: #706f6f!important;
+        height: 28px!important;
+        border: 0px!important;
+        border-left: 1px solid #555454!important;
+        border-radius: 0px!important;
+        width: 50px!important;
+        color: #fff!important;
+    }
+    .yk-btn-append:hover{
+        opacity: 0.7;
+    }
+    
+    .yk-txt .el-input__inner{
+        background: #666666;
+        color: #EEEEEE;
+        border: 0px;
+        border-radius: 0px;
+
+    }
+    .yk-txt .el-textarea__inner{
+        border: 0px!important;
+        background: rgb(102, 102, 102)!important;
+        border: 0px!important;
+        border-radius: 0px!important;
+        color: #fff!important;
+    }
+
+    .yk-txt .el-select-dropdown__item{
+        background: #888!important;
+        height: 28px!important;
+        line-height: 28px!important;
+    }
+
+    .yk-txt .el-popper{
+        border-bottom-color: #888888!important;
+    }
+
+    .yk-txt .el-select-dropdown__list{
+        padding: 0px!important;
+        height: 28px!important;
+        line-height: 28px!important;
+    }
+
+    .yk-txt .el-form-item__label{
+        width:108px!important;
+        color: #C0C0C0;
+        padding: 0 18px 0 0!important;
+    }
+    
+    .yk-txt .el-slider__runway{
+        height: 3px!important;
+        background-color: #F9BE69!important;
+    }
+    .yk-txt .el-slider__bar {
+        height: 3px!important;
+        background-color: #ee873b!important;
+    }
+    .yk-txt .el-slider__stop {
+        height: 3px!important;
+        background-color: #ee873b!important;
+        display: none;
+    }
+    .yk-txt .el-slider__marks-text{
+        width: 80px;
+        margin-top: 3px!important;
+        font-size: 12px!important;    
+    }
+
+    .yk-txt .el-slider__marks-text:first-child{
+        padding-left: 80px!important;
+    }
+    .yk-txt .el-slider__marks-text:last-child{
+        padding-right: 0px!important;
+    }
+
+    .yk-txt .el-input-group__append{
+        border: none;
+        pointer-events: auto;
+        border-radius: 0;
+        overflow: hidden;
+    }
+    
+    .yk-textarea .el-form-item__label {
+        width: 102px!important;
+        color: #C0C0C0;
+        padding: 0 15px 0 0!important;
+    }
+    .yk-textarea .el-form-item__content{
+        margin-left: 103px!important;
+    }
+    .yk-textarea .el-textarea__inner{
+        border: 0px!important;
+        background: rgb(102, 102, 102)!important;
+        border: 0px!important;
+        border-radius: 0px!important;
+        color: #fff!important;
+        resize: none;
+    }
+    .yk-txt .el-input--prefix .el-input__inner{
+        padding-left: 15px!important;
+    }
+    .yk-txt .el-input__prefix{
+        display:none!important;
+    }
+
+    .yk-txt .el-input-group__append, .el-input-group__prepend{
+        width: 50px;
+        text-align: center;
+        color: #fff;
+        background: rgb(102, 102, 102)!important;
+    }   
+
+    .el-slider__button{
+        width: 6px!important;
+        background-color: #F9BE69!important;
+        border: 0px!important;
+        border-radius: unset!important;
+        border-bottom-left-radius: 40%!important;
+        border-bottom-right-radius: 40%!important;
+    }
+    
+    .el-input-group__append{
+        border: 0!important;
+        padding: 0!important;
+    }
+    .el-select-dropdown__item.selected{
+        color: #F59307!important;
+    }
 </style>
