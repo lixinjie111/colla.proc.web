@@ -4,8 +4,7 @@
       <div class="c-scroll-inner">
         <div class="c-title-fixed">
           <h3 class="c-title">
-            信息历史
-            <i class="el-icon-arrow-right"></i>详情
+            信息历史<i class="el-icon-arrow-right"></i>详情
             <el-page-header @back="backClick" class="c-return-btn"></el-page-header>
           </h3>
         </div>
