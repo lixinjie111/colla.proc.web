@@ -39,7 +39,6 @@ import  axiosFilter from './api/axiosConfig.js';
 window.cancleSource={};
 window.cancelToken = axios.CancelToken;
 // 路由拦截器
-
 router.beforeEach((to,from,next) => {
     window.cancleSource.cancel && window.cancleSource.cancel()
     window.cancleSource = window.cancelToken.source()
