@@ -1980,76 +1980,76 @@ export default {
     .yk-btn-append:hover{
         opacity: 0.7;
     }
-    
-    .yk-txt .el-input__inner{
-        background: #666666;
-        color: #EEEEEE;
-        border: 0px;
-        border-radius: 0px;
-
-    }
-    .yk-txt .el-textarea__inner{
-        border: 0px!important;
-        background: rgb(102, 102, 102)!important;
-        border: 0px!important;
-        border-radius: 0px!important;
-        color: #fff!important;
-    }
-
-    .yk-txt .el-select-dropdown__item{
-        background: #888!important;
-        height: 28px!important;
-        line-height: 28px!important;
-    }
-
-    .yk-txt .el-popper{
-        border-bottom-color: #888888!important;
-    }
-
-    .yk-txt .el-select-dropdown__list{
-        padding: 0px!important;
-        height: 28px!important;
-        line-height: 28px!important;
-    }
-
-    .yk-txt .el-form-item__label{
-        width:108px!important;
-        color: #C0C0C0;
-        padding: 0 18px 0 0!important;
-    }
-    
-    .yk-txt .el-slider__runway{
-        height: 3px!important;
-        background-color: #F9BE69!important;
-    }
-    .yk-txt .el-slider__bar {
-        height: 3px!important;
-        background-color: #ee873b!important;
-    }
-    .yk-txt .el-slider__stop {
-        height: 3px!important;
-        background-color: #ee873b!important;
-        display: none;
-    }
-    .yk-txt .el-slider__marks-text{
-        width: 80px;
-        margin-top: 3px!important;
-        font-size: 12px!important;    
-    }
-
-    .yk-txt .el-slider__marks-text:first-child{
-        padding-left: 80px!important;
-    }
-    .yk-txt .el-slider__marks-text:last-child{
-        padding-right: 0px!important;
-    }
-
-    .yk-txt .el-input-group__append{
-        border: none;
-        pointer-events: auto;
-        border-radius: 0;
-        overflow: hidden;
-    }
+    .yk-txt{
+        .el-input__inner{
+            background: #666666;
+            color: #EEEEEE;
+            border: 0px;
+            border-radius: 0px;
+        };
+        .el-textarea__inner{
+            border: 0px!important;
+            background: rgb(102, 102, 102)!important;
+            border: 0px!important;
+            border-radius: 0px!important;
+            color: #fff!important;
+        };
+        .el-select-dropdown__item{
+            background: #888!important;
+            height: 28px!important;
+            line-height: 28px!important;
+        };
+        .el-popper{
+            border-bottom-color: #888888!important;
+        };
+        .el-form-item__label{
+            width:108px!important;
+            color: #C0C0C0;
+            padding: 0 18px 0 0!important;
+        };
+        .el-slider__runway{
+            height: 3px!important;
+            background-color: #F9BE69!important;
+        };
+        .el-slider__bar {
+            height: 3px!important;
+            background-color: #ee873b!important;
+        };
+        .el-slider__stop {
+            height: 3px!important;
+            background-color: #ee873b!important;
+            display: none;
+        };
+        .el-slider__marks-text{
+            width: 80px;
+            margin-top: 3px!important;
+            font-size: 12px!important;    
+        };
+        .el-slider__marks-text:first-child{
+            padding-left: 80px!important;
+        };
+        .el-slider__marks-text:last-child{
+            padding-right: 0px!important;
+        };
+        .el-input-group__append{
+            border: none;
+            pointer-events: auto;
+            border-radius: 0;
+            overflow: hidden;
+        };
+        .el-input--prefix .el-input__inner{
+            padding-left: 15px!important;
+        };
+        .el-input__prefix{
+            display:none!important;
+        };
+        .el-input-group__append, .el-input-group__prepend{
+            width: 50px;
+            text-align: center;
+            color: #fff;
+            background: rgb(102, 102, 102)!important;
+        }  
+    } 
     
     .yk-textarea .el-form-item__label {
         width: 102px!important;
@@ -2067,19 +2067,7 @@ export default {
         color: #fff!important;
         resize: none;
     }
-    .yk-txt .el-input--prefix .el-input__inner{
-        padding-left: 15px!important;
-    }
-    .yk-txt .el-input__prefix{
-        display:none!important;
-    }
-
-    .yk-txt .el-input-group__append, .el-input-group__prepend{
-        width: 50px;
-        text-align: center;
-        color: #fff;
-        background: rgb(102, 102, 102)!important;
-    }   
+    
 
     .el-slider__button{
         width: 6px!important;
