@@ -138,7 +138,7 @@
 				
 			},
 			processData(_result){
-				let pubMsgList=JSON.parse(localStorage.pubMsgList);
+				let pubMsgList=JSON.parse(sessionStorage.pubMsgList);
 				let code=_result.eventTask.taskCode.substring(0,_result.eventTask.taskCode.lastIndexOf("_"));
 				let statisticsTask={};
 				this.staticData=this.statisicsData;
@@ -536,7 +536,7 @@
 
 <style scoped>
 	.yk-pointer-ico {
-		cursor: url('position3.png') 8 24, url('position3.png'), auto;
+		cursor: url('../../../../assets/images/map/position3.png') 8 24, url('../../../../assets/images/map/position3.png'), auto;
 	}
 	
 	.yk-pointer-normal {

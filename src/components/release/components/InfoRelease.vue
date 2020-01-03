@@ -58,7 +58,7 @@
 <script>
 
 import Vue from 'vue';
-import InfoMapOL from '@/components/release/InfoMap_ol.vue'
+import InfoMapOL from './components/InfoMap_ol.vue'
 import { statisticsTask,queryAll} from '@/api/release';   
 
 export default {
@@ -125,7 +125,7 @@ export default {
             queryAll({}).then(res => {
                 if (res.status == 200) {
                     this.pubMsgList = res.data ? res.data : []; 
-                    localStorage.pubMsgList=JSON.stringify(this.pubMsgList);
+                    sessionStorage.pubMsgList=JSON.stringify(this.pubMsgList);
                 }
             });
         },
@@ -218,7 +218,7 @@ export default {
         width: 44px;
         height: 44px;
         margin: 0 auto;
-        background-image: url('./ico-bg.png');
+        background-image: url('../../../assets/images/map/ico-bg.png');
         background-repeat: no-repeat;
         background-size: 100% 100%;
     }
@@ -315,31 +315,31 @@ export default {
                     background-position: center center;
                     margin-right: 5px;
                     &.icon-rsu {
-                        background-image: url("../../assets/images/icon/rsu.png");
+                        background-image: url("../../../assets/images/icon/rsu.png");
                     }
                     &.icon-roadside {
-                        background-image: url("../../assets/images/icon/roadside.png");
+                        background-image: url("../../../assets/images/icon/roadside.png");
                     }
                     &.icon-light {
-                        background-image: url("../../assets/images/icon/light.png");
+                        background-image: url("../../../assets/images/icon/light.png");
                     }
                     &.icon-roadnet {
-                        background-image: url("../../assets/images/icon/roadnet.png");
+                        background-image: url("../../../assets/images/icon/roadnet.png");
                     }
                 }
                 &.isActive {
                     .icon{
                         &.icon-rsu {
-                            background-image: url("../../assets/images/icon/rsu-active.png");
+                            background-image: url("../../../assets/images/icon/rsu-active.png");
                         }
                         &.icon-roadside {
-                            background-image: url("../../assets/images/icon/roadside-active.png");
+                            background-image: url("../../../assets/images/icon/roadside-active.png");
                         }
                         &.icon-light {
-                            background-image: url("../../assets/images/icon/light-active.png");
+                            background-image: url("../../../assets/images/icon/light-active.png");
                         }
                         &.icon-roadnet {
-                            background-image: url("../../assets/images/icon/roadnet-active.png");
+                            background-image: url("../../../assets/images/icon/roadnet-active.png");
                         }
                     }
                 }

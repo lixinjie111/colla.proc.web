@@ -8,11 +8,11 @@
         <el-dropdown trigger="hover">
             <span class="el-dropdown-link userinfo-inner">
                 <i class="icon iconfont el-icon-mc-yonghuzhongxin_f c-vertical-middle"></i>
-                <em class="name c-vertical-middle">{sysAdminName}}</em>
+                <em class="name c-vertical-middle">{{sysAdminName}}</em>
             </span>
             <el-dropdown-menu slot="dropdown" class="c-header-dropdown">
                 <el-dropdown-item divided>版本V{{version}}</el-dropdown-item>
-                <el-dropdown-item divided @click.native="logoutClick">退出</el-dropdown-item>
+                <el-dropdown-item divided @click.native="logout">退出</el-dropdown-item>
             </el-dropdown-menu>
         </el-dropdown>
     </div>
@@ -22,27 +22,24 @@
 <script>
 import { mapActions } from 'vuex';
 import { removeAuthInfo } from '@/session/index';
-import { requestLogout } from '@/api/login'; 
 export default {
     name: "HeaderBar",
     data() {
         return {
-            sysAdminName: this.store.state.userName,
-            version: window.config.version
+            sysAdminName: this.$store.state.admin.adminName,
+            version: window.config.version,
         }
     },
     methods: {
+         ...mapActions(['goLogOut']),
         //退出登录
         logout: function() {
             this.$confirm('确认退出吗?', '提示', {
             }).then(() => {
-                this.goLogOut().then(res => {
-                    // this.$message({
-                    //     type: 'success',
-                    //     duration: '1500',
-                    //     message: res.message,
-                    //     showClose: true
-                    // });  
+                let _params = {
+                    token: JSON.parse(localStorage.getItem("yk-token")).data
+                };
+                this.goLogOut(_params).then(res => {
                     removeAuthInfo();
                     localStorage.removeItem("yk-token");
                     this.$router.push({ path: '/login' });

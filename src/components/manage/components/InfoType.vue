@@ -102,8 +102,8 @@
 <script>
 
 
-import InfoTypePop from "@/components/manage/InfoTypePop.vue"
-import InfoTypeDetail from "@/components/manage/InfoTypeDetail.vue"
+import InfoTypePop from "./components/InfoTypePop.vue"
+import InfoTypeDetail from "./components/InfoTypeDetail.vue"
 import { infoQueryPage,queryDictionary,deleteIds} from '@/api/infoType'; 
 export default {
     components: {
@@ -285,7 +285,7 @@ export default {
     margin: 0 auto;
     width: 34px;
     height: 34px;       
-    background-image: url('./ico-bg.png');
+    background-image: url('../../../assets/images/map/ico-bg.png');
     background-repeat: no-repeat;
     background-size: 100% 100%;
     text-align: center;

@@ -27,8 +27,8 @@
   </div>
 </template>
 <script>
-import VehicleInfoTag from "../../../common/detail/vehicleInfoTag";
-import HistoryVideo from '../../../common/detail/historyVideo';
+import VehicleInfoTag from "@/common/detail/vehicleInfoTag";
+import HistoryVideo from '@/common/detail/historyVideo';
 import { getEventDetail} from '@/api/infoHistory'; 
 export default {
   props: {

@@ -45,9 +45,10 @@
 <script>
 
 import md5 from 'js-md5'
-import SessionUtil from '@/store/session.js'
+import { mapActions } from 'vuex';
+import { removeAuthInfo } from '@/session/index';
 import SlideVerify from './components/slideVerify.vue'; 
-import { requestLogin} from '@/api/login';                        
+                    
 
 export default {
     name: 'Login',
@@ -74,7 +75,7 @@ export default {
             loginForm: {
                 userNo: '',
                 password: '',
-                platform: '40000',
+                platform: this.$store.state.admin.platform,
                 authToken:''
             },
             loginRules: {
@@ -101,7 +102,7 @@ export default {
                 // 直接调用登录接口
                 let _params = {
                     token: _dataObj.data,
-                    platform: '40000'
+                    platform: this.$store.state.admin.platform,
                 };
                 this.loginFunc(_params);
             }
@@ -110,6 +111,7 @@ export default {
         }
     },
     methods:{
+        ...mapActions(['goLogin']),
         handleLogin(){
              this.$refs.loginForm.validate(valid => {
                 if (valid) {
@@ -127,16 +129,12 @@ export default {
             
         },
         loginFunc(params) {
-           requestLogin(params).then(res => {
+           this.goLogin(params).then(res => {
                 this.loading = false;
                     if(res.status == 200){
                         let temp = res.data;
-                        SessionUtil.setItem('login',JSON.parse(temp));
-                        // SessionUtil.setItem('currentMenu','/infoRelease');
-                        // SessionUtil.setItem('currentMenuId','1');
                         localStorage.setItem('yk-token', JSON.stringify({data: JSON.parse(temp).token, 'time': new Date().getTime()}));                          
-                        
-                        this.$router.push('/infoRelease');
+                        this.$router.push({ path: '/' });
                     }else {
                         if(res.status == -200){
                             if(res.data.errorCount) {
@@ -153,12 +151,11 @@ export default {
             });
         },
         removeStorage() {
-            SessionUtil.clearItems();
+            removeAuthInfo();
             localStorage.removeItem("yk-token");
             this.visibleFlag = true;
         },
         onSuccess(authToken){
-            console.log(authToken)
             this.dragFlag=false;
             this.loginForm.authToken=authToken;
           

@@ -86,7 +86,7 @@ export default {
     width: 34px;
     height: 34px;
     /* margin: 0 auto; */
-    background-image: url('./ico-bg.png');
+    background-image: url('../../../../assets/images/map/ico-bg.png');
     background-repeat: no-repeat;
     background-size: 100% 100%;
     text-align: center;

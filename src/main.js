@@ -7,7 +7,6 @@ import App from './App'
 import router from './router'
 import store from './store/index.js'
 // import Api from './api/index.js';
-import SessionUtil from '@/store/session.js'
 
 
 // Element-ui
@@ -29,6 +28,10 @@ import '@/assets/scss/public.scss';
 import '@/assets/scss/element-ui-reset.scss';
 import '@/assets/icon-font/iconfont.css';
 
+// 权限
+import { setAuthInfo, getAdminId, getAuthInfo, removeAuthInfo } from '@/session/index';
+// 在免登录白名单，直接进入
+const whiteList = ['/login','/404'];
 //取消请求的对象
 // axios 过滤器
 import  axiosFilter from './api/axiosConfig.js';
@@ -36,24 +39,27 @@ import  axiosFilter from './api/axiosConfig.js';
 window.cancleSource={};
 window.cancelToken = axios.CancelToken;
 // 路由拦截器
-router.beforeEach((to, from, next) => {
+
+router.beforeEach((to,from,next) => {
     window.cancleSource.cancel && window.cancleSource.cancel()
     window.cancleSource = window.cancelToken.source()
-  if (to.meta.requireAuth) {  // 判断该路由是否需要登录权限
-      if (SessionUtil.getItem('login')) {  // 通过vuex state获取当前的token是否存在
-          next();
-      }
-      else {
-          next({
-              path: '/login',
-              query: {redirect: to.fullPath}  // 将跳转的路由path作为参数，登录成功后跳转到该路由
-          })
-      }
-  }
-  else {
-      next();
-  }
-})
+    const ADMINID = getAdminId();
+    if(ADMINID) {
+        // 回填用户信息
+        store.dispatch('setAuthInfo', getAuthInfo());
+        if(to.path === '/login') {
+            next({path: '/'});
+        }else {
+            next();
+        }
+    }else {
+        if (whiteList.indexOf(to.path) !== -1) { // 在免登录白名单，直接进入
+            next()
+        } else {
+            next('/login'); // 否则全部重定向到登录页
+        }
+    }
+});
 
 /* eslint-disable no-new */
 const vm = new Vue({

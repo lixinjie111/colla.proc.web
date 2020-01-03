@@ -48,10 +48,6 @@ export function getAuthInfo() {
 
 // 移除所有cookie
 export function removeAuthInfo() {
-	sessionStorage.removeItem(adminName);
-	sessionStorage.removeItem(adminId);
-	sessionStorage.removeItem(operations);
-	sessionStorage.removeItem(token);
-	//sessionStorage.clear();
+	sessionStorage.clear();
 	store.dispatch('removeAuthInfo');
 }
