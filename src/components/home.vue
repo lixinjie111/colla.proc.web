@@ -44,10 +44,10 @@
         </section>
 
         <section class="content-container">
-            <!-- <el-breadcrumb class="c-title" separator-class="el-icon-arrow-right" v-if="$route.meta.enable == 'Y' && $route.meta.title != '首页'">
+            <el-breadcrumb class="c-title" separator-class="el-icon-arrow-right" v-if="$route.meta.enable == 'Y' && $route.meta.title != '首页' && $route.path != '/release/infoRelease'">
                 <el-breadcrumb-item class="c-title-item">{{realBreadlist[realBreadlist.length-1].meta.title}}</el-breadcrumb-item>
-            </el-breadcrumb> -->
-            <section class="c-content-wrapper" :class="($route.meta.enable == 'Y' && $route.meta.title != '首页') ? 'c-content-wrapper-inner' : ''">
+            </el-breadcrumb>
+            <section class="c-content-wrapper" :class="($route.meta.enable == 'Y' && $route.meta.title != '首页'&& $route.path != '/release/infoRelease') ? 'c-content-wrapper-inner' : ''">
                 <div class="c-scroll-wrap" ref="scorllWrap">
                     <div class="c-scroll-inner">
                         <transition name="fade" mode="out-in">

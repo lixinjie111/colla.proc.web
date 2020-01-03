@@ -1,5 +1,5 @@
 <template>
-  <div class="c-view-dialog" v-cloak>
+  <div class="c-view-dialog-54" v-cloak>
     <div class="c-scroll-wrap">
       <div class="c-scroll-inner">
         <div class="c-title-fixed">

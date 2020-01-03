@@ -1,12 +1,12 @@
 <template>
     <div class="c-wrapper-20">
-        <el-form :inline="true" size="mini">
-            <el-form-item label="信息类型名称：">
-                <el-input v-model.trim="search.name"></el-input>
+        <el-form :inline="true" size="mini" ref="searchForm" :model="searchKey" :rules="rules">
+            <el-form-item label="信息类型名称：" prop="name">
+                <el-input v-model.trim="searchKey.name"></el-input>
             </el-form-item>
             <el-form-item>
-                <el-button type="warning" @click="handleSearch">查询</el-button>
-                <el-button type="warning" plain @click="handleFlush">刷新</el-button>
+                <el-button type="warning" icon="el-icon-search" @click="searchClick" :loading="searchloading">查询</el-button>
+                <el-button type="warning" plain icon="el-icon-setting" @click="resetClick">重置</el-button>
             </el-form-item>
             <el-form-item class="yk-right">
                 <el-button type="warning" @click="handleAdd">新增</el-button>
@@ -20,16 +20,8 @@
                 border
                 stripe
                 :header-cell-style="{background:'#E6E6E6',color:'#606266',border: '0px'}"
-                v-loading="isLoading">
-            <el-table-column
-                label="序号"
-                type="index">
-                <template slot-scope="scope">
-                    <span>
-                        {{scope.$index + paging.index * paging.size + 1}}
-                    </span>
-                </template>
-            </el-table-column>
+                v-loading="tableLoading">
+            <el-table-column label="序号" type="index" :index="indexMethod"></el-table-column>
             <el-table-column
                 prop="name"
                 label="信息类型名称"
@@ -44,7 +36,6 @@
                     <span v-if="scope.row.eventCategory == 'TI02'">道路异常信息</span>
                     <span v-if="scope.row.eventCategory == 'TI03'">交通管制信息</span>
                     <span v-if="scope.row.eventCategory == 'TI04'">天气服务信息</span>
-                    <!-- <span v-else>{{scope.row.eventCategory}}</span> -->
                 </template>
             </el-table-column>
             <el-table-column
@@ -84,15 +75,8 @@
             </el-table-column>
         </el-table>
 
-        <el-row class="c-page">
-            <el-pagination                
-                background
-                layout="prev, pager, next"               
-                :page-size="this.paging.size"
-                :total="this.paging.total"
-                @current-change="pagingChange">
-            </el-pagination>
-        </el-row>
+         <!-- 分页 -->
+    <pagination :total="pageOption.total"  :page.sync="pageOption.page" :size.sync="pageOption.size" @pagination="initData"></pagination>
 
         <info-type-pop :popData="popData" v-if="infoTypePopFlag" @closeDialog="closeDialog" @successBack="successBack"></info-type-pop>
         <info-type-detail :popData="popData" v-if="infoTypeDetailFlag" @closeDialog="closeDialog" @successBack="successBack"></info-type-detail>
@@ -101,24 +85,22 @@
 </template>
 <script>
 
-
+import Pagination from '@/common/pagination';
 import InfoTypePop from "./components/InfoTypePop.vue"
 import InfoTypeDetail from "./components/InfoTypeDetail.vue"
 import { infoQueryPage,queryDictionary,deleteIds} from '@/api/infoType'; 
 export default {
     components: {
-        InfoTypePop, InfoTypeDetail,
+        InfoTypePop, InfoTypeDetail,Pagination,
     },
     data(){
         return {
             iconPath: window.config.iconPath,
-            paging: {
-                index: 0,
+            pageOption: {
                 size: 10,
                 total: 0,
-                mini: true,
+                page: 1     
             },
-
             infoTypePopFlag: false,
             infoTypeDetailFlag: false,
             popData: {
@@ -126,28 +108,32 @@ export default {
                 data: {},
                 visible: true
             },
+            historySearchKey: {},
             dataList: [],
             typeList: [],
-            search: {
+            searchKey: {
                 name: '',
             },
-            isLoading: false,
+            tableLoading: false,
+            searchloading:false
         }
     },
+    created(){
+        this.initData();
+        this.initTypeList();
+    },
     methods: {
-        initPaging() {
-            this.paging.index = 0;
-            this.paging.total = 0;
-            this.paging.size = 10;
+        initPageOption() {
+            this.dataList = [];
+            this.pageOption.total = 0;
+            this.pageOption.page = 1;
+        },
+        indexMethod(index) {
+            return (this.pageOption.page-1) * this.pageOption.size + index + 1;
         },
         closeDialog() {
             this.infoTypePopFlag = false;
             this.infoTypeDetailFlag = false;
-        },
-        init(){
-            this.search.type = '';
-            this.initData();
-            this.initTypeList();
         },
         initVo(){
             return {
@@ -166,22 +152,24 @@ export default {
             }
         },
         initData(){
-
-            this.isLoading = true;
-            let params = {
-                name: this.search.name,
-                "page": {    
-                    "pageIndex": this.paging.index,
-                    "pageSize": this.paging.size,
-                },
-            };
+            this.tableLoading = true;
+            let params = Object.assign({}, this.historySearchKey, {
+                page:{
+                    pageSize: this.pageOption.size,
+                    pageIndex: this.pageOption.page == 0 ? 0 : this.pageOption.page -1,
+                }
+            });
             infoQueryPage(params).then(res=>{
                 if (res.status == 200) {
                     this.dataList = res.data.list;
                     this.$refs.table.bodyWrapper.scrollTop = 0;
-                    this.paging.total = res.data.totalCount;
+                    this.pageOption.total = res.data.totalCount;
                 }
-                this.isLoading = false;
+                this.tableLoading = false;
+                this.searchloading = false;
+            }).catch(err => {
+                this.tableLoading = false;
+                this.searchloading = false;
             });
         },
         initTypeList(){
@@ -201,12 +189,22 @@ export default {
                 
             }
         },
-        handleSearch(){
-            this.initPaging();
+        searchClick(){
+            this.$refs.searchForm.validate((valid) => {
+                if (valid) {
+                    this.searchloading = true;
+                    this.historySearchKey = this.searchKey;
+                    this.initPageOption();
+                    this.initData();
+                } else {
+                    return false;
+                }
+            });
+            this.initPageOption();
             this.initData();
         },
-        handleFlush(){
-            this.search.name = '';
+        resetClick(){
+            this.$refs.searchForm.resetFields();
             this.initData();
         },
         handleAdd(index,item){
@@ -266,14 +264,8 @@ export default {
                 this.infoTypeDetailFlag = false;
             }
         },
-        pagingChange(index){
-            this.paging.index = index - 1;
-            this.initData();
-        }
     },
-    created(){
-        this.init();
-    },
+   
 
 }
 </script>

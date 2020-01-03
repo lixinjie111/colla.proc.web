@@ -1,11 +1,11 @@
 <template>
   <div class="c-wrapper-20">
-    <el-form :inline="true" size="mini">
-      <el-form-item label="信息类型：">
-        <el-input v-model.trim="search.eventType"></el-input>
+   <el-form :inline="true" size="mini" ref="searchForm" :model="searchKey" :rules="rules">
+      <el-form-item label="信息类型：" prop="eventType">
+        <el-input v-model.trim="searchKey.eventType"></el-input>
       </el-form-item>
-      <el-form-item label="信息状态：">
-        <el-select v-model="search.status" placeholder="请选择">
+      <el-form-item label="信息状态：" prop="status">
+        <el-select v-model="searchKey.status" placeholder="请选择">
           <el-option
             v-for="item in statusList"
             :key="item.value"
@@ -14,17 +14,17 @@
           ></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="发布时间：">
+      <el-form-item label="发布时间：" prop="publishTime">
         <el-date-picker
-          v-model="search.publishTime"
+          v-model="searchKey.publishTime"
           type="datetimerange"
           range-separator="至"
           start-placeholder="开始时间"
           end-placeholder="结束时间"
         ></el-date-picker>
       </el-form-item>
-      <el-form-item label="信息来源：">
-        <el-select v-model="search.datasource" placeholder="请选择">
+      <el-form-item label="信息来源："  prop="datasource">
+        <el-select v-model="searchKey.datasource" placeholder="请选择">
           <el-option
             v-for="item in datasourceList"
             :key="item.value"
@@ -34,8 +34,8 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button type="warning" @click="handleSearch">查询</el-button>
-        <el-button type="warning" plain @click="handleFlush">刷新</el-button>
+         <el-button type="warning" icon="el-icon-search" @click="searchClick" :loading="searchloading">查询</el-button>
+         <el-button type="warning" plain icon="el-icon-setting" @click="resetClick">重置</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -46,14 +46,9 @@
       border
       stripe
       :header-cell-style="{background:'#E6E6E6',color:'#606266',border: '0px'}"
-      v-loading="isLoading"
+      v-loading="tableLoading"
     >
-      <el-table-column label="序号" type="index">
-        <template slot-scope="scope">
-          <span>{{scope.$index + paging.index * paging.size + 1}}</span>
-        </template>
-      </el-table-column>
-
+      <el-table-column label="序号" type="index" :index="indexMethod"></el-table-column>
       <el-table-column prop="taskCode" label="信息编号" min-width="13%"></el-table-column>
 
       <el-table-column prop="eventName" label="信息类型" min-width="6%"></el-table-column>
@@ -80,7 +75,13 @@
       </el-table-column>
 
       <el-table-column label="信息内容" min-width="15%">
-        <template slot-scope="scope">{{scope.row.content ? scope.row.content : '--'}}</template>
+        <template slot-scope="scope">
+            <el-popover placement="top" width="350" trigger="hover" popper-class="c-table-popover">
+                <div class="c-table-popover-content" v-text="scope.row.content"></div>
+                <p class="c-table-popover-text-2" slot="reference" v-text='scope.row.content'></p>
+            </el-popover>
+        </template>
+        <!-- <template slot-scope="scope">{{scope.row.content ? scope.row.content : '--'}}</template> -->
       </el-table-column>
 
       <el-table-column prop="sendNumber" label="下发次数" min-width="6%"></el-table-column>
@@ -105,43 +106,38 @@
         </template>
       </el-table-column>
     </el-table>
-
-    <el-row class="c-page">
-      <el-pagination
-        background
-        layout="prev, pager, next"
-        :page-size="this.paging.size"
-        :total="this.paging.total"
-        @current-change="pagingChange"
-      ></el-pagination>
-    </el-row>
+     <!-- 分页 -->
+    <pagination :total="pageOption.total"  :page.sync="pageOption.page" :size.sync="pageOption.size" @pagination="initData"></pagination>
     <info-history-detail v-if="isShow" :taskCode="taskCode" :detailData="detailData" :content="detailContent" @infoHistoryBack="infoHistoryBack"></info-history-detail>
   </div>
 </template>
 <script>
+import Pagination from '@/common/pagination';
 import TDate from "@/common/date.js";
 import InfoHistoryDetail from "./components/infoHistoryDetail";
 import { taskQueryPage,queryDictionary} from '@/api/infoHistory'; 
 export default {
   components: {
+    Pagination,
     InfoHistoryDetail
   },
   data() {
     return {
       dataList: [],
       TDate: TDate,
-      search: {
+      searchKey: {
         eventType: "",
         status: "",
         publishTime: "",
-        startTime: "",
+        beginTime: "",
         endTime: "",
         datasource: ""
       },
-      paging: {
-        index: 0,
-        size: 10,
-        total: 0
+      historySearchKey: {},
+      pageOption: {
+          size: 10,
+          total: 0,
+          page: 1     
       },
       statusList: [
         { id: 1, name: "有效", key: 1 },
@@ -151,7 +147,8 @@ export default {
       datasourceList: [],
       oldTime: null,
       timeInterval: 400,
-      isLoading: false,
+      tableLoading: false,
+      searchloading:false,
       detailData: [],
       detailContent: '',
       isShow: false,
@@ -160,55 +157,36 @@ export default {
   },
   created() {
     this.initDatasourceList();
-    this.init();
-  },
-  mounted() {
+    this.initData();
   },
   methods: {
-    handleScroll(el) {
-      console.log(el);
+    indexMethod(index) {
+        return (this.pageOption.page-1) * this.pageOption.size + index + 1;
     },
-    init() {
-      this.initSearch();
-      this.initPaging();
-      this.initData();
-    },
-    initPaging() {
-      this.paging.index = 0;
-      this.paging.total = 0;
-      this.paging.size = 10;
-    },
-    initSearch() {
-      this.search = {
-        eventType: "",
-        status: "",
-        publishTime: "",
-        startTime: "",
-        endTime: "",
-        datasource: ""
-      };
+    initPageOption() {
+        this.dataList = [];
+        this.pageOption.total = 0;
+        this.pageOption.page = 1;
     },
     initData(type) {
-      this.isLoading = true;
-      let params = {
-        // code: this.search.code,
-        eventType: this.search.eventType,
-        status: this.search.status,
-        beginTime: this.search.startTime,
-        endTime: this.search.endTime,
-        datasource: this.search.datasource,
-        page: {
-          pageIndex: this.paging.index,
-          pageSize: this.paging.size
-        }
-      };
+      this.tableLoading = true;
+      let params = Object.assign({}, this.historySearchKey, {
+          page:{
+              pageSize: this.pageOption.size,
+              pageIndex: this.pageOption.page == 0 ? 0 : this.pageOption.page -1,
+          }
+      });
      taskQueryPage(params).then(res => {
         if (res.status == 200) {
           this.dataList = res.data.list;
           this.$refs.table.bodyWrapper.scrollTop = 0;
-          this.paging.total = res.data.totalCount;
+          this.pageOption.total = res.data.totalCount;
         }
-        this.isLoading = false;
+        this.tableLoading = false;
+        this.searchloading = false;
+      }).catch(err => {
+          this.tableLoading = false;
+          this.searchloading = false;
       });
     },
     initDatasourceList() {
@@ -221,25 +199,27 @@ export default {
         }
       });
     },
-    handleSearch() {
-      if (Array.isArray(this.search.publishTime)) {
-        let start = this.search.publishTime[0];
-        let end = this.search.publishTime[1];
-        this.search.startTime = TDate.dateToMs(start);
-        this.search.endTime = TDate.dateToMs(end);
-      }
-      this.initPaging();
-      this.initData();
+    searchClick() {
+       this.$refs.searchForm.validate((valid) => {
+          if (valid) {
+              if (Array.isArray(this.searchKey.publishTime)) {
+                let start = this.searchKey.publishTime[0];
+                let end = this.searchKey.publishTime[1];
+                this.searchKey.beginTime = TDate.dateToMs(start);
+                this.searchKey.endTime = TDate.dateToMs(end);
+              }
+              this.searchloading = true;
+              this.historySearchKey = this.searchKey;
+              this.initPageOption();
+              this.initData();
+          } else {
+              return false;
+          }
+      });
     },
-    handleFlush() {
-      this.initSearch();
+    resetClick() {
+      this.$refs.searchForm.resetFields();
       this.initData();
-    },
-    pagingChange(value) {
-      this.paging.index = value - 1;
-      this.initData();
-
-      // this.saveWater();
     },
 
     // saving
