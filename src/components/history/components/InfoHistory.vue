@@ -219,7 +219,6 @@ export default {
     },
     resetClick() {
       this.$refs.searchForm.resetFields();
-      this.initData();
     },
 
     // saving

@@ -33,7 +33,7 @@
                        
           <el-input placeholder="请上传信息类型图标" v-model.trim="ruleForm.icon">
             <template slot="append">
-              <label class="yk_input_append" for="xFile">上传</label>
+              <label for="xFile">上传</label>
             </template>
           </el-input>
 
@@ -43,11 +43,11 @@
 
         </el-form-item>
 
-        <el-form-item label="默认广播频率" prop="frequency">
+        <el-form-item label="默认广播频率" prop="frequency" class="m-select-append">
             <el-input v-model.trim="ruleForm.frequency">             
             
               <template slot="append">
-                <select class="yk-border-left-none yk-input-select" v-model.trim="ruleForm.frequencyUnit" placeholder="请选择">
+                <select v-model.trim="ruleForm.frequencyUnit" placeholder="请选择">
                     <option v-for="(item,index) in frequencyUnitList" :key="index" :value="item.key">{{item.name}}</option>
                 </select>
               </template>
@@ -286,19 +286,14 @@
     position: absolute;
     clip: rect(0 0 0 0);
 }
-.yk-unit{
-  width: 90px;
-  /* width: 100px;
-  float: right; */
+</style>
+<style lang="scss">
+.m-select-append {
+  .el-input-group__append {
+    padding: 0 !important;
+    select {
+      padding: 0 20px !important;
+    }
+  }
 }
-
-.yk_input_append{
-  /* border: 1px solid #DCDFE6!important; */
-  /* padding: 0 20px!important; */
-  padding-top: 5px;
-  padding-left: 20px;
-  padding-right: 20px;
-}
-
-
 </style>

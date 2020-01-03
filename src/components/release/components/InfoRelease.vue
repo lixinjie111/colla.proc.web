@@ -27,28 +27,24 @@
 
         <!-- 右侧信息 -->
         <div class="yk-right">
-                <div class="yk-form-item  yk-border-r yrButton">
+                <div class="yk-form-item yrButton">
                     <div class="add">
                         <i class="icon el-icon-plus"></i>
                         <div class="addContent">
-                            <el-form> 
-                                <el-form-item  class="ic-form-item">
-                                    <el-select ref="refPubMsg" placeholder="发布信息" v-model="search.pubMsg"  value-key="name" >                        
-                                        <el-option-group v-for="(group,groupIndex) in pubMsgGroup" label="发布信息" :key="groupIndex">
-                                            <template v-for="(item,index) in pubMsgList">
-                                                <el-option :key="index" :value="item" @click.native="pubMsgClick(item);">                                        
-                                                    {{item.name}}
-                                                </el-option>
-                                            </template>
-                                        </el-option-group>
-                                    </el-select>                    
-                                </el-form-item> 
-                            </el-form> 
+                            <el-select ref="refPubMsg" placeholder="发布信息" v-model="search.pubMsg"  value-key="name" class="ic-form-item" popper-class="ic-form-select">                        
+                                <el-option-group v-for="(group,groupIndex) in pubMsgGroup" label="发布信息" :key="groupIndex">
+                                    <template v-for="(item,index) in pubMsgList">
+                                        <el-option :key="index" :value="item" @click.native="pubMsgClick(item);">                                        
+                                            {{item.name}}
+                                        </el-option>
+                                    </template>
+                                </el-option-group>
+                            </el-select>  
                         </div>
                     </div>
                 </div>              
             
-                <div class="yk-form-item  yk-border-r yrButton1">
+                <div class="yk-form-item yrButton1">
                     <div v-for="item in poiList"  class="yrSwitch" :class="{isActive:item.isCheck}"  :key="item.value" :value="item.name" @click="poiClick(item);"><i :class="item.icon" class="icon"></i> {{item.name}}</div> 
                 </div>                
          
@@ -168,26 +164,6 @@ export default {
 </script>
 <style scoped lang="scss">
 @import '@/assets/scss/theme.scss';
-    
-    .el-select-group__wrap{
-        background: #666!important;        
-    }
-    .el-select-dropdown__item{
-        color: #fff!important;
-    }
-    .hover{
-        color: #F59307!important;
-        background: #666!important;
-    }
-    .selected{
-        color: #F59307!important;
-        background: #666!important;
-    }
-    .el-select-dropdown__item.hover, .el-select-dropdown__item:hover {
-        background-color: transparent !important;
-    }
-   
-
     .el-card{
         margin-bottom: 20px;
         width: 94px;
@@ -276,7 +252,6 @@ export default {
                     font-size: 27px;
                 }
                 .addContent{
-                    width:130px;
                     height: 100%;
                     position: absolute;
                     right:0;
@@ -351,10 +326,6 @@ export default {
         }
         
     }
-    .yk-border-r{
-        border-right: 1px solid rgb(145, 143, 143)!important;
-    }
-
     .yk-r-10{
         margin-right: 10px;
     }
@@ -365,54 +336,43 @@ export default {
         font-size: 16px;
         user-select: none;
     }
-
-    .yk-form{
-        top: 200px;
-        left: 200px;
-        position: absolute;
-        background: #ffffff;
-    }
-
-    .yk-135{
-        width: 135px;
-        font-size: 14px;
-    }
-        
     .isActive{
         color:#f59307;
     }
-    .el-select-dropdown{
-        right:0;
-    }
-   
-
-</style>
-
-
-<style lang="scss">
-    .yk-form-item{
+    .yk-form-item {
         background: #666!important;
-        .el-input__inner {
-            width: 100% !important;
-            background-color: #4D4D4D!important;
-            border: 0px!important;
-            border-radius: 0px!important;
+        border-right: 1px solid rgb(145, 143, 143)!important;
+    }
+</style>
+<style lang="scss">
+.ic-form-select {
+    left: auto !important;
+    right: 30px !important;
+    background-color: #666 !important;
+    color: #fff !important;
+    .el-select-group__title {
+        display: none !important;
+    }
+    .el-select-dropdown__item {
+        color: #fff;
+        &:hover {
+            background-color: transparent !important;
+            color: #f59307 !important;
+        }
+        &.hover {
+            background-color: transparent !important;
+        }
+        &.selected {
+            color: #f59307 !important;
         }
     }
-    .el-select-group__title{
-        display: none;
+    .popper__arrow {
+        left: auto !important;
+        right: 13px !important;
+        &:after {
+            border-bottom-color: #666 !important;
+        }
     }
-    .el-popper[x-placement^=bottom-start] .popper__arrow {
-        left:100px !important;
-        border-bottom-color: #7d7c7c!important;
-        filter: none !important;
-    }
-    .el-popper[x-placement^=bottom-start] .popper__arrow::after{
-        border-bottom-color: #7d7c7c!important;
-    }
-   
-
-
-
+}
 </style>
 

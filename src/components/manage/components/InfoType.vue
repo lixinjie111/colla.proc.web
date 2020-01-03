@@ -200,12 +200,9 @@ export default {
                     return false;
                 }
             });
-            this.initPageOption();
-            this.initData();
         },
         resetClick(){
             this.$refs.searchForm.resetFields();
-            this.initData();
         },
         handleAdd(index,item){
             this.popData.title = '新增';

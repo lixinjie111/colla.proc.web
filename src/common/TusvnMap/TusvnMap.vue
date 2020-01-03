@@ -1,5 +1,5 @@
 <template>
-    <div style="height:100%">
+    <div style="height:100%" class="tusvn-wrapper">
         <div :id="targetId"  style="height:100%" v-loading="isLoading"></div>
         <div :id="overlayContainerId" style="display: none;">
             <!-- <div id="marker" title="Marker">
@@ -1678,15 +1678,6 @@ export default {
 }
 </script>
 <style scoped>
-    
-
-
-   
-
-
-
-
-
     #map {
         width: 100%;
         height: 100%;
@@ -1822,13 +1813,7 @@ export default {
             opacity: 1 !important;
         }
     }
-
-
-
-
-
-
-.yk-info-window-title{
+    .yk-info-window-title{
         display:inline-block;
         height: 15px;
         line-height: 15px;
@@ -1862,19 +1847,6 @@ export default {
     .yk-w-51{
         width: 51px;
     }
-    .yk-border-left-none{
-        border-left: 0px!important;
-        border-top-left-radius: 0px!important;
-        border-bottom-left-radius: 0px!important;
-    }
-
-    .yk-input-select{
-        height: 28px;
-        border: 1px solid #DCDFE6;
-        border-top-right-radius: 3px;
-        border-bottom-right-radius: 3px;
-        padding: 0 10px;
-    }
     .yk-input-select-2{
         height: 28px;
         background: #666;
@@ -1905,24 +1877,15 @@ export default {
     }
 </style>
 <style lang="scss">
-.path-view-popover {
-    max-width: 256px;
-    border: none;
-    color: #999;
-    // max-height: 200px;
-    // overflow-y: auto;
-}
-.demo-ruleForm {
-    .el-form-item__content {
-        width: 240px;
-        .el-input__inner {
-            box-sizing: border-box;
-            width: 100%;
-        }
-        .el-date-editor.el-input, .el-date-editor.el-input__inner {
-            width: 100%;
-        }
-        &.el-form--inline {
+.tusvn-wrapper {
+    .path-view-popover {
+        max-width: 256px;
+        border: none;
+        color: #999;
+    }
+    .demo-ruleForm {
+        .el-form-item__content {
+            width: 240px;
             .el-input__inner {
                 box-sizing: border-box;
                 width: 100%;
@@ -1930,18 +1893,26 @@ export default {
             .el-date-editor.el-input, .el-date-editor.el-input__inner {
                 width: 100%;
             }
-            // .el-date-editor--datetimerange.el-input, .el-date-editor--datetimerange.el-input__inner {
-            //  width: 350px;
-            // }
+            &.el-form--inline {
+                .el-input__inner {
+                    box-sizing: border-box;
+                    width: 100%;
+                }
+                .el-date-editor.el-input, .el-date-editor.el-input__inner {
+                    width: 100%;
+                }
+                // .el-date-editor--datetimerange.el-input, .el-date-editor--datetimerange.el-input__inner {
+                //  width: 350px;
+                // }
+            }
+        }
+        .el-input-number {
+            .el-input-number__increase, .el-input-number__decrease {
+                border-radius: 0!important;
+            }
         }
     }
-    .el-input-number {
-        .el-input-number__increase, .el-input-number__decrease {
-            border-radius: 0!important;
-        }
-    }
-}
-    
+        
     .yk-readonly .el-input__inner{
         pointer-events: none;
         user-select: none!important;
@@ -2084,5 +2055,6 @@ export default {
     }
     .el-select-dropdown__item.selected{
         color: #F59307!important;
-    }
+    }    
+}
 </style>
