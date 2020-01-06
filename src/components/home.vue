@@ -10,7 +10,7 @@
                     <el-menu 
                         class="el-menu-vertical-demo"
                         :default-active="$route.path"
-                        unique-opened 
+                        :unique-opened="false"
                         router 
                         @open="handleopen" 
                         @close="handleclose" 
