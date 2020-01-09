@@ -34,6 +34,23 @@ input:-webkit-autofill {
 	.el-date-editor.el-input, .el-date-editor.el-input__inner {
 		width: 100%;
 	}
+	.c-input-append-select {
+	    .el-select {
+	        .el-input__inner {
+	            width: 72px;
+	        }
+	    }
+	}
+	.el-input-number {
+		width: 100%;
+		&.c-input-number {
+			width: calc(100% - 68px);
+		}
+		.el-input__inner {
+			text-align: left;
+			width: 100% !important;
+		}
+	}
 	&.el-form--inline {
 		.el-input-inner {
 			width: 200px;
@@ -54,15 +71,24 @@ input:-webkit-autofill {
 		.el-date-editor--datetimerange.el-input, .el-date-editor--datetimerange.el-input__inner {
 			width: 350px;
 		}
-		// 数字加减框
-		.el-input-number--small{
-    		width: 200px;
+		.c-input-append-select {
+	    	width: 200px;
+	    	box-sizing: border-box;
+	    	.el-input__inner {
+	            width: 100%;
+	        }
+			.el-select {
+		        .el-input__inner {
+		            width: 72px;
+		        }
+		    }
 		}
-	}
-	.el-input-number--mini {
-		width: calc(100% - 80px);
-		.el-input--mini .el-input__inner {
-			text-align: left;
+		// 数字加减框
+		.el-input-number{
+    		width: 200px;
+    		&.c-input-number {
+			width: 120px !important;
+		}
 		}
 	}
 }
@@ -224,15 +250,13 @@ input:-webkit-autofill {
 			}
 		}
 		img {
-			&.el-icon-plus {
-				object-fit: contain;
-			}
+			object-fit: contain;
 		}
 	}
 }
 .c-form-tip {
 	display: inline-block;
-	vertical-align: bottom;
+	vertical-align: middle;
 	line-height: 20px;
 	font-size: 12px;
 	margin-left: 5px;
