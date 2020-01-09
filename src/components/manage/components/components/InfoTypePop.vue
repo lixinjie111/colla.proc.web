@@ -44,8 +44,15 @@
 
         <el-form-item label="默认广播频率" prop="frequency">
             <el-input v-model.trim="ruleForm.frequency" class="c-input-append-select">
-              <el-select v-model="select.frequencyUnit" slot="append"  placeholder="请选择">
-                  <el-option v-for="(item,index) in frequencyUnitList" :key="index" :value="item.key">{{item.name}}</el-option>
+              <el-select 
+                v-model="ruleForm.frequencyUnit" 
+                slot="append"
+                placeholder="请选择">
+                  <el-option 
+                    v-for="(item,index) in frequencyUnitList" 
+                    :key="item.key"
+                    :label="item.name"
+                    :value="item.key"></el-option>
               </el-select>
             </el-input>
         </el-form-item>
@@ -95,22 +102,8 @@
       return {
         submitLoading: false,
         fileList: [],
-        typeList: [
-          // { id: 1 ,name: '车辆异常',value: 1},
-          // { id: 2 ,name: '道路异常',value: 2},
-          // { id: 3 ,name: '交通管制',value: 3},
-          // { id: 4 ,name: '天气信息',value: 4},
-        ],
+        typeList: [],
         frequencyUnitList: [],
-        // ruleForm: {
-        //   name: '',
-        //   eventCategory: '',
-        //   frequency: '',
-        //   frequencyUnit: '',
-        //   delivery: false,
-        //   content: '',
-        //   infoType: '',
-        // },
         rules: {
           eventCategory: [
             { required: true, message: '请选择信息所属分类', trigger: 'change' }
@@ -133,10 +126,6 @@
           infoType: [
             { required: true, message: '请填写子类型代码', trigger: 'blur' },
           ]
-        },
-        select: {
-          sendChannel: '',
-          frequencyUnit: '',
         },
         sendChannelList: [
           { id: 1, name: '道路施工/路面打滑' , key: 'DM0202'},
@@ -171,8 +160,13 @@
         queryDictionary(params).then(res=>{
             if (res.status == 200) {
                 this.frequencyUnitList = res.data ? res.data : [];
-                if(this.frequencyUnitList.length){                                           
-                  this.select.frequencyUnit = this.frequencyUnitList[0];
+                if(this.frequencyUnitList.length && this.ruleForm.frequencyUnit) {
+                  this.frequencyUnitList.forEach(item => {
+                    if(item.key == this.ruleForm.frequencyUnit) {
+                      this.ruleForm.frequencyUnit = item.name;
+                      return;
+                    }
+                  });
                 }
             }
         });
@@ -245,7 +239,6 @@
           );
       },
       updateFn(){
-          let url = 'event/info/update';
           let params = {
               id: this.ruleForm.id,
               code: this.ruleForm.code,
