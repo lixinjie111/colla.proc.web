@@ -66,8 +66,8 @@
                                 </el-form-item> -->
                                 <!-- <el-input-number v-model.trim="ruleForm.alertRadius" controls-position="right" :min="1" :max="1024"></el-input-number> -->
                                 <el-form-item label="影响范围" prop="alertRadius" class="yk-bottom-12 yk-txt">
-                                    <el-input-number v-model.trim="trafficInfo.alertRadius" controls-position="right" :min="1" :max="1024"></el-input-number>
-                                    <span class="c-ml-10">单位:10cm</span>
+                                    <el-input-number v-model.trim="trafficInfo.alertRadius" class="c-input-number" controls-position="right" :min="1" :max="1024"></el-input-number>
+                                    <span class="c-form-tip" style="color: #fff;">单位:10cm</span>
                                 </el-form-item>
 
                                 <el-form-item label="信息内容" prop="content" class="yk-bottom-16 yk-textarea">
