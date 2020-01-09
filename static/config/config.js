@@ -30,7 +30,7 @@ window.config = {
     // dlWmsUrl: 'http://10.0.1.199:8080/', //迪路
 
     //上海正式环境 外网
-    staticUrl: "http://116.236.72.204:49090/", //静态文件路径
+    staticUrl: "http://116.236.72.205:49092/", //静态文件路径 -- 影子服务器
     url:'http://116.236.72.204:49094/collaProcApp/',  // 交通平台
     operateUrl: 'http://116.236.72.204:49090/operateApp/', //运营平台登陆
     iconPath:'http://116.236.72.204:49090/file/pic/trafficType/',  // 图片服务器地址
