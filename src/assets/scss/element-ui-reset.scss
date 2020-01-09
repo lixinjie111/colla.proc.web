@@ -15,6 +15,10 @@
 		color: #333;
 	}
 }
+input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0px 1000px white inset !important;
+    -webkit-text-fill-color: #333 !important;
+}
 // 表单
 .el-form {
 	.el-select {
@@ -197,17 +201,27 @@
 
 // 上传图片
 .c-upload-wrapper {
+	margin-bottom: 10px;
+	&:last-child {
+		margin-bottom: 0;
+	}
 	.el-upload {
 		width: auto !important;
 		text-align: left;
-		.el-icon-plus {
-			width: 32px !important;
-			height: 32px !important;
-			line-height: 30px !important;
-			vertical-align: middle !important;
-			text-align: center !important;
+		.c-upload-size {
+			display: inline-block;
+			width: 32px;
+			height: 32px;
+			line-height: 30px;
+			background-color: #F5F7FA;
 			border: 1px dashed $borderColor !important;
 			box-sizing: border-box !important;
+			vertical-align: middle !important;
+			text-align: center !important;
+			margin-right: 5px;
+			&:last-child {
+				margin-right: 0;
+			}
 		}
 		img {
 			&.el-icon-plus {
@@ -215,4 +229,12 @@
 			}
 		}
 	}
+}
+.c-form-tip {
+	display: inline-block;
+	vertical-align: bottom;
+	line-height: 20px;
+	font-size: 12px;
+	margin-left: 5px;
+	color: $fontGrayColor;
 }
