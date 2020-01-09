@@ -30,7 +30,20 @@
         </el-form-item>
 
         <el-form-item label="信息类型图标" prop="icon">
-                       
+            <!-- <el-upload
+            class="c-upload-wrapper"
+            ref="upload"
+            action="https://jsonplaceholder.typicode.com/posts/"
+            :auto-upload="false"
+            :show-file-list="false"
+            :before-upload="beforeAvatarUpload"
+            :on-change="handleUploadChange"
+          >
+            <img v-if="ruleForm.icon" :src="ruleForm.icon" class="c-upload-size" />
+            <i v-else class="el-icon-plus c-upload-size"></i>
+            <el-button type="warning">上传图标</el-button>
+            <span class="c-form-tip">尺寸： 28*28</span>
+          </el-upload>   -->
           <el-input placeholder="请上传信息类型图标" v-model.trim="ruleForm.icon">
             <template slot="append">
               <label class="yk_input_append" for="xFile">上传</label>
@@ -153,6 +166,7 @@
     },
     created(){
       this.init();
+     
     },
     methods: {
       init(){        
@@ -188,6 +202,7 @@
         this.ruleForm.icon = file.name;
         let param = new FormData(); //创建form对象
         param.append('upfile',file); //通过append向form对象添加数据
+        console.log(file)
         //console.log(param.get('upfile')); //FormData私有类对象，访问不到，可以通过get判断值是否传进去
 
         // this.validator.isFile = true;
@@ -195,6 +210,7 @@
       },
       uploadFile(formData){
         let url = this.uploadPath;
+         console.log(this.uploadPath)
         let config = {
           headers:{'Content-Type':'multipart/form-data'}
         };
