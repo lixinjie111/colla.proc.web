@@ -1,4 +1,4 @@
-<template>
+ <template>
 
 <!-- :model="ruleForm" -->
   <el-dialog
@@ -7,7 +7,6 @@
     width="30%"
     :before-close="handleCancel"
     :visible.sync="popData.visible"
-    class="yk-left"
     >
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" size="mini" label-width="120px">
         
@@ -43,15 +42,11 @@
 
         </el-form-item>
 
-        <el-form-item label="默认广播频率" prop="frequency" class="m-select-append">
-            <el-input v-model.trim="ruleForm.frequency">             
-            
-              <template slot="append">
-                <select v-model.trim="ruleForm.frequencyUnit" placeholder="请选择">
-                    <option v-for="(item,index) in frequencyUnitList" :key="index" :value="item.key">{{item.name}}</option>
-                </select>
-              </template>
-            
+        <el-form-item label="默认广播频率" prop="frequency">
+            <el-input v-model.trim="ruleForm.frequency" class="c-input-append-select">
+              <el-select v-model="select.frequencyUnit" slot="append"  placeholder="请选择">
+                  <el-option v-for="(item,index) in frequencyUnitList" :key="index" :value="item.key">{{item.name}}</el-option>
+              </el-select>
             </el-input>
         </el-form-item>
 
@@ -60,8 +55,8 @@
         </el-form-item>
 
         <el-form-item label="默认影响范围" prop="alertRadius">
-            <el-input-number v-model.trim="ruleForm.alertRadius" controls-position="right" :min="1" :max="1024"></el-input-number>
-            <span class="c-ml-10">单位:10cm</span>
+            <el-input-number v-model.trim="ruleForm.alertRadius" class="c-input-number" controls-position="right" :min="1" :max="1024"></el-input-number>
+            <span class="c-form-tip">单位:10cm</span>
         </el-form-item>
 
         <el-form-item label="下发通道" prop="sendChannel">
@@ -286,14 +281,9 @@
     position: absolute;
     clip: rect(0 0 0 0);
 }
-</style>
-<style lang="scss">
-.m-select-append {
-  .el-input-group__append {
-    padding: 0 !important;
-    select {
-      padding: 0 20px !important;
-    }
-  }
+.yk-unit{
+  width: 90px;
+  /* width: 100px;
+  float: right; */
 }
 </style>
