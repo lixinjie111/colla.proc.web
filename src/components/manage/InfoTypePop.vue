@@ -1,4 +1,4 @@
-<template>
+ <template>
 
 <!-- :model="ruleForm" -->
   <el-dialog
@@ -73,8 +73,8 @@
         </el-form-item>
 
         <el-form-item label="默认影响范围" prop="alertRadius">
-            <el-input-number v-model.trim="ruleForm.alertRadius" controls-position="right" :min="1" :max="1024"></el-input-number>
-            <span class="c-ml-10">单位:10cm</span>
+            <el-input-number v-model.trim="ruleForm.alertRadius" class="c-input-number" controls-position="right" :min="1" :max="1024"></el-input-number>
+            <span class="c-form-tip">单位:10cm</span>
         </el-form-item>
 
         <el-form-item label="下发通道" prop="sendChannel">
