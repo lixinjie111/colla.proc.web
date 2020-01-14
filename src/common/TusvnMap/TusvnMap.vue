@@ -649,8 +649,9 @@ export default {
                 alertRadius: this.trafficInfo.alertRadius,                      
                 alertPath: this.trafficInfo.alertPath,
                 alertCategory: this.trafficInfo.alertCategory,
+                eventCode:this.trafficInfo.eventCode,
+                status:1
             };
-
             taskUpdate(params).then(res => {
                 if(res.status == 200){
                     this.$message({
@@ -675,6 +676,12 @@ export default {
             let params = {
                 id: this.trafficInfo.id,
                 "taskCode": this.trafficInfo.taskCode,
+                "datasource": this.trafficInfo.datasource,
+                "latitude": this.trafficInfo.latitude,
+                "longitude": this.trafficInfo.longitude,
+                "eventCode": this.trafficInfo.eventCode,
+                "alertCategory": this.trafficInfo.alertCategory,
+                "alertRadius": this.trafficInfo.alertRadius,
                 "expirationTime": new Date().getTime(), 
                 "status": 2                
             };
@@ -788,6 +795,7 @@ export default {
                     this.trafficInfo.datasource = res.data.datasource;     
                     this.trafficInfo.infoType = res.data.infoType;
                     this.trafficInfo.sendChannel = res.data.sendChannel; 
+                    this.trafficInfo.eventCode = res.data.eventCode; 
                     if(!flag) {
                         this.trafficInfo.alertPath = res.data.alertPath;   
                         this.select.alertPath = res.data.alertPath;    
