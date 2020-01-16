@@ -701,8 +701,8 @@ export default {
             // this.initSelect();
             // this.initTrafficInof();
         },
-        closeInforWindow(e){ 
-            this.addClickEvent();                
+        closeInforWindow(e){
+            this.addClickEvent();
             this.closeMyInfoWindow();
             this.initSelect();
             this.initTrafficInof();
