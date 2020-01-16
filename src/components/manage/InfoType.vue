@@ -8,7 +8,7 @@
                 <el-button type="warning" @click="handleSearch">查询</el-button>
                 <el-button type="warning" plain @click="handleFlush">刷新</el-button>
             </el-form-item>
-            <el-form-item class="yk-right">
+            <el-form-item class="c-pull-right">
                 <el-button type="warning" @click="handleAdd">新增</el-button>
             </el-form-item>
         </el-form>
@@ -52,10 +52,11 @@
                 label="图标"
                 min-width="15%">
                 <template slot-scope="scope">
-                    <div class="picBox">
-                        <div v-for="item in scope.row.icon.split(',')" :key="item" :class="item.indexOf('rsi_map')==-1?'image-box':'image-pic'">
-                                <img  :src="iconPath + item" class="image" @error="errorImg($event)">
-                        </div>
+                    <div class="m-pic-box image-box">
+                        <img :src="iconPath+'rsi_'+scope.row.alertCategory+'.png'" class="image" @error="errorImg($event)">
+                    </div>
+                    <div class="m-pic-box image-pic">
+                        <img :src="iconPath+'rsi_map_'+scope.row.alertCategory+'.png'" class="image" @error="errorImg($event)">
                     </div>
                 </template>
             </el-table-column>
@@ -132,7 +133,7 @@ export default {
             search: {
                 name: '',
             },
-            isLoading: false,
+            isLoading: false
         }
     },
     methods: {
@@ -275,6 +276,7 @@ export default {
             }
         },
         pagingChange(index){
+            this.dataList = [];
             this.paging.index = index - 1;
             this.initData();
         }
@@ -287,30 +289,28 @@ export default {
 </script>
 <style lang="scss" scoped>
 @import "@/assets/scss/theme.scss";
-.yk-right {
-    float: right;
-}
-.picBox{
-    @include layoutMode();
-    .image-pic{
-        width: 27px;
-        @include layoutMode();
-        .image{
-                width: 100%;
-            }
-    }
-    .image-box{
+.m-pic-box {
+    overflow: hidden;
+    display: inline-block;
+    margin: 0 3px; 
+    height: 34px; 
+    &.image-box{
         width: 34px;
-        height: 34px;
-        margin-right: 5px;  
-        background:#f59307;  
-        border-radius:50%;     
-        @include layoutMode();
+        background: #f59307;  
+        border-radius:50%;
         .image{
-            width: 25px;
+            border-radius: 100%;
+            height: 70% !important;
+            margin-top: 15%;
         }
+    } 
+    &.image-pic{
+        min-width: 25px;
+    }
+    .image{
+        display: inline-block;
+        height: 100%;
     }
 }
-
 </style>
 
