@@ -293,23 +293,21 @@ export default {
     overflow: hidden;
     display: inline-block;
     margin: 0 3px; 
-    height: 34px; 
+    width: 34px;
+    vertical-align: middle;
     &.image-box{
-        width: 34px;
+        height: 34px;
         background: #f59307;  
         border-radius:50%;
+        overflow: hidden;
         .image{
-            border-radius: 100%;
-            height: 70% !important;
-            margin-top: 15%;
+            width: 76% !important;
+            margin-top: 12%;
         }
     } 
-    &.image-pic{
-        min-width: 25px;
-    }
     .image{
         display: inline-block;
-        height: 100%;
+        width: 100%;
     }
 }
 </style>
