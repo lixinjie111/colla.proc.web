@@ -295,11 +295,12 @@ export default {
     margin: 0 3px; 
     width: 34px;
     vertical-align: middle;
+    overflow: hidden;
+    line-height: 0;
     &.image-box{
         height: 34px;
         background: #f59307;  
         border-radius:50%;
-        overflow: hidden;
         .image{
             width: 76% !important;
             margin-top: 12%;
