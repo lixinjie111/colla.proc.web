@@ -24,7 +24,6 @@
 					trafficSignalIds: [],
 					message: 'MessageLayer', // 发布信息 图层
 					messageBg: 'MessageBgLayer', // 信息的背景图片 图层
-					messageBg1: 'MessageBgLayer1', // 信息的背景图片 图层
 				},
 				mapMarker: {
 					rsu: false, // rsu
@@ -138,6 +137,7 @@
 				
 			},
 			processData(_result){
+				console.log(_result)
 				let pubMsgList=JSON.parse(localStorage.pubMsgList);
 				let code=_result.eventTask.taskCode.substring(0,_result.eventTask.taskCode.lastIndexOf("_"));
 				let statisticsTask={};
@@ -146,7 +146,8 @@
 					if(item.code==code){
 						statisticsTask={
 							icon:item.icon,
-							name:item.name
+							name:item.name,
+							alertCategory:item.alertCategory
 						}
 					}
 				});
@@ -154,7 +155,7 @@
 				if(_result.optType=="cancel"){
 					if(this.prevData[_result.eventTask.taskCode]){
 						this.staticData.forEach((item,index)=>{
-							if(item.icon==statisticsTask.icon){
+							if(item.alertCategory==statisticsTask.alertCategory){
 								if(item.num==1){
 									this.staticData.splice(index, 1);
 								}else{
@@ -163,8 +164,7 @@
 							}
 						});
 						if(this.$refs.refTusvnMap){
-							this.$refs.refTusvnMap.removeFeature(this.prevData[_result.eventTask.taskCode].id, this.mapLayer.messageBg1);
-							this.$refs.refTusvnMap.removeFeature(this.prevData[_result.eventTask.taskCode].bgImgId, this.mapLayer.messageBg);
+							this.$refs.refTusvnMap.removeFeature(this.prevData[_result.eventTask.taskCode].id, this.mapLayer.messageBg);
 							if(this.$refs.refTusvnMap.isOpen[_result.eventTask.taskCode]){
 								this.$refs.refTusvnMap.closeInforWindow();
 							}
@@ -175,7 +175,7 @@
 				if(_result.optType == "add"){//新增
 					if(!this.prevData[_result.eventTask.taskCode]){
 						let flag=this.staticData.find(item=>{
-							if(item.icon==statisticsTask.icon){
+							if(item.alertCategory==statisticsTask.alertCategory){
 								item.num++;
 								return true;
 							}
@@ -184,6 +184,7 @@
 							this.staticData.push({
 								icon:statisticsTask.icon,
 								name:statisticsTask.name,
+								alertCategory:statisticsTask.alertCategory,
 								num:1
 							})
 						}
@@ -191,10 +192,9 @@
 							lon: _result.eventTask.longitude?_result.eventTask.longitude:'',
 							lat: _result.eventTask.latitude?_result.eventTask.latitude:'',
 							id: _result.eventTask.taskCode,
-							icon: this.iconPath+statisticsTask.icon,
+							icon: this.iconPath + "rsi_map_"+_result.eventTask.alertCategory+".png",
 							bgImgId: 'bg_' + _result.eventTask.taskCode,
-							bgImgSrc: 'static/images/ico-bg2.png',
-							bgImgSize: [44, 58],
+							bgImgSize: [44, 59],
 							bgImgOffset: [0, 0],
 							size: [28, 28],
 							imgOffset: [0, -34],
@@ -214,8 +214,7 @@
 									icon: _filterData[id].icon,
 									trafficInfo: this.trafficInfo,
 								};
-								this.$refs.refTusvnMap.addImg(_filterData[id].lon, _filterData[id].lat, _filterData[id].bgImgId, this.mapLayer.messageBg, _filterData[id].bgImgSrc, _filterData[id].bgImgSize, null, true, null, _filterData[id].bgImgOffset, null, [0.5, 1],marker);
-								this.$refs.refTusvnMap.addImg(_filterData[id].lon, _filterData[id].lat, _filterData[id].id,      this.mapLayer.messageBg1, _filterData[id].icon,     _filterData[id].size,      null, null, null,  [0,0],                      null, [0.5, 1.7],marker);
+								this.$refs.refTusvnMap.addImg(_filterData[id].lon, _filterData[id].lat, _filterData[id].id, this.mapLayer.messageBg, _filterData[id].icon, _filterData[id].bgImgSize, null, true, null, _filterData[id].bgImgOffset, null, [0.5, 1],marker);
 							}
 						}
 						this.prevData[_result.eventTask.taskCode]=_filterData[_result.eventTask.taskCode];
@@ -233,10 +232,9 @@
 							lon: item.longitude?item.longitude:'',
 							lat: item.latitude?item.latitude:'',
 							id: item.taskCode,
-							icon: item.icon ? this.iconPath + item.icon : 'static/images/position.png',
+							icon: this.iconPath + "rsi_map_"+item.alertCategory+".png",
 							bgImgId: 'bg_' + item.taskCode,
-							bgImgSrc: 'static/images/ico-bg2.png',
-							bgImgSize: [44, 58],
+							bgImgSize: [44, 59],
 							bgImgOffset: [0, 0],
 							size: [28, 28],
 							imgOffset: [0, -34],
@@ -258,8 +256,7 @@
 							icon: _filterData[id].icon,
 							trafficInfo: this.trafficInfo,
 						};
-						this.$refs.refTusvnMap.addImg(_filterData[id].lon, _filterData[id].lat, _filterData[id].bgImgId, this.mapLayer.messageBg, _filterData[id].bgImgSrc, _filterData[id].bgImgSize, null, true, null, _filterData[id].bgImgOffset, null, [0.5, 1],marker);
-						this.$refs.refTusvnMap.addImg(_filterData[id].lon, _filterData[id].lat, _filterData[id].id,      this.mapLayer.messageBg1, _filterData[id].icon,     _filterData[id].size,      null, null, null,  [0,0],                      null, [0.5, 1.7],marker);
+						this.$refs.refTusvnMap.addImg(_filterData[id].lon, _filterData[id].lat, _filterData[id].id, this.mapLayer.messageBg, _filterData[id].icon, _filterData[id].bgImgSize, null, true, null, _filterData[id].bgImgOffset, null, [0.5, 1],marker);
 					}
 				}
 				_this.prevData = Object.assign({}, _filterData);
@@ -282,7 +279,6 @@
 			},
 			clearPubMsgIco() {
 				this.$refs.refTusvnMap.removeAllFeature(this.mapLayer.messageBg);
-				this.$refs.refTusvnMap.removeAllFeature(this.mapLayer.messageBg1);
 			},
 			clearPubMsg() {
 				this.clearPubMsgIco();
@@ -498,14 +494,13 @@
 						alertPath: '', //格式 "[[12.333,23.333],[12.444,23,444]]"，转换显示为 12.333,23.333;12.444,23,444
 						alertCategory: '' //告警类型
 					};
-					//console.log('this.msgTypeInfo.icon', this.iconPath + this.msgTypeInfo.icon);
 					let marker = {
 						id: 'marker' + (new Date()).getTime(),
 						lon: lon,
 						lat: lat,
 						trafficInfo: this.trafficInfo,
 						isEdit: false,
-						icon: this.iconPath + this.msgTypeInfo.icon,
+						icon: this.iconPath + "rsi_map_"+this.msgTypeInfo.alertCategory+".png"
 					};
 					this.$refs.refTusvnMap.addMyInfoWindow(marker,true);
 
@@ -518,7 +513,6 @@
 				this.$refs.refTusvnMap.addVectorLayer(this.mapLayer.tabLayer);
 				this.$refs.refTusvnMap.addVectorLayer(this.mapLayer.message);
 				this.$refs.refTusvnMap.addVectorLayer(this.mapLayer.messageBg);
-				this.$refs.refTusvnMap.addVectorLayer(this.mapLayer.messageBg1);
 				this.mapInitOk = true;
 				// 设置地图中心点及级别
 				this.$refs.refTusvnMap.centerAt(window.defaultMapOption.center[0], window.defaultMapOption.center[1]);

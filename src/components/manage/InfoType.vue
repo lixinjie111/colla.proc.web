@@ -52,9 +52,10 @@
                 label="图标"
                 min-width="15%">
                 <template slot-scope="scope">
-                    <!-- <img :src="iconPath + scope.row.icon" class="image"> -->
-                    <div class="image-box">
-                        <img :src="iconPath + scope.row.icon" class="image">
+                    <div class="picBox">
+                        <div v-for="item in scope.row.icon.split(',')" :key="item" :class="item.indexOf('rsi_map')==-1?'image-box':'image-pic'">
+                                <img  :src="iconPath + item" class="image">
+                        </div>
                     </div>
                 </template>
             </el-table-column>
@@ -277,25 +278,32 @@ export default {
 
 }
 </script>
-<style scoped>
+<style lang="scss" scoped>
+@import "@/assets/scss/theme.scss";
 .yk-right {
     float: right;
 }
-.image-box{
-    margin: 0 auto;
-    width: 34px;
-    height: 34px;       
-    background-image: url('./ico-bg.png');
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
-    text-align: center;
+.picBox{
+    @include layoutMode();
+    .image-pic{
+        width: 27px;
+        @include layoutMode();
+        .image{
+                width: 100%;
+            }
+    }
+    .image-box{
+        width: 34px;
+        height: 34px;
+        margin-right: 5px;  
+        background:#f59307;  
+        border-radius:50%;     
+        @include layoutMode();
+        .image{
+            width: 25px;
+        }
+    }
 }
-.image{
-    width: 20px;
-    margin: 0 auto;
-    position: relative;
-    top: 50%; 
-    transform: translateY(-50%);
-}
+
 </style>
 

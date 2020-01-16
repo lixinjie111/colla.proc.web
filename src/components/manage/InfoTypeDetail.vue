@@ -9,8 +9,6 @@
     >
     <el-form ref="ruleForm" size="mini" label-width="120px">
         <el-form-item label="信息所属分类：">
-            <!-- <el-input size="mini" v-model="data.eventCategory" disabled></el-input> -->
-            <!-- {{data.eventCategory}} -->
             <span v-if="ruleForm.eventCategory == 'TI01'">车辆异常信息</span>
             <span v-else-if="ruleForm.eventCategory == 'TI02'">道路异常信息</span>
             <span v-else-if="ruleForm.eventCategory == 'TI03'">交通管制信息</span>
@@ -19,20 +17,17 @@
 
         </el-form-item>
         <el-form-item label="信息类型名称：">
-            <!-- <el-input size="mini" v-model="data.name" disabled></el-input> -->
             {{ruleForm.name}}
         </el-form-item>
         <el-form-item label="告警类别(国标)：">
             {{ruleForm.alertCategory}}
         </el-form-item>
         <el-form-item label="信息类型图标：">
-            
-            <!-- <el-image :src="iconPath"></el-image> -->
-
-            <div class="image-box">
-                <img :src="iconPath" class="image">
+            <div class="picBox">
+                <div v-for="item in iconPath" :key="item" :class="item.indexOf('rsi_map')==-1?'image-box':'image-pic'">
+                    <img  :src="item" class="image">
+                </div>
             </div>
-
         </el-form-item>
         <el-form-item label="默认广播频率：">
             <!-- <el-input size="mini" v-model="data.name" disabled></el-input> -->
@@ -61,41 +56,49 @@ export default {
     },
     data(){
         return {
-            iconPath: '',
+            iconPath: [],
             disabled: true,
         }
+    },
+    created(){
+        let _arr=this.popData.data.icon.split(",");  
+        _arr.forEach(item =>{
+            this.iconPath.push(window.config.iconPath+item)
+        }) 
     },
     methods: {
       handleCancel() {
         this.$emit("closeDialog");
       }
     },
-    watch:{
-        'ruleForm.icon': {
-            handler(newVal,oldVal){                
-                this.iconPath = window.config.iconPath + newVal;
-            },
-            deep: true,
-            immediate: true,
+}
+</script>
+<style lang="scss" scoped>
+@import "@/assets/scss/theme.scss";
+.yk-right {
+    float: right;
+}
+.picBox{
+     height: 34px;
+    display: flex;
+    .image-pic{
+        width: 27px;
+        margin-right: 5px;  
+        @include layoutMode();
+        .image{
+                width: 100%;
+            }
+    }
+    .image-box{
+        width: 34px;
+        height: 34px;
+        background:#f59307;  
+        border-radius:50%;     
+        @include layoutMode();
+        .image{
+            width: 25px;
         }
     }
 }
-</script>
-<style scoped>
-.image-box{
-    width: 34px;
-    height: 34px;
-    /* margin: 0 auto; */
-    background-image: url('./ico-bg.png');
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
-    text-align: center;
-}
-.image{
-    width: 20px;
-    margin: 0 auto;
-    position: relative;
-    top: 50%; /*偏移*/
-    transform: translateY(-50%);
-}
+
 </style>

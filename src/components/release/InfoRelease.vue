@@ -14,7 +14,7 @@
                     <el-card v-for="(item,index) in statisicsData" :key="index" :body-style="{ padding: '0px' }">
                         <div class="react-bg">                    
                             <div class="image-box">
-                                <img :src="iconPath + item.icon" class="image">
+                                <img :src="iconPath +'rsi_'+ item.alertCategory+'.png'" class="image">
                             </div>
                             <div class="yk-card-title">
                                 <span>{{item.num}}</span>

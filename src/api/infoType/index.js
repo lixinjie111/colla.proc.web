@@ -8,7 +8,7 @@ export const queryDictionary = params => { return axios.post(`${HTTPURL}common/q
 
 export const deleteIds = params => { return axios.post(`${HTTPURL}event/info/delete/ids`, params).then(res => res.data); };
 
-export const uploadPic = (params,config) => { return axios.post(`${HTTPURL}event/info/uploadPic`, params,config).then(res => res.data); };
+export const uploadPicNew = (params,config) => { return axios.post(`${HTTPURL}event/info/uploadPicNew`, params,config).then(res => res.data); };
 
 export const infoSave = params => { return axios.post(`${HTTPURL}event/info/save`, params).then(res => res.data); };
 

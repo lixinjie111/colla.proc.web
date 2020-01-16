@@ -1070,14 +1070,7 @@ export default {
         },
         // 画 发布信息图标
         drawPubMsgIcon(lon,lat,icon){
-            // lon,lat,id,layerId,carImgUrl,size,rotation,rotateWithView,opacity,offset,scale
-            let pubMsgBgIco = 'static/images/ico-bg2.png';
-            let pubMsgBgIcoID = 'bg_' + this.pubMsgIconID;
-            // [44,58]
-            this.addImg(lon,lat,pubMsgBgIcoID,this.MessageTempLayer,pubMsgBgIco,[44,87],null,null,null,[0,10]);
-
-            // [22,37]
-            this.addImg(lon,lat,this.pubMsgIconID,this.MessageTempLayer,icon,[28,66],null,null,null,[0,8]);
+            this.addImg(lon,lat,this.pubMsgIconID,this.MessageTempLayer,icon,[44,59],null,true,null,[0,0],null,[0.5,1]);
         },
         // 移除 发布信息图标
         clearPubMsgIcon(){
