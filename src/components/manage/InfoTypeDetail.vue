@@ -23,10 +23,11 @@
             {{ruleForm.alertCategory}}
         </el-form-item>
         <el-form-item label="信息类型图标：">
-            <div class="picBox">
-                <div v-for="item in iconPath" :key="item" :class="item.indexOf('rsi_map')==-1?'image-box':'image-pic'">
-                    <img  :src="item" class="image" @error="errorImg($event)">
-                </div>
+            <div class="m-pic-box image-box">
+                <img :src="iconPath+'rsi_'+popData.data.alertCategory+'.png'" class="image">
+            </div>
+            <div class="m-pic-box image-pic">
+                <img :src="iconPath+'rsi_map_'+popData.data.alertCategory+'.png'" class="image" >
             </div>
         </el-form-item>
         <el-form-item label="默认广播频率：">
@@ -56,15 +57,9 @@ export default {
     },
     data(){
         return {
-            iconPath: [],
+            iconPath: window.config.iconPath,
             disabled: true,
         }
-    },
-    created(){
-        let _arr=this.popData.data.icon.split(",");  
-        _arr.forEach(item =>{
-            this.iconPath.push(window.config.iconPath+item)
-        }) 
     },
     methods: {
         handleCancel() {
@@ -82,30 +77,32 @@ export default {
 </script>
 <style lang="scss" scoped>
 @import "@/assets/scss/theme.scss";
-.yk-right {
-    float: right;
-}
-.picBox{
-     height: 34px;
-    display: flex;
-    .image-pic{
-        width: 27px;
-        margin-right: 5px;  
-        @include layoutMode();
-        .image{
-                width: 100%;
-            }
-    }
-    .image-box{
-        width: 34px;
+.m-pic-box {
+    overflow: hidden;
+    display: inline-block;
+    margin: 0 3px; 
+    width: 34px;
+    vertical-align: middle;
+    overflow: hidden;
+    line-height: 0;
+    &.image-box{
         height: 34px;
-        background:#f59307;  
-        border-radius:50%;     
-        @include layoutMode();
+        background: #f59307;  
+        border-radius:50%;
+        position: relative;
         .image{
-            width: 25px;
+           position: absolute;
+           width: 76% !important;
+            top:0;
+            bottom:0;
+            left:0;
+            right: 0;
+            margin:auto
         }
+    } 
+    .image{
+        display: inline-block;
+        width: 100%;
     }
 }
-
 </style>

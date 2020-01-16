@@ -301,9 +301,15 @@ export default {
         height: 34px;
         background: #f59307;  
         border-radius:50%;
+        position: relative;
         .image{
+            position: absolute;
             width: 76% !important;
-            margin-top: 12%;
+            top:0;
+            bottom:0;
+            left:0;
+            right: 0;
+            margin:auto
         }
     } 
     .image{

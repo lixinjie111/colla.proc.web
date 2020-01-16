@@ -160,24 +160,10 @@
       };
     },
     created(){
-      if(this.popData.data.icon){
+      if(this.popData.type=="info-type-update"){
         this.uploadFileBase64.forEach(item=>{
          item.url=this.iconPath+item.iconType+"_"+this.ruleForm.alertCategory+".png";
         })
-        // let arr=this.popData.data.icon.split(',');
-        // arr.forEach(item => {
-        //   this.uploadFileBase64.forEach(subItem=>{
-        //     if(item.indexOf("rsi_map")==-1){
-        //       if(subItem.iconType=="rsi"){
-        //         subItem.url=this.iconPath+item;
-        //       }
-        //     }else{
-        //       if(subItem.iconType=="rsi_map"){
-        //         subItem.url=this.iconPath+item;
-        //       }
-        //     }
-        //   })
-        // })
       }
       console.log(this.uploadFileBase64)
       this.init();
