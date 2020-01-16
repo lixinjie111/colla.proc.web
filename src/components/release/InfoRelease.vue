@@ -14,7 +14,7 @@
                     <el-card v-for="(item,index) in statisicsData" :key="index" :body-style="{ padding: '0px' }">
                         <div class="react-bg">                    
                             <div class="image-box">
-                                <img :src="iconPath +'rsi_'+ item.alertCategory+'.png'" class="image">
+                                <img :src="iconPath +'rsi_'+ item.alertCategory+'.png'" class="image" @error="errorImg($event)">
                             </div>
                             <div class="yk-card-title">
                                 <span>{{item.num}}</span>
@@ -109,6 +109,13 @@ export default {
         this.initStatisics();
     },
     methods: {
+        errorImg(event){
+            if(event.target.src.indexOf('rsi_map')==-1){
+                event.target.src=this.iconPath+"rsi_0.png";
+            }else{
+                event.target.src=this.iconPath+"rsi_map_0.png";
+            }
+        },
       	initStatisics(){
             statisticsTask({}).then(res => {
                 if (res.status == 200 ) {

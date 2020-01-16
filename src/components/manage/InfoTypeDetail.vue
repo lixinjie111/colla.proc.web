@@ -25,7 +25,7 @@
         <el-form-item label="信息类型图标：">
             <div class="picBox">
                 <div v-for="item in iconPath" :key="item" :class="item.indexOf('rsi_map')==-1?'image-box':'image-pic'">
-                    <img  :src="item" class="image">
+                    <img  :src="item" class="image" @error="errorImg($event)">
                 </div>
             </div>
         </el-form-item>
@@ -67,10 +67,17 @@ export default {
         }) 
     },
     methods: {
-      handleCancel() {
-        this.$emit("closeDialog");
-      }
-    },
+        handleCancel() {
+            this.$emit("closeDialog");
+        }, 
+        errorImg(event){
+            if(event.target.src.indexOf('rsi_map')==-1){
+                event.target.src=this.iconPath+"rsi_0.png";
+            }else{
+                event.target.src=this.iconPath+"rsi_map_0.png";
+            }
+        },
+    }
 }
 </script>
 <style lang="scss" scoped>

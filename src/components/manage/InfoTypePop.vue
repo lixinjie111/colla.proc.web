@@ -39,7 +39,7 @@
                 :show-file-list="false"
                 :on-change="imgPreview"
               >
-                <img v-if="uploadFileBase64[index].url" :src="uploadFileBase64[index].url" class="c-upload-size" />
+                <img v-if="uploadFileBase64[index].url" :src="uploadFileBase64[index].url" @error="errorImg($event)" class="c-upload-size" />
                 <i v-else class="el-icon-plus c-upload-size"></i>
                 <el-button type="warning">上传图标</el-button>
                 <span class="c-form-tip">尺寸：{{item.width}}*{{item.height}}</span>
@@ -109,7 +109,7 @@
           height: '80',
           iconType: 'rsi',
           category:'',
-          url: '' //base64编码
+          url: '', //base64编码
         },
         {
           width: '44',
@@ -186,6 +186,13 @@
       init(){        
         this.initTypeList();
         this.initUnintList();
+      },
+      errorImg(event){
+        if(event.target.src.indexOf('rsi_map')==-1){
+            event.target.src=this.iconPath+"rsi_0.png";
+        }else{
+            event.target.src=this.iconPath+"rsi_map_0.png";
+        }
       },
       initTypeList(){
         let params = {

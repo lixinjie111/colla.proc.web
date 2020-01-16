@@ -54,7 +54,7 @@
                 <template slot-scope="scope">
                     <div class="picBox">
                         <div v-for="item in scope.row.icon.split(',')" :key="item" :class="item.indexOf('rsi_map')==-1?'image-box':'image-pic'">
-                                <img  :src="iconPath + item" class="image">
+                                <img  :src="iconPath + item" class="image" @error="errorImg($event)">
                         </div>
                     </div>
                 </template>
@@ -144,6 +144,13 @@ export default {
         closeDialog() {
             this.infoTypePopFlag = false;
             this.infoTypeDetailFlag = false;
+        },
+        errorImg(event){
+            if(event.target.src.indexOf('rsi_map')==-1){
+                event.target.src=this.iconPath+"rsi_0.png";
+            }else{
+                event.target.src=this.iconPath+"rsi_map_0.png";
+            }
         },
         init(){
             this.search.type = '';

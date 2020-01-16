@@ -480,6 +480,20 @@ export function removeAllFeature(layer) {
 */
 export function generateIcon(src, size, rotation, rotateWithView, opacity, offset, scale,anchor) {
     // console.log(src);
+    // var img=new Image();
+    // img.src=src;
+    // img.onload=function(){
+    //     if(this.complete){
+
+    //     }
+    // }
+    // img.onerror=function(){
+    //     if(src.indexOf('rsi_map')==-1){
+    //         src=window.config.iconPath+"rsi_0.png";
+    //     }else{
+    //         src=window.config.iconPath+"rsi_map_0.png";
+    //     }
+    // }
     let icon = new Icon({
     src: src || "@/assets/images/geolocation_marker.png",
     size: size || [22, 22],
@@ -491,7 +505,7 @@ export function generateIcon(src, size, rotation, rotateWithView, opacity, offse
     anchor:anchor||[0.5,0.5]
     });
     return icon;
-    }
+}
 
 /**
  * 生成ICON:ol/style/Text

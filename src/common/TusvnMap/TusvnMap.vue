@@ -1389,6 +1389,7 @@ export default {
         * @param {Array.<number>} anchor Anchor. Default value is the icon center.
         */
         addImg:function(lon,lat,id,layerId,carImgUrl,size,rotation,rotateWithView,opacity,offset,scale,anchor,marker){
+            
             let carStyle = new Style({
                 image:mapInit.generateIcon(carImgUrl||"../../static/assets/images/geolocation_marker_heading.png",size||[22,37],rotation||0,rotateWithView||true,opacity||1,offset||[0,0],scale,anchor)
             });
