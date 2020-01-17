@@ -44,10 +44,10 @@
                 min-width="15%">
                <template slot-scope="scope">
                     <div class="m-pic-box image-box">
-                        <img :src="iconPath+'rsi_'+scope.row.alertCategory+'.png'" class="image" @error="errorImg($event)">
+                        <img :src="iconPath+'rsi_'+scope.row.alertCategory+'.png'+'?t='+new Date().getTime()" class="image" @error="errorImg($event)">
                     </div>
                     <div class="m-pic-box image-pic">
-                        <img :src="iconPath+'rsi_map_'+scope.row.alertCategory+'.png'" class="image" @error="errorImg($event)">
+                        <img :src="iconPath+'rsi_map_'+scope.row.alertCategory+'.png'+'?t='+new Date().getTime()" class="image" @error="errorImg($event)">
                     </div>
                 </template>
             </el-table-column>
