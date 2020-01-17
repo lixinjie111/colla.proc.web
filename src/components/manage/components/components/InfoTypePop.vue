@@ -38,7 +38,7 @@
                 :show-file-list="false"
                 :on-change="imgPreview"
               >
-                <img v-if="uploadFileBase64[index].url" :src="uploadFileBase64[index].url" @error="errorImg($event)" class="c-upload-size" />
+                <img v-if="uploadFileBase64[index].url" :src="uploadFileBase64[index].url | isBaseImg"  @error="errorImg($event)" class="c-upload-size">
                 <i v-else class="el-icon-plus c-upload-size"></i>
                 <el-button type="warning">上传图标</el-button>
                 <span class="c-form-tip">尺寸：{{item.width}}*{{item.height}}</span>
@@ -103,6 +103,11 @@
         return this.popData.data
       }
     },
+    filters: {
+      isBaseImg: function (val) {
+        return val.indexOf("base64")==-1 ? window.config.iconPath+val : val
+      }
+    },
     data() {
       let _uploadOption = [      // 图片上传
         {
@@ -164,7 +169,7 @@
     created(){
       if(this.popData.type=="info-type-update"){
         this.uploadFileBase64.forEach(item=>{
-         item.url=this.iconPath+item.iconType+"_"+this.ruleForm.alertCategory+".png";
+         item.url=item.iconType+"_"+this.ruleForm.alertCategory+".png";
         })
       }
       this.init();
@@ -265,17 +270,19 @@
         let flag=true;
         this.uploadFileBase64.forEach(item => {
           if(item.url==""){
-            this.$message({
-                type: 'error',
-                duration: '1500',
-                message: "请上传全部信息类型图标 ！",
-                showClose: true
-            });
             flag=false;
           }
           item.category=this.ruleForm.alertCategory;
         })
-        if(!flag) return;
+        if(!flag) {
+          this.$message({
+              type: 'error',
+              duration: '1500',
+              message: "请上传全部信息类型图标 ！",
+              showClose: true
+          });
+          return;
+        }
         this.submitLoading = true;
         uploadPicNew({picVOList:this.uploadFileBase64}).then(res=>{
               if (res.status == 200) {
