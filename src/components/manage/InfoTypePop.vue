@@ -39,7 +39,7 @@
                 :show-file-list="false"
                 :on-change="imgPreview"
               >
-                <img v-if="uploadFileBase64[index].url" :src="uploadFileBase64[index].url | isBaseImg"  @error="errorImg($event)" class="c-upload-size">
+                <img v-if="uploadFileBase64[index].url" :src="uploadFileBase64[index].url | isBaseImg"  class="c-upload-size">
                 <i v-else class="el-icon-plus c-upload-size"></i>
                 <el-button type="warning">上传图标</el-button>
                 <span class="c-form-tip">尺寸：{{item.width}}*{{item.height}}</span>
@@ -104,7 +104,7 @@
     },
     filters: {
       isBaseImg: function (val) {
-        return val.indexOf("base64")==-1 ? window.config.iconPath+val : val
+        return val.indexOf("base64")==-1 ? window.config.iconPath+val+"?t="+new Date().getTime(): val
       }
     },
     data() {
