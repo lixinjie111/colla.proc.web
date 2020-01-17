@@ -20,7 +20,7 @@
             </el-select>
         </el-form-item>
 
-        <el-form-item label="告警类别(国标)">
+        <el-form-item label="告警类别(国标)" prop="alertCategory">
              <el-input v-model.trim="ruleForm.alertCategory"></el-input>
         </el-form-item>
 
@@ -28,31 +28,23 @@
             <el-input v-model.trim="ruleForm.name"></el-input>
         </el-form-item>
 
-        <el-form-item label="信息类型图标" prop="icon">
-            <!-- <el-upload
-            class="c-upload-wrapper"
-            ref="upload"
-            action="https://jsonplaceholder.typicode.com/posts/"
-            :auto-upload="false"
-            :show-file-list="false"
-            :before-upload="beforeAvatarUpload"
-            :on-change="handleUploadChange"
-          >
-            <img v-if="ruleForm.icon" :src="ruleForm.icon" class="c-upload-size" />
-            <i v-else class="el-icon-plus c-upload-size"></i>
-            <el-button type="warning">上传图标</el-button>
-            <span class="c-form-tip">尺寸： 28*28</span>
-          </el-upload>   -->
-          <el-input placeholder="请上传信息类型图标" v-model.trim="ruleForm.icon">
-            <template slot="append">
-              <label for="xFile">上传</label>
-            </template>
-          </el-input>
-
-          <form>
-              <input ref="refUploadInput" class="yk-file" type="file" id="xFile" @change="selectFile">
-          </form>
-
+         <el-form-item label="信息类型图标" prop="icon">
+          <template v-for="(item, index) in uploadFileBase64">
+            <div @click="getImageTypeIndex(index)" class="c-upload-wrapper">
+              <el-upload
+                ref="upload"
+                action
+                :auto-upload="false"
+                :show-file-list="false"
+                :on-change="imgPreview"
+              >
+                <img v-if="uploadFileBase64[index].url" :src="uploadFileBase64[index].url" @error="errorImg($event)" class="c-upload-size" />
+                <i v-else class="el-icon-plus c-upload-size"></i>
+                <el-button type="warning">上传图标</el-button>
+                <span class="c-form-tip">尺寸：{{item.width}}*{{item.height}}</span>
+              </el-upload>
+            </div>
+          </template>
         </el-form-item>
 
         <el-form-item label="默认广播频率" prop="frequency">
@@ -100,8 +92,8 @@
 </template>
 
 <script>
-  import axios from 'axios'
-  import { uploadPic,queryDictionary,infoUpdate,infoSave } from '@/api/infoType'; 
+  import { imgPreviewBase64, getImgSize } from '@/common/imgPreviewBase64';
+  import { uploadPicNew,queryDictionary,infoUpdate,infoSave } from '@/api/infoType'; 
   export default {
     props: {
       popData: Object
@@ -112,7 +104,25 @@
       }
     },
     data() {
+      let _uploadOption = [      // 图片上传
+        {
+          width: '80',
+          height: '80',
+          iconType: 'rsi',
+          category:'',
+          url: '', //base64编码
+        },
+        {
+          width: '44',
+          height: '59',
+          iconType: 'rsi_map',
+          category:'',
+          url: '', //base64编码
+        },
+      ];
       return {
+        iconPath: window.config.iconPath,
+        uploadFileBase64: _uploadOption,
         submitLoading: false,
         fileList: [],
         typeList: [],
@@ -125,11 +135,14 @@
             { required: true, message: '请输入信息类型名称', trigger: 'blur' },
             // { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
           ],
-          icon: [
-            { required: true, message: '请上传信息类型图标', trigger: 'blur' },
-            { message: '请上传信息类型图标', trigger: 'input' },
-
+          alertCategory: [
+            { required: true, message: '请填写告警类别', trigger: 'blur' },
           ],
+          // icon: [
+          //   { required: true, message: '请上传信息类型图标', trigger: 'blur' },
+          //   { message: '请上传信息类型图标', trigger: 'input' },
+
+          // ],
           frequency: [
             { required: true, message: '请填写默认广播频率', trigger: 'blur' },
           ],
@@ -149,13 +162,25 @@
       };
     },
     created(){
+      if(this.popData.type=="info-type-update"){
+        this.uploadFileBase64.forEach(item=>{
+         item.url=this.iconPath+item.iconType+"_"+this.ruleForm.alertCategory+".png";
+        })
+      }
+      console.log(this.uploadFileBase64)
       this.init();
-     
     },
     methods: {
       init(){        
         this.initTypeList();
         this.initUnintList();
+      },
+       errorImg(event){
+        if(event.target.src.indexOf('rsi_map')==-1){
+            event.target.src=this.iconPath+"rsi_0.png";
+        }else{
+            event.target.src=this.iconPath+"rsi_map_0.png";
+        }
       },
       initTypeList(){
         let params = {
@@ -185,37 +210,27 @@
             }
         });
       },
-      selectFile(e){
-        this.$refs.ruleForm.clearValidate('icon');
-        let file = e.target.files[0];
-        this.ruleForm.icon = file.name;
-        let param = new FormData(); //创建form对象
-        param.append('upfile',file); //通过append向form对象添加数据
-        console.log(file)
-        //console.log(param.get('upfile')); //FormData私有类对象，访问不到，可以通过get判断值是否传进去
-
-        // this.validator.isFile = true;
-        this.uploadFile(param);
+      getImageTypeIndex(index) {
+        this.uploadCurrentIndex = index;
       },
-      uploadFile(formData){
-        let url = this.uploadPath;
-         console.log(this.uploadPath)
-        let config = {
-          headers:{'Content-Type':'multipart/form-data'}
-        };
-        uploadPic(formData,config).then(res => {
-              //console.log('文件上传结果 ： -------------- ' + JSON.stringify(response.data) );              
-              if(res.status == '200'){
-                  this.ruleForm.icon = res.data;
-                    // 隐藏批量导入面板
-                  this.$message({
-                      type: 'success',
-                      duration: '1500',
-                      message: '上传成功！',
-                      showClose: true
-                  });       
-              }
-          })
+      imgPreview(file) {
+        let _this = this;
+        imgPreviewBase64(_this, file.raw, function(base64){
+          getImgSize(_this, base64).then(res => {
+            let _option = _this.uploadFileBase64[_this.uploadCurrentIndex];
+            if(res.width == _option.width && res.height == _option.height) {
+              _this.uploadFileBase64[_this.uploadCurrentIndex].url = base64;
+              _this.uploadFileBase64 = JSON.parse(JSON.stringify(_this.uploadFileBase64));
+            }else {
+              _this.$message({
+                type: 'error',
+                duration: '1500',
+                message: `请上传尺寸为${_option.width}*${_option.height}的图片`,
+                showClose: true
+              });
+            }
+          }).catch(err => {});
+        });
       },
   
       frequencyUnitChange(e){
@@ -225,16 +240,9 @@
         this.$emit("closeDialog");
       },
       handleOk() {
-        // this.$refs.ruleForm.submitForm();
-        // console.log("确定-----");
         this.$refs.ruleForm.validate((valid) => {
           if (valid) {           
-            this.submitLoading = true;
-            if(this.popData.type == 'info-type-add'){
-                this.addFn();
-            }else if(this.popData.type == 'info-type-update'){
-                this.updateFn();
-            }
+            this.upload();
           }
         });
       },
@@ -254,6 +262,39 @@
               }
           );
       },
+      upload(){
+        let flag=true;
+        this.uploadFileBase64.forEach(item => {
+          if(item.url==""){
+            this.$message({
+                type: 'error',
+                duration: '1500',
+                message: "请上传全部信息类型图标 ！",
+                showClose: true
+            });
+            flag=false;
+          }
+          item.category=this.ruleForm.alertCategory;
+        })
+        if(!flag) return;
+        this.submitLoading = true;
+        uploadPicNew({picVOList:this.uploadFileBase64}).then(res=>{
+              if (res.status == 200) {
+                  this.ruleForm.icon=res.data;
+                  this.$message({
+                      type: 'success',
+                      duration: '1500',
+                      message: "上传图标成功 ！",
+                      showClose: true
+                  });
+                  if(this.popData.type == 'info-type-add'){
+                      this.addFn();
+                  }else if(this.popData.type == 'info-type-update'){
+                      this.updateFn();
+                  }       
+              }
+          });
+      },
       updateFn(){
           let params = {
               id: this.ruleForm.id,
@@ -262,7 +303,7 @@
               name: this.ruleForm.name,
               frequency: this.ruleForm.frequency,
               frequencyUnit: this.ruleForm.frequencyUnit,
-              icon: this.ruleForm.icon,
+              icon:this.ruleForm.icon,
               content: this.ruleForm.content,
               sendChannel: this.ruleForm.sendChannel,
               infoType: this.ruleForm.infoType,
@@ -281,6 +322,7 @@
                   this.submitLoading = false;
               }
           });
+         
       }
     }
   }

@@ -26,13 +26,12 @@
             {{ruleForm.alertCategory}}
         </el-form-item>
         <el-form-item label="信息类型图标：">
-            
-            <!-- <el-image :src="iconPath"></el-image> -->
-
-            <div class="image-box">
-                <img :src="iconPath" class="image">
+            <div class="m-pic-box image-box">
+                <img :src="iconPath+'rsi_'+popData.data.alertCategory+'.png'" class="image">
             </div>
-
+            <div class="m-pic-box image-pic">
+                <img :src="iconPath+'rsi_map_'+popData.data.alertCategory+'.png'" class="image" >
+            </div>
         </el-form-item>
         <el-form-item label="默认广播频率：">
             <!-- <el-input size="mini" v-model="data.name" disabled></el-input> -->
@@ -61,41 +60,52 @@ export default {
     },
     data(){
         return {
-            iconPath: '',
+            iconPath: window.config.iconPath,
             disabled: true,
         }
     },
     methods: {
       handleCancel() {
         this.$emit("closeDialog");
-      }
-    },
-    watch:{
-        'ruleForm.icon': {
-            handler(newVal,oldVal){                
-                this.iconPath = window.config.iconPath + newVal;
-            },
-            deep: true,
-            immediate: true,
-        }
+      },
+      errorImg(event){
+            if(event.target.src.indexOf('rsi_map')==-1){
+                event.target.src=this.iconPath+"rsi_0.png";
+            }else{
+                event.target.src=this.iconPath+"rsi_map_0.png";
+            }
+        },
     }
 }
 </script>
-<style scoped>
-.image-box{
+<style lang="scss" scoped>
+@import "@/assets/scss/theme.scss";
+.m-pic-box {
+    overflow: hidden;
+    display: inline-block;
+    margin: 0 3px; 
     width: 34px;
-    height: 34px;
-    /* margin: 0 auto; */
-    background-image: url('../../../../assets/images/map/ico-bg.png');
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
-    text-align: center;
-}
-.image{
-    width: 20px;
-    margin: 0 auto;
-    position: relative;
-    top: 50%; /*偏移*/
-    transform: translateY(-50%);
+    vertical-align: middle;
+    overflow: hidden;
+    line-height: 0;
+    &.image-box{
+        height: 34px;
+        background: #f59307;  
+        border-radius:50%;
+        position: relative;
+        .image{
+           position: absolute;
+           width: 76% !important;
+            top:0;
+            bottom:0;
+            left:0;
+            right: 0;
+            margin:auto
+        }
+    } 
+    .image{
+        display: inline-block;
+        width: 100%;
+    }
 }
 </style>

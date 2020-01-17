@@ -8,7 +8,7 @@
                 <el-button type="warning" icon="el-icon-search" @click="searchClick" :loading="searchloading">查询</el-button>
                 <el-button type="warning" plain icon="el-icon-setting" @click="resetClick">重置</el-button>
             </el-form-item>
-            <el-form-item class="yk-right">
+            <el-form-item class="c-pull-right">
                 <el-button type="warning" @click="handleAdd">新增</el-button>
             </el-form-item>
         </el-form>
@@ -42,10 +42,12 @@
                 prop="icon"
                 label="图标"
                 min-width="15%">
-                <template slot-scope="scope">
-                    <!-- <img :src="iconPath + scope.row.icon" class="image"> -->
-                    <div class="image-box">
-                        <img :src="iconPath + scope.row.icon" class="image">
+               <template slot-scope="scope">
+                    <div class="m-pic-box image-box">
+                        <img :src="iconPath+'rsi_'+scope.row.alertCategory+'.png'" class="image" @error="errorImg($event)">
+                    </div>
+                    <div class="m-pic-box image-pic">
+                        <img :src="iconPath+'rsi_map_'+scope.row.alertCategory+'.png'" class="image" @error="errorImg($event)">
                     </div>
                 </template>
             </el-table-column>
@@ -134,6 +136,13 @@ export default {
         closeDialog() {
             this.infoTypePopFlag = false;
             this.infoTypeDetailFlag = false;
+        },
+        errorImg(event){
+            if(event.target.src.indexOf('rsi_map')==-1){
+                event.target.src=this.iconPath+"rsi_0.png";
+            }else{
+                event.target.src=this.iconPath+"rsi_map_0.png";
+            }
         },
         initVo(){
             return {
@@ -266,25 +275,35 @@ export default {
 
 }
 </script>
-<style scoped>
-.yk-right {
-    float: right;
-}
-.image-box{
-    margin: 0 auto;
+</script>
+<style lang="scss" scoped>
+.m-pic-box {
+    overflow: hidden;
+    display: inline-block;
+    margin: 0 3px; 
     width: 34px;
-    height: 34px;       
-    background-image: url('../../../assets/images/map/ico-bg.png');
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
-    text-align: center;
-}
-.image{
-    width: 20px;
-    margin: 0 auto;
-    position: relative;
-    top: 50%; 
-    transform: translateY(-50%);
+    vertical-align: middle;
+    overflow: hidden;
+    line-height: 0;
+    &.image-box{
+        height: 34px;
+        background: #f59307;  
+        border-radius:50%;
+        position: relative;
+        .image{
+            position: absolute;
+            width: 76% !important;
+            top:0;
+            bottom:0;
+            left:0;
+            right: 0;
+            margin:auto
+        }
+    } 
+    .image{
+        display: inline-block;
+        width: 100%;
+    }
 }
 </style>
 
