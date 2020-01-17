@@ -105,7 +105,7 @@
     },
     filters: {
       isBaseImg: function (val) {
-        return val.indexOf("base64")==-1 ? window.config.iconPath+val : val
+        return val.indexOf("base64")==-1 ? window.config.iconPath+val+"?t="+new Date().getTime(): val
       }
     },
     data() {
