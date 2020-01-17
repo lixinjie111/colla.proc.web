@@ -167,7 +167,6 @@
          item.url=this.iconPath+item.iconType+"_"+this.ruleForm.alertCategory+".png";
         })
       }
-      console.log(this.uploadFileBase64)
       this.init();
     },
     methods: {
@@ -202,7 +201,7 @@
                 if(this.frequencyUnitList.length && this.ruleForm.frequencyUnit) {
                   this.frequencyUnitList.forEach(item => {
                     if(item.key == this.ruleForm.frequencyUnit) {
-                      this.ruleForm.frequencyUnit = item.name;
+                      this.ruleForm.frequencyUnit = item.key;
                       return;
                     }
                   });
