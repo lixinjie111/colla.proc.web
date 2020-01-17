@@ -27,10 +27,10 @@
         </el-form-item>
         <el-form-item label="信息类型图标：">
             <div class="m-pic-box image-box">
-                <img :src="iconPath+'rsi_'+popData.data.alertCategory+'.png'" class="image">
+                <img :src="iconPath+'rsi_'+popData.data.alertCategory+'.png'" class="image" @error="errorImg($event)">
             </div>
             <div class="m-pic-box image-pic">
-                <img :src="iconPath+'rsi_map_'+popData.data.alertCategory+'.png'" class="image" >
+                <img :src="iconPath+'rsi_map_'+popData.data.alertCategory+'.png'" class="image" @error="errorImg($event)">
             </div>
         </el-form-item>
         <el-form-item label="默认广播频率：">
