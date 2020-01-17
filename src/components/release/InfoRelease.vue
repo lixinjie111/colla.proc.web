@@ -33,7 +33,7 @@
                         <div class="addContent">
                             <el-form> 
                                 <el-form-item  class="ic-form-item">
-                                    <el-select ref="refPubMsg" placeholder="发布信息" v-model="search.pubMsg"  value-key="name" >                        
+                                    <el-select ref="refPubMsg" placeholder="发布信息" v-model="search.pubMsg"  value-key="name" popper-class="ic-form-select">                        
                                         <el-option-group v-for="(group,groupIndex) in pubMsgGroup" label="发布信息" :key="groupIndex">
                                             <template v-for="(item,index) in pubMsgList">
                                                 <el-option :key="index" :value="item" @click.native="pubMsgClick(item);">                                        
@@ -406,16 +406,17 @@ export default {
             border-radius: 0px!important;
         }
     }
-    .el-select-group__title{
-        display: none;
-    }
-    .el-popper[x-placement^=bottom-start] .popper__arrow {
-        left:100px !important;
-        border-bottom-color: #7d7c7c!important;
-        filter: none !important;
-    }
-    .el-popper[x-placement^=bottom-start] .popper__arrow::after{
-        border-bottom-color: #7d7c7c!important;
+   .ic-form-select {
+        .el-select-group__title {
+            display: none !important;
+        }
+        .popper__arrow {
+            left: auto !important;
+            right: 13px !important;
+            &:after {
+                border-bottom-color: #666 !important;
+            }
+        }
     }
    
 
