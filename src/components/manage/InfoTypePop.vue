@@ -263,17 +263,19 @@
         let flag=true;
         this.uploadFileBase64.forEach(item => {
           if(item.url==""){
-            this.$message({
-                type: 'error',
-                duration: '1500',
-                message: "请上传全部信息类型图标 ！",
-                showClose: true
-            });
             flag=false;
           }
           item.category=this.ruleForm.alertCategory;
         })
-        if(!flag) return;
+        if(!flag) {
+          this.$message({
+              type: 'error',
+              duration: '1500',
+              message: "请上传全部信息类型图标 ！",
+              showClose: true
+          });
+          return;
+        }
         this.submitLoading = true;
         uploadPicNew({picVOList:this.uploadFileBase64}).then(res=>{
               if (res.status == 200) {
