@@ -332,7 +332,7 @@
 							let lon = item.longitude;
 							let lat = item.latitude;
 							let id = this.generataIcoName('rsu', i);
-							let icon = "static/images/poi_2.png";
+							let icon = "static/images/map/poi_2.png";
 							let size = [30, 30];
 							this.mapLayer.rsuIds.push(id);
 							this.$refs.refTusvnMap.addImg(lon, lat, id, this.mapLayer.tabLayer, icon, size);
@@ -361,7 +361,7 @@
 								let lon = item.longitude;
 								let lat = item.latitude;
 								let id = this.generataIcoName('roadsideUnit', i);
-								let icon = "static/images/poi_1.png";
+								let icon = "static/images/map/poi_1.png";
 								let size = [30, 30];
 								this.mapLayer.roadsideUniIds.push(id);
 								this.$refs.refTusvnMap.addImg(lon, lat, id, this.mapLayer.tabLayer, icon, size);
@@ -390,7 +390,7 @@
 							let lon = item.longitude;
 							let lat = item.latitude;
 							let id = this.generataIcoName('trafficSignal', i);
-							let icon = "static/images/poi_3.png";
+							let icon = "static/images/map/poi_3.png";
 							let size = [30, 30];
 							this.mapLayer.trafficSignalIds.push(id);
 							this.$refs.refTusvnMap.addImg(lon, lat, id, this.mapLayer.tabLayer, icon, size);
