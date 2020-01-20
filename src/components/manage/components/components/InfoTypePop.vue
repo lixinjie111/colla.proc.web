@@ -108,15 +108,6 @@
         return val.indexOf("base64")==-1 ? window.config.iconPath+val+"?t="+new Date().getTime(): val
       }
     },
-    watch: {
-      'ruleForm.alertCategory'(val) {
-        this.uploadFileBase64.forEach(item =>{
-          if(item.url&&item.url.indexOf("base64")==-1){
-            this.$set(item,"url",'');
-          }
-        })
-      }
-    },
     data() {
       let _uploadOption = [      // 图片上传
         {
