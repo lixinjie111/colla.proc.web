@@ -682,6 +682,7 @@ export default {
                 "eventCode": this.trafficInfo.eventCode,
                 "alertCategory": this.trafficInfo.alertCategory,
                 "alertRadius": this.trafficInfo.alertRadius,
+                "affectRange": this.trafficInfo.affectRange,    // 广播范围
                 "isSend":true,
                 "expirationTime": new Date().getTime(), 
                 "status": 2                
