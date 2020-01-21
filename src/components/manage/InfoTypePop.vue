@@ -246,18 +246,19 @@
       addFn(){
           let params = this.ruleForm;
           infoSave(params).then(res=>{
-            if (res.status == 200) {
-                      this.$emit("successBack");
-                      this.$message({
-                          type: 'success',
-                          duration: '1500',
-                          message: "新增信息类型成功 ！",
-                          showClose: true
-                      });      
-                      this.submitLoading = false;
-                  }
-              }
-          );
+            if(res.status == 200) {
+              this.$emit("successBack");
+              this.$message({
+                  type: 'success',
+                  duration: '1500',
+                  message: "新增信息类型成功 ！",
+                  showClose: true
+              });
+            }    
+            this.submitLoading = false;
+          }).catch(err => {
+          this.submitLoading = false;
+        });
       },
       upload(){
         let flag=true;
@@ -278,21 +279,22 @@
         }
         this.submitLoading = true;
         uploadPicNew({picVOList:this.uploadFileBase64}).then(res=>{
-              if (res.status == 200) {
-                  this.ruleForm.icon=res.data;
-                  this.$message({
-                      type: 'success',
-                      duration: '1500',
-                      message: "上传图标成功 ！",
-                      showClose: true
-                  });
-                  if(this.popData.type == 'info-type-add'){
-                      this.addFn();
-                  }else if(this.popData.type == 'info-type-update'){
-                      this.updateFn();
-                  }       
-              }
-          });
+            if (res.status == 200) {
+                this.ruleForm.icon=res.data;
+                if(this.popData.type == 'info-type-add'){
+                    this.addFn();
+                }else if(this.popData.type == 'info-type-update'){
+                    this.uploadFileBase64.forEach(item=>{
+                      item.url=item.iconType+"_"+this.ruleForm.alertCategory+".png";
+                    })
+                    this.updateFn();
+                }       
+            }else {
+              this.submitLoading = false;
+            }
+        }).catch(err => {
+          this.submitLoading = false;
+        });
       },
       updateFn(){
           let params = {
@@ -317,11 +319,12 @@
                       duration: '1500',
                       message: "修改信息类型成功 ！",
                       showClose: true
-                  });       
-                  this.submitLoading = false;
+                  });
               }
-          });
-         
+              this.submitLoading = false;
+          }).catch(err => {
+            this.submitLoading = false;
+          });         
       }
     }
   }
