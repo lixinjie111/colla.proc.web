@@ -28,7 +28,7 @@
             <el-input v-model.trim="ruleForm.name"></el-input>
         </el-form-item>
 
-         <el-form-item label="信息类型图标" prop="icon">
+        <el-form-item label="信息类型图标" prop="icon">
           <template v-for="(item, index) in uploadFileBase64">
             <div @click="getImageTypeIndex(index)" class="c-upload-wrapper">
               <el-upload
@@ -38,7 +38,7 @@
                 :show-file-list="false"
                 :on-change="imgPreview"
               >
-                <img v-if="uploadFileBase64[index].url" :src="uploadFileBase64[index].url | isBaseImg"  @error="errorImg($event)" class="c-upload-size">
+                <img v-if="uploadFileBase64[index].url" :src="uploadFileBase64[index].url | isBaseImg"  class="c-upload-size" @error="errorImg($event)">
                 <i v-else class="el-icon-plus c-upload-size"></i>
                 <el-button type="warning">上传图标</el-button>
                 <span class="c-form-tip">尺寸：{{item.width}}*{{item.height}}</span>
@@ -143,11 +143,6 @@
           alertCategory: [
             { required: true, message: '请填写告警类别', trigger: 'blur' },
           ],
-          // icon: [
-          //   { required: true, message: '请上传信息类型图标', trigger: 'blur' },
-          //   { message: '请上传信息类型图标', trigger: 'input' },
-
-          // ],
           frequency: [
             { required: true, message: '请填写默认广播频率', trigger: 'blur' },
           ],
@@ -179,7 +174,7 @@
         this.initTypeList();
         this.initUnintList();
       },
-       errorImg(event){
+      errorImg(event){
         if(event.target.src.indexOf('rsi_map')==-1){
             event.target.src=this.iconPath+"rsi_0.png";
         }else{
@@ -235,8 +230,7 @@
             }
           }).catch(err => {});
         });
-      },
-  
+      } ,
       frequencyUnitChange(e){
         this.data.frequencyUnit = this.ruleForm.frequencyUnit.key;
       },
@@ -253,18 +247,19 @@
       addFn(){
           let params = this.ruleForm;
           infoSave(params).then(res=>{
-            if (res.status == 200) {
-                      this.$emit("successBack");
-                      this.$message({
-                          type: 'success',
-                          duration: '1500',
-                          message: "新增信息类型成功 ！",
-                          showClose: true
-                      });      
-                      this.submitLoading = false;
-                  }
-              }
-          );
+            if(res.status == 200) {
+              this.$emit("successBack");
+              this.$message({
+                  type: 'success',
+                  duration: '1500',
+                  message: "新增信息类型成功 ！",
+                  showClose: true
+              });
+            }    
+            this.submitLoading = false;
+          }).catch(err => {
+          this.submitLoading = false;
+        });
       },
       upload(){
         let flag=true;
@@ -285,21 +280,22 @@
         }
         this.submitLoading = true;
         uploadPicNew({picVOList:this.uploadFileBase64}).then(res=>{
-              if (res.status == 200) {
-                  this.ruleForm.icon=res.data;
-                  this.$message({
-                      type: 'success',
-                      duration: '1500',
-                      message: "上传图标成功 ！",
-                      showClose: true
-                  });
-                  if(this.popData.type == 'info-type-add'){
-                      this.addFn();
-                  }else if(this.popData.type == 'info-type-update'){
-                      this.updateFn();
-                  }       
-              }
-          });
+            if (res.status == 200) {
+                this.ruleForm.icon=res.data;
+                if(this.popData.type == 'info-type-add'){
+                    this.addFn();
+                }else if(this.popData.type == 'info-type-update'){
+                    this.uploadFileBase64.forEach(item=>{
+                      item.url=item.iconType+"_"+this.ruleForm.alertCategory+".png";
+                    })
+                    this.updateFn();
+                }       
+            }else {
+              this.submitLoading = false;
+            }
+        }).catch(err => {
+          this.submitLoading = false;
+        });
       },
       updateFn(){
           let params = {
@@ -324,23 +320,13 @@
                       duration: '1500',
                       message: "修改信息类型成功 ！",
                       showClose: true
-                  });       
-                  this.submitLoading = false;
+                  });
               }
-          });
-         
+              this.submitLoading = false;
+          }).catch(err => {
+            this.submitLoading = false;
+          });         
       }
     }
   }
 </script>
-<style scoped>
-.yk-file{
-    position: absolute;
-    clip: rect(0 0 0 0);
-}
-.yk-unit{
-  width: 90px;
-  /* width: 100px;
-  float: right; */
-}
-</style>
