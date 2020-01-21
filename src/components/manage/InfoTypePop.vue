@@ -7,7 +7,6 @@
     width="30%"
     :before-close="handleCancel"
     :visible.sync="popData.visible"
-    class="yk-left"
     >
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" size="mini" label-width="120px">
         
@@ -329,24 +328,3 @@
     }
   }
 </script>
-<style scoped>
-.yk-file{
-    position: absolute;
-    clip: rect(0 0 0 0);
-}
-.yk-unit{
-  width: 90px;
-  /* width: 100px;
-  float: right; */
-}
-
-.yk_input_append{
-  /* border: 1px solid #DCDFE6!important; */
-  /* padding: 0 20px!important; */
-  padding-top: 5px;
-  padding-left: 20px;
-  padding-right: 20px;
-}
-
-
-</style>
