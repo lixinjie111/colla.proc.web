@@ -137,7 +137,7 @@
 				
 			},
 			processData(_result){
-				console.log(_result)
+				// console.log(_result)
 				let pubMsgList=JSON.parse(localStorage.pubMsgList);
 				let code=_result.eventTask.taskCode.substring(0,_result.eventTask.taskCode.lastIndexOf("_"));
 				let statisticsTask={};
