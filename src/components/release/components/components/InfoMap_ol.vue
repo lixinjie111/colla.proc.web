@@ -137,7 +137,7 @@
 				
 			},
 			processData(_result){
-				console.log(_result)
+				// console.log(_result)
 				let pubMsgList=JSON.parse(sessionStorage.pubMsgList);
 				let code=_result.eventTask.taskCode.substring(0,_result.eventTask.taskCode.lastIndexOf("_"));
 				let statisticsTask={};
