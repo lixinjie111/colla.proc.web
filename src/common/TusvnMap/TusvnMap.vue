@@ -583,11 +583,11 @@ export default {
             return '';
         },
         publichInfo(e){
+            if(!this.submitForm()) return; 
             this.publishLoading = true;
             this.trafficInfo.datasource = this.select.datasource ? (this.select.datasource.key ? this.select.datasource.key : '') : '';
             this.trafficInfo.frequencyUnit = this.select.frequencyUnit ? (this.select.frequencyUnit.key ? this.select.frequencyUnit.key : '') : '';
             // console.log(this.trafficInfo.alertCategory);
-            if(!this.submitForm()) return; 
             let params = {
                 status: 1,
                 eventType: this.trafficInfo.eventType,      //信息类型
