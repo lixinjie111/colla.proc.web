@@ -226,7 +226,7 @@ export default {
 
 .el-main{
   position: relative;
-  padding: 0px;
+  padding: 0px!important;;
   /* overflow: hidden!important; */
 }
 
