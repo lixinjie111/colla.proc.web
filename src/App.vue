@@ -220,7 +220,7 @@ export default {
 
 .el-submenu__title{
   /* background: #353585; */
-  font-size: 16px;
+  font-size: 16px!important;
   color: #B5B5B5!important;
 }
 
