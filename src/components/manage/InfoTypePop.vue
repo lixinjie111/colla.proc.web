@@ -89,7 +89,6 @@
 </template>
 
 <script>
-  import axios from 'axios'
   import { imgPreviewBase64, getImgSize } from '@/common/imgPreviewBase64';
   import { uploadPicNew,queryDictionary,infoUpdate,infoSave } from '@/api/infoType'; 
   export default {
