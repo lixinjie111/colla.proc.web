@@ -147,6 +147,7 @@ export default {
             this.infoTypeDetailFlag = false;
         },
         errorImg(event){
+            console.log(this.iconPath)
             if(event.target.src.indexOf('rsi_map')==-1){
                 event.target.src=this.iconPath+"rsi_0.png";
             }else{
