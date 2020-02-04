@@ -238,8 +238,8 @@ export default {
                 content: '',
                 frequency: 500,
                 frequencyUnit: '',
-                beginTime: new Date().getTime(),
-                endTime: new Date().getTime(),
+                beginTime: '',
+                endTime: '',
                 datasource: '',
                 // alertRadius: 1000,
                 affectRange: 1000,
@@ -581,8 +581,80 @@ export default {
             }
             return '';
         },
+        checkTime(){
+            if(this.trafficInfo.beginTime){
+                if(this.trafficInfo.beginTime>new Date().getTime()){
+                    this.$message({
+                        type: 'error',
+                        duration: '1500',
+                        message: "开始时间不得晚于系统时间！",
+                        showClose: true
+                    });
+                    this.trafficInfo.beginTime='';
+                    return false;
+                }
+                if(this.trafficInfo.endTime){
+                    if(this.trafficInfo.endTime<this.trafficInfo.beginTime){
+                        this.$message({
+                            type: 'error',
+                            duration: '1500',
+                            message: "发布失效时间不得早于生效时间！",
+                            showClose: true
+                        });
+                        this.trafficInfo.endTime='';
+                        return false;
+                    }else if(this.trafficInfo.endTime<new Date().getTime()){
+                        this.$message({
+                            type: 'error',
+                            duration: '1500',
+                            message: "发布失效时间不得早于系统时间！",
+                            showClose: true
+                        });
+                        this.trafficInfo.endTime='';
+                        return false;
+                    }
+                }
+            }else{
+                if(this.trafficInfo.endTime){
+                    if(this.trafficInfo.endTime<new Date().getTime()){
+                        this.$message({
+                            type: 'error',
+                            duration: '1500',
+                            message: "发布失效时间不得早于系统时间！",
+                            showClose: true
+                        });
+                        this.trafficInfo.endTime='';
+                        return false;
+                    }
+                }
+
+            }
+            if(this.trafficInfo.beginTime && this.trafficInfo.endTime){
+                if(this.trafficInfo.endTime<this.trafficInfo.beginTime){
+                    this.$message({
+                        type: 'error',
+                        duration: '1500',
+                        message: "发布失效时间不得早于生效时间！",
+                        showClose: true
+                    });
+                    this.trafficInfo.endTime='';
+                    return false;
+                }else if(this.trafficInfo.endTime<new Date().getTime()){
+                    this.$message({
+                        type: 'error',
+                        duration: '1500',
+                        message: "发布失效时间不得早于系统时间！",
+                        showClose: true
+                    });
+                    this.trafficInfo.endTime='';
+                    return false;
+                }
+            }
+            return true;
+        },
         publichInfo(e){
-            if(!this.submitForm()) return; 
+            if(!this.submitForm()) return;
+            if(!this.checkTime()) return;
             this.publishLoading = true;
             this.trafficInfo.datasource = this.select.datasource ? (this.select.datasource.key ? this.select.datasource.key : '') : '';
             this.trafficInfo.frequencyUnit = this.select.frequencyUnit ? (this.select.frequencyUnit.key ? this.select.frequencyUnit.key : '') : '';
@@ -625,11 +697,11 @@ export default {
             
         },        
         updateInfo(e){
+            if(!this.submitForm()) return; 
+            if(!this.checkTime()) return;
             this.updateLoading = true;
             this.trafficInfo.datasource = this.select.datasource ? (this.select.datasource.key ? this.select.datasource.key : '') : '';
             this.trafficInfo.frequencyUnit = this.select.frequencyUnit ? (this.select.frequencyUnit.key ? this.select.frequencyUnit.key : '') : '';
-            // console.log(this.trafficInfo.alertCategory);
-           if(!this.submitForm()) return; 
             let params = {
                 id: this.trafficInfo.id,
                 "taskCode": this.trafficInfo.taskCode,
@@ -840,8 +912,8 @@ export default {
                 content: '',
                 frequency: 500,
                 frequencyUnit: '',
-                beginTime: new Date().getTime(),
-                endTime: new Date().getTime(),
+                beginTime: '',
+                endTime: '',
                 datasource: '',
                 // alertRadius: 1000,
                 affectRange: 1000,
