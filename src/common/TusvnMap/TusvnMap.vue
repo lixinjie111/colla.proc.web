@@ -91,7 +91,8 @@
                                     <el-date-picker
                                         v-model="trafficInfo.beginTime"
                                         type="datetime"
-                                        placeholder="选择日期时间">
+                                        placeholder="选择日期时间"
+                                        :picker-options="beginTimeOption">
                                     </el-date-picker>
                                 </el-form-item>
 
@@ -99,7 +100,8 @@
                                     <el-date-picker
                                         v-model="trafficInfo.endTime"
                                         type="datetime"
-                                        placeholder="选择日期时间">
+                                        placeholder="选择日期时间"
+                                        :picker-options="endTimeOption">
                                     </el-date-picker>
                                 </el-form-item>
 
@@ -165,6 +167,49 @@ export default {
     name:"TusvnMap",
     props:["targetId","overlayContainerId",], //'trafficInfo'
     data(){
+        let _this = this,
+            _checkBeginTime = (rule, value ,callback) => {
+                let _startTime = value ? TDate.dateToMs(TDate.formatTime(value)) : null,//标准时间转为时间戳
+                    _endTime = this.trafficInfo.endTime ? TDate.dateToMs(TDate.formatTime(this.trafficInfo.endTime)) : null;//标准时间转为时间戳
+                if(_startTime){
+                    if(_endTime) {
+                        if(_startTime > _endTime){
+                            callback(new Error('开始时间必须小于结束时间'));
+                        }else {
+                            callback();
+                        }
+                    }else {
+                        callback();
+                    }
+                }else {
+                    // 如果是必填项
+                    // callback(new Error('开始时间不能为空!'));
+                    // 如果是非必填项
+                    callback();
+                }
+            },
+            _checkEndTime = (rule, value ,callback) => {
+                let _startTime = this.trafficInfo.beginTime ? TDate.dateToMs(TDate.formatTime(this.trafficInfo.beginTime)) : null,//标准时间转为时间戳
+                    _endTime = value ? TDate.dateToMs(TDate.formatTime(value)) : null;//标准时间转为时间戳
+                if(_endTime){
+                    if(_startTime) {
+                        if(_startTime > _endTime){
+                            callback(new Error('结束时间不小于开始时间'));
+                        }else if(_endTime < new Date().getTime()){
+                            callback(new Error('结束时间不小于系统时间'));
+                        }else {
+                            callback();
+                        }
+                    }else {
+                        callback();
+                    }
+                }else {
+                    // 如果是必填项
+                    // callback(new Error('结束时间不能为空!'));
+                    // 如果是非必填项
+                    callback();
+                }
+            };
         return {
             selectFlag:true,
             slideFlag:true,
@@ -212,16 +257,38 @@ export default {
                 frequency: [
                     { required: true, message: '请填写默认广播频率', trigger: 'blur' },
                 ],
-                // beginTime: [
-                //     { type: 'date', required: true, message: '发送生效时间', trigger: 'change' },
-                // ],
-                // endTime: [
-                //     { type: 'date', required: true, message: '发送失效时间', trigger: 'change' },
-                // ],
+                beginTime: [
+                    { validator: _checkBeginTime, trigger: 'change' },
+                    // { type: 'date', required: true, message: '发送生效时间', trigger: 'change' },
+                ],
+                endTime: [
+                    { validator: _checkEndTime, trigger: 'change' },
+                    // { type: 'date', required: true, message: '发送失效时间', trigger: 'change' },
+                ],
                 datasource: [
                     { required: true, message: '请选择信息来源', trigger: 'change' }
                 ],
             },
+            beginTimeOption: {
+                disabledDate: time => {
+                    let _time = time.getTime(),
+                        _newTime = new Date().getTime(), 
+                        _endDateVal = _this.trafficInfo.endTime ? TDate.dateToMs(TDate.formatTime(_this.trafficInfo.endTime, "yy-mm-dd")+' 00:00:00') : null;
+                    if (_endDateVal) {
+                        return _time > _endDateVal || _time > _newTime;
+                    }else {
+                        return _time > _newTime;
+                    }
+                }
+            },
+            endTimeOption: {
+                disabledDate: time => {
+                    let _time = time.getTime(),
+                        _newTime = new Date().getTime(), 
+                        _startDateVal = TDate.dateToMs(TDate.formatTime(_newTime, "yy-mm-dd")+' 00:00:00');
+                        return  _time < _startDateVal;
+                }
+            },       
             updateLoading: false,
             publishLoading: false,
             invalidLoading: false,
@@ -582,80 +649,8 @@ export default {
             }
             return '';
         },
-        checkTime(){
-            if(this.trafficInfo.beginTime){
-                if(this.trafficInfo.beginTime>new Date().getTime()){
-                    this.$message({
-                        type: 'error',
-                        duration: '1500',
-                        message: "开始时间不得晚于系统时间！",
-                        showClose: true
-                    });
-                    this.trafficInfo.beginTime='';
-                    return false;
-                }
-                if(this.trafficInfo.endTime){
-                    if(this.trafficInfo.endTime<this.trafficInfo.beginTime){
-                        this.$message({
-                            type: 'error',
-                            duration: '1500',
-                            message: "发布失效时间不得早于生效时间！",
-                            showClose: true
-                        });
-                        this.trafficInfo.endTime='';
-                        return false;
-                    }else if(this.trafficInfo.endTime<new Date().getTime()){
-                        this.$message({
-                            type: 'error',
-                            duration: '1500',
-                            message: "发布失效时间不得早于系统时间！",
-                            showClose: true
-                        });
-                        this.trafficInfo.endTime='';
-                        return false;
-                    }
-                }
-            }else{
-                if(this.trafficInfo.endTime){
-                    if(this.trafficInfo.endTime<new Date().getTime()){
-                        this.$message({
-                            type: 'error',
-                            duration: '1500',
-                            message: "发布失效时间不得早于系统时间！",
-                            showClose: true
-                        });
-                        this.trafficInfo.endTime='';
-                        return false;
-                    }
-                }
-
-            }
-            if(this.trafficInfo.beginTime && this.trafficInfo.endTime){
-                if(this.trafficInfo.endTime<this.trafficInfo.beginTime){
-                    this.$message({
-                        type: 'error',
-                        duration: '1500',
-                        message: "发布失效时间不得早于生效时间！",
-                        showClose: true
-                    });
-                    this.trafficInfo.endTime='';
-                    return false;
-                }else if(this.trafficInfo.endTime<new Date().getTime()){
-                    this.$message({
-                        type: 'error',
-                        duration: '1500',
-                        message: "发布失效时间不得早于系统时间！",
-                        showClose: true
-                    });
-                    this.trafficInfo.endTime='';
-                    return false;
-                }
-            }
-            return true;
-        },
         publichInfo(e){
             if(!this.submitForm()) return; 
-            if(!this.checkTime()) return; 
             this.publishLoading = true;
             this.trafficInfo.datasource = this.select.datasource ? (this.select.datasource.key ? this.select.datasource.key : '') : '';
             this.trafficInfo.frequencyUnit = this.select.frequencyUnit ? (this.select.frequencyUnit.key ? this.select.frequencyUnit.key : '') : '';
@@ -698,12 +693,10 @@ export default {
             
         },        
         updateInfo(e){
-            if(!this.checkTime()) return; 
             if(!this.submitForm()) return; 
             this.updateLoading = true;
             this.trafficInfo.datasource = this.select.datasource ? (this.select.datasource.key ? this.select.datasource.key : '') : '';
             this.trafficInfo.frequencyUnit = this.select.frequencyUnit ? (this.select.frequencyUnit.key ? this.select.frequencyUnit.key : '') : '';
-            // console.log(this.trafficInfo.alertCategory);
             let params = {
                 id: this.trafficInfo.id,
                 "taskCode": this.trafficInfo.taskCode,
