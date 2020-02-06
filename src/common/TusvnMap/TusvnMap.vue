@@ -1,5 +1,5 @@
 <template>
-    <div style="height:100%" class="tusvn-wrapper">
+    <div class="c-position-trbl m-tusvn-map">
         <div :id="targetId"  style="height:100%" v-loading="isLoading"></div>
         <div :id="overlayContainerId" style="display: none;">
             <!-- <div id="marker" title="Marker">
@@ -1952,7 +1952,8 @@ export default {
     }
 </style>
 <style lang="scss">
-.tusvn-wrapper {
+.m-tusvn-map {
+    height: auto !important;
     .path-view-popover {
         max-width: 256px;
         border: none;

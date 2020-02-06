@@ -3,9 +3,7 @@
     <div id="ykMap" class="yk-map" @click="mapBoxClick();">
        
         <!-- openlayer地图 -->
-        <div>
-            <InfoMapOL ref="refInfoMap" :mapHeight="pageHeight" :statisicsData="statisicsData" :msgTypeInfo="search.pubMsg" @PubMsgChange="pubMsgChange" @initStatisics="initStatisics"></InfoMapOL>
-        </div>
+        <InfoMapOL ref="refInfoMap" :mapHeight="pageHeight" :statisicsData="statisicsData" :msgTypeInfo="search.pubMsg" @PubMsgChange="pubMsgChange" @initStatisics="initStatisics"></InfoMapOL>
 
         <!-- 左侧信息 -->
         <div class="yk-left">
@@ -379,6 +377,11 @@ export default {
         &:after {
             border-bottom-color: #666 !important;
         }
+    }
+    .el-select-dropdown__empty {
+        color: #fff;
+        padding-left: 20px;
+        padding-right: 20px;
     }
 }
 </style>
