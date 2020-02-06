@@ -1,6 +1,6 @@
 <template>
-    <div style="height:100%">
-        <div :id="targetId"  style="height:100%" v-loading="isLoading"></div>
+    <div class="c-position-trbl m-tusvn-map">
+        <div :id="targetId" style="height:100%" v-loading="isLoading"></div>
         <div :id="overlayContainerId" style="display: none;">
             <!-- <div id="marker" title="Marker">
                 <img src="../../static/assets/images/loading.gif"/>
@@ -1749,7 +1749,9 @@ export default {
 }
 </script>
 <style scoped>
-
+    .m-tusvn-map {
+        height: auto !important;
+    }
     #map {
         width: 100%;
         height: 100%;
