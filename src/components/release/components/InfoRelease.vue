@@ -121,13 +121,16 @@ export default {
            // console.log(data)
            this.statisicsData=data;
         },
-
         initPubMsgList(){
             queryAll({}).then(res => {
                 if (res.status == 200) {
                     this.pubMsgList = res.data ? res.data : []; 
-                    sessionStorage.pubMsgList=JSON.stringify(this.pubMsgList);
+                    localStorage.pubMsgList=JSON.stringify(this.pubMsgList);
+                }else {
+                    localStorage.pubMsgList = JSON.stringify([]);
                 }
+            }).catch(err => {
+                localStorage.pubMsgList = JSON.stringify([]);
             });
         },
         poiClick(item){
