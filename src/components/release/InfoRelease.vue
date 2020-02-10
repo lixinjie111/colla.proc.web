@@ -131,7 +131,11 @@ export default {
                 if (res.status == 200) {
                     this.pubMsgList = res.data ? res.data : []; 
                     localStorage.pubMsgList=JSON.stringify(this.pubMsgList);
+                }else {
+                    localStorage.pubMsgList = JSON.stringify([]);
                 }
+            }).catch(err => {
+                localStorage.pubMsgList = JSON.stringify([]);
             });
         },
         poiClick(item){
