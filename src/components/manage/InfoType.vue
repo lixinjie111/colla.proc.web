@@ -40,11 +40,7 @@
                 label="信息分类"
                 min-width="15%">
                 <template slot-scope="scope">
-                    <span v-if="scope.row.eventCategory == 'TI01'">车辆异常信息</span>
-                    <span v-if="scope.row.eventCategory == 'TI02'">道路异常信息</span>
-                    <span v-if="scope.row.eventCategory == 'TI03'">交通管制信息</span>
-                    <span v-if="scope.row.eventCategory == 'TI04'">天气服务信息</span>
-                    <!-- <span v-else>{{scope.row.eventCategory}}</span> -->
+                    <span v-for="item in typeList" :key="item.key"  v-if="scope.row.eventCategory == item.key">{{item.name}}</span>
                 </template>
             </el-table-column>
             <el-table-column
@@ -96,8 +92,8 @@
             </el-pagination>
         </el-row>
 
-        <info-type-pop :popData="popData" v-if="infoTypePopFlag" @closeDialog="closeDialog" @successBack="successBack"></info-type-pop>
-        <info-type-detail :popData="popData" v-if="infoTypeDetailFlag" @closeDialog="closeDialog" @successBack="successBack"></info-type-detail>
+        <info-type-pop :popData="popData" :typeList="typeList" v-if="infoTypePopFlag" @closeDialog="closeDialog" @successBack="successBack"></info-type-pop>
+        <info-type-detail :popData="popData" :typeList="typeList" v-if="infoTypeDetailFlag" @closeDialog="closeDialog" @successBack="successBack"></info-type-detail>
         
     </div>
 </template>
@@ -120,7 +116,6 @@ export default {
                 total: 0,
                 mini: true,
             },
-
             infoTypePopFlag: false,
             infoTypeDetailFlag: false,
             popData: {
@@ -135,6 +130,9 @@ export default {
             },
             isLoading: false
         }
+    },
+    created(){
+        this.init();
     },
     methods: {
         initPaging() {
@@ -175,7 +173,6 @@ export default {
             }
         },
         initData(){
-
             this.isLoading = true;
             let params = {
                 name: this.search.name,
@@ -202,13 +199,6 @@ export default {
                     this.typeList = res.data ? res.data : [];
                 }
             });
-        },
-        getTypeCnName(type){
-            if(!this.typeList){
-                this.initTypeList(type)
-            }else{
-                
-            }
         },
         handleSearch(){
             this.initPaging();
@@ -281,9 +271,7 @@ export default {
             this.initData();
         }
     },
-    created(){
-        this.init();
-    },
+   
 
 }
 </script>

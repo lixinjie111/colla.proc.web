@@ -9,12 +9,7 @@
     >
     <el-form ref="ruleForm" size="mini" label-width="120px">
         <el-form-item label="信息所属分类：">
-            <span v-if="ruleForm.eventCategory == 'TI01'">车辆异常信息</span>
-            <span v-else-if="ruleForm.eventCategory == 'TI02'">道路异常信息</span>
-            <span v-else-if="ruleForm.eventCategory == 'TI03'">交通管制信息</span>
-            <span v-else-if="ruleForm.eventCategory == 'TI04'">天气服务信息</span>
-            <span v-else>{{ruleForm.eventCategory}}</span>
-
+             <span v-for="item in typeList" :key="item.key"  v-if="ruleForm.eventCategory == item.key">{{item.name}}</span>
         </el-form-item>
         <el-form-item label="信息类型名称：">
             {{ruleForm.name}}
@@ -48,7 +43,8 @@
 <script>
 export default {
     props: {
-      popData: Object
+      popData: Object,
+      typeList:Array
     },
     computed: {
       ruleForm() {

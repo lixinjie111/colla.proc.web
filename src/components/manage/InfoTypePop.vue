@@ -93,7 +93,8 @@
   import { uploadPicNew,queryDictionary,infoUpdate,infoSave } from '@/api/infoType'; 
   export default {
     props: {
-      popData: Object
+      popData: Object,
+      typeList:Array
     },
     computed: {
       ruleForm() {
@@ -127,7 +128,6 @@
         uploadFileBase64: _uploadOption,
         submitLoading: false,
         fileList: [],
-        typeList: [],
         frequencyUnitList: [],
         rules: {
           eventCategory: [
@@ -173,7 +173,6 @@
     },
     methods: {
       init(){        
-        this.initTypeList();
         this.initUnintList();
       },
       errorImg(event){
@@ -182,16 +181,6 @@
         }else{
             event.target.src=this.iconPath+"rsi_map_0.png";
         }
-      },
-      initTypeList(){
-        let params = {
-          parentCode: 'trafficType',
-        };
-        queryDictionary(params).then(res=>{
-            if (res.status == 200) {
-                this.typeList = res.data ? res.data : [];
-            }
-        });
       },
       initUnintList(){
         let params = {
