@@ -46,6 +46,7 @@ function axiosFilter(vm) {
     // response
     axios.interceptors.response.use(function(response) {
         let returnStatus = response.data.status || response.data.code || response.data.state;
+        let returnMessage = response.data.message;
         switch (returnStatus+"") {
             case '1': {
                 return Promise.resolve(response);
@@ -56,12 +57,14 @@ function axiosFilter(vm) {
                 break;
             }
             default: {
-                vm.$message({
-                    type: 'error',
-                    duration: '1500',
-                    message: response.data.message || '操作失败' || response.data,
-                    showClose: true
-                });
+                if(returnMessage){
+                    vm.$message({
+                        type: 'error',
+                        duration: '1500',
+                        message: returnMessage,
+                        showClose: true
+                    });
+                }
                 return Promise.resolve(response);
             }
         }
