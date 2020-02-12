@@ -32,10 +32,7 @@
                 label="信息分类"
                 min-width="15%">
                 <template slot-scope="scope">
-                    <span v-if="scope.row.eventCategory == 'TI01'">车辆异常信息</span>
-                    <span v-if="scope.row.eventCategory == 'TI02'">道路异常信息</span>
-                    <span v-if="scope.row.eventCategory == 'TI03'">交通管制信息</span>
-                    <span v-if="scope.row.eventCategory == 'TI04'">天气服务信息</span>
+                    <span v-for="item in typeList" :key="item.key"  v-if="scope.row.eventCategory == item.key">{{item.name}}</span>
                 </template>
             </el-table-column>
             <el-table-column
@@ -80,8 +77,8 @@
          <!-- 分页 -->
     <pagination :total="pageOption.total"  :page.sync="pageOption.page" :size.sync="pageOption.size" @pagination="initData"></pagination>
 
-        <info-type-pop :popData="popData" v-if="infoTypePopFlag" @closeDialog="closeDialog" @successBack="successBack"></info-type-pop>
-        <info-type-detail :popData="popData" v-if="infoTypeDetailFlag" @closeDialog="closeDialog" @successBack="successBack"></info-type-detail>
+        <info-type-pop :popData="popData" :typeList="typeList" v-if="infoTypePopFlag" @closeDialog="closeDialog" @successBack="successBack"></info-type-pop>
+        <info-type-detail :popData="popData" :typeList="typeList" v-if="infoTypeDetailFlag" @closeDialog="closeDialog" @successBack="successBack"></info-type-detail>
         
     </div>
 </template>
@@ -190,13 +187,6 @@ export default {
                     this.typeList = res.data ? res.data : [];
                 }
             });
-        },
-        getTypeCnName(type){
-            if(!this.typeList){
-                this.initTypeList(type)
-            }else{
-                
-            }
         },
         searchClick(){
             this.$refs.searchForm.validate((valid) => {
