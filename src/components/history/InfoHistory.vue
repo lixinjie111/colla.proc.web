@@ -80,7 +80,13 @@
       </el-table-column>
 
       <el-table-column label="信息内容" min-width="15%">
-        <template slot-scope="scope">{{scope.row.content ? scope.row.content : '--'}}</template>
+         <template slot-scope="scope">
+            <el-popover placement="top" width="350" trigger="hover" popper-class="c-table-popover">
+                <div class="c-table-popover-content" v-text="scope.row.content"></div>
+                <p class="c-table-popover-text-2" slot="reference" v-text='scope.row.content'></p>
+            </el-popover>
+        </template>
+        <!-- <template slot-scope="scope">{{scope.row.content ? scope.row.content : '--'}}</template> -->
       </el-table-column>
 
       <el-table-column prop="sendNumber" label="下发次数" min-width="6%"></el-table-column>
