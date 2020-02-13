@@ -456,6 +456,12 @@ h3.c-title {
 .c-table-popover-text {
 	@include lineClamp(4);
 }
+.c-table-popover-text-2 {
+	@include lineClamp(2);
+}
+.c-table-popover-text-1 {
+	@include lineClamp(1);
+}
 // 单元格里的popover提示框
 .c-table-popover {
 	box-shadow: 0 2px 12px 0 rgba(0,0,0,.5);
