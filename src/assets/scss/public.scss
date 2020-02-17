@@ -497,6 +497,9 @@ h3.c-title {
 // 单元格里的popover提示框
 .c-table-popover {
 	box-shadow: 0 2px 12px 0 rgba(0,0,0,.5);
+	max-width: 350px !important;
+	min-width: auto !important;
+	width: auto !important;
     .el-popover__title {
         font-size: 14px;
         line-height: 18px;
