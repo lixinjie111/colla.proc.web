@@ -5,7 +5,7 @@
                 <el-input v-model.trim="search.name"></el-input>
             </el-form-item>
             <el-form-item>
-                <el-button type="warning" @click="handleSearch">查询</el-button>
+                <el-button type="warning" @click="handleSearch" :loading="searchloading">查询</el-button>
                 <el-button type="warning" plain @click="handleFlush">刷新</el-button>
             </el-form-item>
             <el-form-item class="c-pull-right">
@@ -20,7 +20,7 @@
                 border
                 stripe
                 :header-cell-style="{background:'#E6E6E6',color:'#606266',border: '0px'}"
-                v-loading="isLoading">
+                v-loading="tableLoading">
             <el-table-column
                 label="序号"
                 type="index">
@@ -128,7 +128,8 @@ export default {
             search: {
                 name: '',
             },
-            isLoading: false
+            tableLoading: false,
+            searchloading:false
         }
     },
     created(){
@@ -173,7 +174,7 @@ export default {
             }
         },
         initData(){
-            this.isLoading = true;
+            this.tableLoading = true;
             let params = {
                 name: this.search.name,
                 "page": {    
@@ -187,7 +188,11 @@ export default {
                     this.$refs.table.bodyWrapper.scrollTop = 0;
                     this.paging.total = res.data.totalCount;
                 }
-                this.isLoading = false;
+                this.tableLoading = false;
+                this.searchloading=false;
+            }).catch(err => {
+                this.searchloading=false;
+                this.tableLoading = false;
             });
         },
         initTypeList(){
@@ -201,6 +206,7 @@ export default {
             });
         },
         handleSearch(){
+            this.searchloading=true;
             this.initPaging();
             this.initData();
         },

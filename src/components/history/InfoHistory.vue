@@ -34,7 +34,7 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button type="warning" @click="handleSearch">查询</el-button>
+        <el-button type="warning" @click="handleSearch" :loading="searchloading">查询</el-button>
         <el-button type="warning" plain @click="handleFlush">刷新</el-button>
       </el-form-item>
     </el-form>
@@ -46,7 +46,7 @@
       border
       stripe
       :header-cell-style="{background:'#E6E6E6',color:'#606266',border: '0px'}"
-      v-loading="isLoading"
+      v-loading="tableLoading"
     >
       <el-table-column label="序号" type="index">
         <template slot-scope="scope">
@@ -157,7 +157,8 @@ export default {
       datasourceList: [],
       oldTime: null,
       timeInterval: 400,
-      isLoading: false,
+      tableLoading: false,
+      searchloading: false,
       detailData: [],
       detailContent: '',
       isShow: false,
@@ -195,7 +196,7 @@ export default {
       };
     },
     initData(type) {
-      this.isLoading = true;
+      this.tableLoading = true;
       let params = {
         // code: this.search.code,
         eventType: this.search.eventType,
@@ -214,7 +215,11 @@ export default {
           this.$refs.table.bodyWrapper.scrollTop = 0;
           this.paging.total = res.data.totalCount;
         }
-        this.isLoading = false;
+        this.tableLoading = false;
+        this.searchloading=false;
+      }).catch(err => {
+         this.searchloading=false;
+         this.tableLoading = false;
       });
     },
     initDatasourceList() {
@@ -234,6 +239,7 @@ export default {
         this.search.startTime = TDate.dateToMs(start);
         this.search.endTime = TDate.dateToMs(end);
       }
+      this.searchloading=true;
       this.initPaging();
       this.initData();
     },
@@ -242,6 +248,7 @@ export default {
       this.initData();
     },
     pagingChange(value) {
+      this.dataList=[];
       this.paging.index = value - 1;
       this.initData();
 
