@@ -6,8 +6,8 @@ window.config = {
     // iconPath:'http://172.17.1.16:9090/file/pic/trafficPic/',       // 图片服务器地址
     // mapWaPianPath:'http://172.17.1.134:8086/',   //地图瓦片
     // websocketUrl:'ws://172.17.1.16:9996/colla',
-    // dlUrl: 'http://10.0.1.22:8085/', //迪路
-    // dlWmsUrl: 'http://10.0.1.22:8080/', //迪路
+    dlUrl: 'http://10.0.1.22:8085/', //迪路
+    dlWmsUrl: 'http://10.0.1.22:8080/', //迪路
     
     //望京 外网
     staticUrl: "http://120.133.21.14:9090/", //静态文件路径
@@ -16,8 +16,8 @@ window.config = {
     iconPath:'http://120.133.21.14:9090/file/pic/trafficPic/',       // 图片服务器地址
     mapWaPianPath:'http://120.133.21.14:8086/',   //地图瓦片
     websocketUrl:'ws://120.133.21.14:49996/colla', 
-    dlUrl: 'http://117.114.144.227:8085/', //迪路
-    dlWmsUrl: 'http://117.114.144.227:8080/', //迪路
+    // dlUrl: 'http://117.114.144.227:8085/', //迪路
+    // dlWmsUrl: 'http://117.114.144.227:8080/', //迪路
     
     //测试环境 内网
     // staticUrl: "http://10.0.1.181:9090/", //静态文件路径
