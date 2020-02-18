@@ -169,6 +169,7 @@ export default {
         this.pageOption.page = 1;
     },
     initData(type) {
+      this.dataList = [];
       this.tableLoading = true;
       let params = Object.assign({}, this.historySearchKey, {
           page:{
