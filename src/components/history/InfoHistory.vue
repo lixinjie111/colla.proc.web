@@ -1,8 +1,29 @@
 <template>
   <div class="c-wrapper-20">
-    <el-form :inline="true" size="mini">
-      <el-form-item label="信息类型：">
+    <el-form :inline="true" size="mini" ref="searchForm" :model="search">
+      <!-- <el-form-item label="信息类型：">
         <el-input v-model.trim="search.eventType"></el-input>
+      </el-form-item> -->
+      <el-form-item label="信息类型：" prop='eventType'>
+          <el-select
+              v-model.trim="search.eventType"
+              clearable
+              filterable
+              remote
+              reserve-keyword
+              placeholder="请输入关键词"
+              :remote-method="eventTypeRemoteMethod"
+              @clear="eventTypeOption.searchFilter.clearFunc(eventTypeOption)"
+              @focus="eventTypeOption.searchFilter.remoteMethodClick(eventTypeOption, search, 'eventType')"
+              @blur="eventTypeOption.searchFilter.remoteMethodBlur(search, 'eventType')" 
+              :loading="eventTypeOption.loading">
+              <el-option
+                  v-for="item in eventTypeOption.filterOption"
+                  :key="item"
+                  :label="item.name"
+                  :value="item.code">
+              </el-option>
+          </el-select>
       </el-form-item>
       <el-form-item label="信息状态：">
         <el-select v-model="search.status" placeholder="请选择">
@@ -126,6 +147,8 @@
 </template>
 <script>
 import TDate from "@/common/date.js";
+import SearchFilter from '@/assets/js/module/searchFilter.js';
+import { infoQueryPage} from '@/api/infoType'; 
 import InfoHistoryDetail from "./components/infoHistoryDetail";
 import { taskQueryPage,queryDictionary} from '@/api/infoHistory'; 
 export default {
@@ -143,6 +166,20 @@ export default {
         startTime: "",
         endTime: "",
         datasource: ""
+      },
+      eventTypeOption: {
+          loading: false,
+          searchFilter:new SearchFilter(),
+          filterOption: [],
+          defaultOption: [],
+          defaultFlag: false,
+          request: infoQueryPage,
+          otherParams:{
+            page: {    
+                pageIndex: 0,
+                pageSize: 1000,
+            },
+          }
       },
       paging: {
         index: 0,
@@ -194,6 +231,15 @@ export default {
         endTime: "",
         datasource: ""
       };
+      this.eventTypeOption.filterOption = this.eventTypeOption.defaultOption;
+    },
+    eventTypeRemoteMethod(query) {
+        this.eventTypeOption.searchFilter.publicRemoteMethod({
+            query: query,
+            searchOption: this.eventTypeOption,
+            searchObj: this.search,
+            key: 'eventType'
+        });
     },
     initData(type) {
       this.tableLoading = true;
