@@ -8,25 +8,15 @@ import router from './router'
 import store from './store/index.js'
 // import Api from './api/index.js';
 
-
-// Element-ui
-import ElementUI from 'element-ui';  //加载优化
-import 'element-ui/lib/theme-chalk/index.css';  //加载优化
-Vue.use(ElementUI);  //加载优化
-
-
 Vue.config.productionTip = false
-
-// Vue.use(ElementUI)
-
-// Vue.prototype.$api = Api;
-// Vue.prototype.$TDate = TDate;
 
 // 全局静态资源
 import '@/assets/scss/reset.scss';
 import '@/assets/scss/public.scss';
 import '@/assets/scss/element-ui-reset.scss';
 import '@/assets/icon-font/iconfont.css';
+
+import AddScriptJs from '@/assets/js/utils/addScriptJs';
 
 // 权限
 import { setAuthInfo, getAdminId, getAuthInfo, removeAuthInfo } from '@/session/index';
@@ -46,11 +36,13 @@ router.beforeEach((to,from,next) => {
     if(ADMINID) {
         // 回填用户信息
         store.dispatch('setAuthInfo', getAuthInfo());
-        if(to.path === '/login') {
-            next({path: '/'});
-        }else {
-            next();
-        }
+        AddScriptJs.add("livePlayer", window.scriptJs.livePlayerUrl, function() {
+            if(to.path === '/login') {
+                next({path: '/'});
+            }else {
+                next();
+            }
+        });
     }else {
         if (whiteList.indexOf(to.path) !== -1) { // 在免登录白名单，直接进入
             next()
