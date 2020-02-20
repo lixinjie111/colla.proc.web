@@ -69,12 +69,7 @@
       :header-cell-style="{background:'#E6E6E6',color:'#606266',border: '0px'}"
       v-loading="tableLoading"
     >
-      <el-table-column label="序号" type="index">
-        <template slot-scope="scope">
-          <span>{{scope.$index + paging.index * paging.size + 1}}</span>
-        </template>
-      </el-table-column>
-
+      <el-table-column label="序号" type="index" :index="indexMethod"></el-table-column>
       <el-table-column prop="taskCode" label="信息编号" min-width="13%"></el-table-column>
 
       <el-table-column prop="eventName" label="信息类型" min-width="6%"></el-table-column>
@@ -133,7 +128,7 @@
       </el-table-column>
     </el-table>
 
-    <el-row class="c-page">
+    <!-- <el-row class="c-page">
       <el-pagination
         background
         layout="prev, pager, next"
@@ -141,19 +136,22 @@
         :total="this.paging.total"
         @current-change="pagingChange"
       ></el-pagination>
-    </el-row>
+    </el-row> -->
+     <!-- 分页 -->
+    <pagination :total="pageOption.total" :page.sync="pageOption.page" :size.sync="pageOption.size" @pagination="initData"></pagination>
     <info-history-detail v-if="isShow" :taskCode="taskCode" :detailData="detailData" :content="detailContent" @infoHistoryBack="infoHistoryBack"></info-history-detail>
   </div>
 </template>
 <script>
 import TDate from "@/common/date.js";
 import SearchFilter from '@/assets/js/module/searchFilter.js';
+import Pagination from '@/common/pagination';
 import { infoQueryPage} from '@/api/infoType'; 
 import InfoHistoryDetail from "./components/infoHistoryDetail";
 import { taskQueryPage,queryDictionary} from '@/api/infoHistory'; 
 export default {
   components: {
-    InfoHistoryDetail
+    InfoHistoryDetail,Pagination
   },
   data() {
     return {
@@ -181,11 +179,16 @@ export default {
             },
           }
       },
-      paging: {
-        index: 0,
-        size: 10,
-        total: 0
+      pageOption: {
+          size: 10,
+          total: 0,
+          page: 1     //从1开始
       },
+      // paging: {
+      //   index: 0,
+      //   size: 10,
+      //   total: 0
+      // },
       statusList: [
         { id: 1, name: "有效", key: 1 },
         { id: 2, name: "失效", key: 2 },
@@ -209,18 +212,17 @@ export default {
   mounted() {
   },
   methods: {
-    handleScroll(el) {
-      console.log(el);
-    },
     init() {
       this.initSearch();
-      this.initPaging();
       this.initData();
     },
-    initPaging() {
-      this.paging.index = 0;
-      this.paging.total = 0;
-      this.paging.size = 10;
+    initPageOption() {
+        this.dataList=[];
+        this.pageOption.total = 0;
+        this.pageOption.page = 1;
+    },
+    indexMethod(index) {
+        return (this.pageOption.page-1) * this.pageOption.size + index + 1;
     },
     initSearch() {
       this.search = {
@@ -231,6 +233,7 @@ export default {
         endTime: "",
         datasource: ""
       };
+      this.initPageOption();
       this.eventTypeOption.filterOption = this.eventTypeOption.defaultOption;
     },
     eventTypeRemoteMethod(query) {
@@ -251,15 +254,15 @@ export default {
         endTime: this.search.endTime,
         datasource: this.search.datasource,
         page: {
-          pageIndex: this.paging.index,
-          pageSize: this.paging.size
+          pageIndex: this.pageOption.page-1,
+          pageSize: this.pageOption.size
         }
       };
      taskQueryPage(params).then(res => {
         if (res.status == 200) {
           this.dataList = res.data.list;
           this.$refs.table.bodyWrapper.scrollTop = 0;
-          this.paging.total = res.data.totalCount;
+          this.pageOption.total = res.data.totalCount;
         }
         this.tableLoading = false;
         this.searchloading=false;
