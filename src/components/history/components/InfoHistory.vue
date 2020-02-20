@@ -1,8 +1,26 @@
 <template>
   <div class="c-wrapper-20">
    <el-form :inline="true" size="mini" ref="searchForm" :model="searchKey" :rules="rules">
-      <el-form-item label="信息类型：" prop="eventType">
-        <el-input v-model.trim="searchKey.eventType"></el-input>
+     <el-form-item label="信息类型：" prop='eventType'>
+          <el-select
+              v-model.trim="searchKey.eventType"
+              clearable
+              filterable
+              remote
+              reserve-keyword
+              placeholder="请输入关键词"
+              :remote-method="eventTypeRemoteMethod"
+              @clear="eventTypeOption.searchFilter.clearFunc(eventTypeOption)"
+              @focus="eventTypeOption.searchFilter.remoteMethodClick(eventTypeOption, searchKey, 'eventType')"
+              @blur="eventTypeOption.searchFilter.remoteMethodBlur(searchKey, 'eventType')" 
+              :loading="eventTypeOption.loading">
+              <el-option
+                  v-for="item in eventTypeOption.filterOption"
+                  :key="item"
+                  :label="item.name"
+                  :value="item.code">
+              </el-option>
+          </el-select>
       </el-form-item>
       <el-form-item label="信息状态：" prop="status">
         <el-select v-model="searchKey.status" placeholder="请选择">
@@ -114,6 +132,8 @@
 <script>
 import Pagination from '@/common/pagination';
 import TDate from "@/common/date.js";
+import { infoQueryPage} from '@/api/infoType'; 
+import SearchFilter from '@/assets/js/module/searchFilter.js';
 import InfoHistoryDetail from "./components/infoHistoryDetail";
 import { taskQueryPage,queryDictionary} from '@/api/infoHistory'; 
 export default {
@@ -132,6 +152,20 @@ export default {
         beginTime: "",
         endTime: "",
         datasource: ""
+      },
+      eventTypeOption: {
+          loading: false,
+          searchFilter:new SearchFilter(),
+          filterOption: [],
+          defaultOption: [],
+          defaultFlag: false,
+          request: infoQueryPage,
+          otherParams:{
+            page: {    
+                pageIndex: 0,
+                pageSize: 1000,
+            },
+          }
       },
       historySearchKey: {},
       pageOption: {
@@ -200,6 +234,14 @@ export default {
         }
       });
     },
+    eventTypeRemoteMethod(query) {
+        this.eventTypeOption.searchFilter.publicRemoteMethod({
+            query: query,
+            searchOption: this.eventTypeOption,
+            searchObj: this.searchKey,
+            key: 'eventType'
+        });
+    },
     searchClick() {
        this.$refs.searchForm.validate((valid) => {
           if (valid) {
@@ -220,6 +262,7 @@ export default {
     },
     resetClick() {
       this.$refs.searchForm.resetFields();
+      this.eventTypeOption.filterOption = this.eventTypeOption.defaultOption;
     },
 
     // saving
