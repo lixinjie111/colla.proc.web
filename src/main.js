@@ -9,13 +9,6 @@ import store from './store/index.js'
 // import Api from './api/index.js';
 import SessionUtil from '@/store/session.js'
 
-
-// Element-ui
-import ElementUI from 'element-ui';  //加载优化
-import 'element-ui/lib/theme-chalk/index.css';  //加载优化
-Vue.use(ElementUI);  //加载优化
-
-
 Vue.config.productionTip = false
 
 // Vue.use(ElementUI)
@@ -29,6 +22,8 @@ import '@/assets/scss/public.scss';
 import '@/assets/scss/element-ui-reset.scss';
 import '@/assets/icon-font/iconfont.css';
 
+import AddScriptJs from '@/assets/js/utils/addScriptJs';
+
 //取消请求的对象
 // axios 过滤器
 import  axiosFilter from './api/axiosConfig.js';
@@ -41,7 +36,13 @@ router.beforeEach((to, from, next) => {
     window.cancleSource = window.cancelToken.source()
   if (to.meta.requireAuth) {  // 判断该路由是否需要登录权限
       if (SessionUtil.getItem('login')) {  // 通过vuex state获取当前的token是否存在
-          next();
+          if(to.path == '/login') {
+              next();
+            }else {
+              AddScriptJs.add("livePlayer", window.scriptJs.livePlayerUrl, function() {
+                  next();
+              });
+            }
       }
       else {
           next({

@@ -128,7 +128,6 @@ export default {
         },
         loginFunc(params) {
            requestLogin(params).then(res => {
-                this.loading = false;
                     if(res.status == 200){
                         let temp = res.data;
                         SessionUtil.setItem('login',JSON.parse(temp));
@@ -138,6 +137,7 @@ export default {
                         
                         this.$router.push('/infoRelease');
                     }else {
+                        this.loading = false;
                         if(res.status == -200){
                             if(res.data.errorCount) {
                                 if(res.data.errorCount>=5){
