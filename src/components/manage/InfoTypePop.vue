@@ -168,7 +168,6 @@
          item.url=item.iconType+"_"+this.ruleForm.alertCategory+".png";
         })
       }
-      console.log(this.uploadFileBase64)
       this.init();
     },
     methods: {

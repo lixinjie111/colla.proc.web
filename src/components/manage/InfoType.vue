@@ -1,12 +1,12 @@
 <template>
     <div class="c-wrapper-20">
-        <el-form :inline="true" size="mini">
-            <el-form-item label="信息类型名称：">
-                <el-input v-model.trim="search.name"></el-input>
+        <el-form :inline="true" size="mini" ref="searchForm" :model="searchKey" :rules="rules">
+            <el-form-item label="信息类型名称：" prop="name">
+                <el-input v-model.trim="searchKey.name"></el-input>
             </el-form-item>
             <el-form-item>
-                <el-button type="warning" @click="handleSearch" :loading="searchloading">查询</el-button>
-                <el-button type="warning" plain @click="handleFlush">刷新</el-button>
+                <el-button type="warning" icon="el-icon-search" @click="searchClick" :loading="searchloading">查询</el-button>
+                <el-button type="warning" plain icon="el-icon-setting" @click="resetClick">重置</el-button>
             </el-form-item>
             <el-form-item class="c-pull-right">
                 <el-button type="warning" @click="handleAdd">新增</el-button>
@@ -21,15 +21,7 @@
                 stripe
                 :header-cell-style="{background:'#E6E6E6',color:'#606266',border: '0px'}"
                 v-loading="tableLoading">
-            <el-table-column
-                label="序号"
-                type="index">
-                <template slot-scope="scope">
-                    <span>
-                        {{scope.$index + paging.index * paging.size + 1}}
-                    </span>
-                </template>
-            </el-table-column>
+            <el-table-column label="序号" type="index" :index="indexMethod"></el-table-column>
             <el-table-column
                 prop="name"
                 label="信息类型名称"
@@ -82,15 +74,7 @@
             </el-table-column>
         </el-table>
 
-        <el-row class="c-page">
-            <el-pagination                
-                background
-                layout="prev, pager, next"               
-                :page-size="this.paging.size"
-                :total="this.paging.total"
-                @current-change="pagingChange">
-            </el-pagination>
-        </el-row>
+        <pagination :total="pageOption.total"  :page.sync="pageOption.page" :size.sync="pageOption.size" @pagination="initData"></pagination>
 
         <info-type-pop :popData="popData" :typeList="typeList" v-if="infoTypePopFlag" @closeDialog="closeDialog" @successBack="successBack"></info-type-pop>
         <info-type-detail :popData="popData" :typeList="typeList" v-if="infoTypeDetailFlag" @closeDialog="closeDialog" @successBack="successBack"></info-type-detail>
@@ -99,22 +83,21 @@
 </template>
 <script>
 
-
+import Pagination from '@/common/pagination';
 import InfoTypePop from "@/components/manage/InfoTypePop.vue"
 import InfoTypeDetail from "@/components/manage/InfoTypeDetail.vue"
 import { infoQueryPage,queryDictionary,deleteIds} from '@/api/infoType'; 
 export default {
     components: {
-        InfoTypePop, InfoTypeDetail,
+        InfoTypePop, InfoTypeDetail,Pagination
     },
     data(){
         return {
             iconPath: window.config.iconPath,
-            paging: {
-                index: 0,
+            pageOption: {
                 size: 10,
                 total: 0,
-                mini: true,
+                page: 1     
             },
             infoTypePopFlag: false,
             infoTypeDetailFlag: false,
@@ -123,9 +106,10 @@ export default {
                 data: {},
                 visible: true
             },
+            historySearchKey: {},
             dataList: [],
             typeList: [],
-            search: {
+            searchKey: {
                 name: '',
             },
             tableLoading: false,
@@ -133,13 +117,17 @@ export default {
         }
     },
     created(){
-        this.init();
+        this.initData();
+        this.initTypeList();
     },
     methods: {
-        initPaging() {
-            this.paging.index = 0;
-            this.paging.total = 0;
-            this.paging.size = 10;
+       initPageOption() {
+            this.dataList = [];
+            this.pageOption.total = 0;
+            this.pageOption.page = 1;
+        },
+        indexMethod(index) {
+            return (this.pageOption.page-1) * this.pageOption.size + index + 1;
         },
         closeDialog() {
             this.infoTypePopFlag = false;
@@ -151,11 +139,6 @@ export default {
             }else{
                 event.target.src=this.iconPath+"rsi_map_0.png";
             }
-        },
-        init(){
-            this.search.type = '';
-            this.initData();
-            this.initTypeList();
         },
         initVo(){
             return {
@@ -174,25 +157,25 @@ export default {
             }
         },
         initData(){
+            this.dataList=[];
             this.tableLoading = true;
-            let params = {
-                name: this.search.name,
-                "page": {    
-                    "pageIndex": this.paging.index,
-                    "pageSize": this.paging.size,
-                },
-            };
+            let params = Object.assign({}, this.historySearchKey, {
+                page:{
+                    pageSize: this.pageOption.size,
+                    pageIndex: this.pageOption.page == 0 ? 0 : this.pageOption.page -1,
+                }
+            });
             infoQueryPage(params).then(res=>{
                 if (res.status == 200) {
                     this.dataList = res.data.list;
                     this.$refs.table.bodyWrapper.scrollTop = 0;
-                    this.paging.total = res.data.totalCount;
+                    this.pageOption.total = res.data.totalCount;
                 }
                 this.tableLoading = false;
-                this.searchloading=false;
+                this.searchloading = false;
             }).catch(err => {
-                this.searchloading=false;
                 this.tableLoading = false;
+                this.searchloading = false;
             });
         },
         initTypeList(){
@@ -205,14 +188,20 @@ export default {
                 }
             });
         },
-        handleSearch(){
-            this.searchloading=true;
-            this.initPaging();
-            this.initData();
+        searchClick(){
+            this.$refs.searchForm.validate((valid) => {
+                if (valid) {
+                    this.searchloading = true;
+                    this.historySearchKey = this.searchKey;
+                    this.initPageOption();
+                    this.initData();
+                } else {
+                    return false;
+                }
+            });
         },
-        handleFlush(){
-            this.search.name = '';
-            this.initData();
+        resetClick(){
+            this.$refs.searchForm.resetFields();
         },
         handleAdd(index,item){
             this.popData.title = '新增';
@@ -271,11 +260,6 @@ export default {
                 this.infoTypeDetailFlag = false;
             }
         },
-        pagingChange(index){
-            this.dataList = [];
-            this.paging.index = index - 1;
-            this.initData();
-        }
     },
    
 
