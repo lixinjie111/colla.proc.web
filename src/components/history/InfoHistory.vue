@@ -1,63 +1,60 @@
 <template>
   <div class="c-wrapper-20">
-    <el-form :inline="true" size="mini" ref="searchForm" :model="search">
-      <!-- <el-form-item label="信息类型：">
-        <el-input v-model.trim="search.eventType"></el-input>
-      </el-form-item> -->
+    <el-form :inline="true" size="mini" ref="searchForm" :model="searchKey" :rules="rules">
       <el-form-item label="信息类型：" prop='eventType'>
-          <el-select
-              v-model.trim="search.eventType"
-              clearable
-              filterable
-              remote
-              reserve-keyword
-              placeholder="请输入关键词"
-              :remote-method="eventTypeRemoteMethod"
-              @clear="eventTypeOption.searchFilter.clearFunc(eventTypeOption)"
-              @focus="eventTypeOption.searchFilter.remoteMethodClick(eventTypeOption, search, 'eventType')"
-              @blur="eventTypeOption.searchFilter.remoteMethodBlur(search, 'eventType')" 
-              :loading="eventTypeOption.loading">
-              <el-option
-                  v-for="item in eventTypeOption.filterOption"
-                  :key="item"
-                  :label="item.name"
-                  :value="item.code">
-              </el-option>
+            <el-select
+                v-model.trim="searchKey.eventType"
+                clearable
+                filterable
+                remote
+                reserve-keyword
+                placeholder="请输入关键词"
+                :remote-method="eventTypeRemoteMethod"
+                @clear="eventTypeOption.searchFilter.clearFunc(eventTypeOption)"
+                @focus="eventTypeOption.searchFilter.remoteMethodClick(eventTypeOption, searchKey, 'eventType')"
+                @blur="eventTypeOption.searchFilter.remoteMethodBlur(searchKey, 'eventType')" 
+                :loading="eventTypeOption.loading">
+                <el-option
+                    v-for="item in eventTypeOption.filterOption"
+                    :key="item"
+                    :label="item.name"
+                    :value="item.code">
+                </el-option>
+            </el-select>
+        </el-form-item>
+        <el-form-item label="信息状态：" prop="status">
+          <el-select v-model="searchKey.status" placeholder="请选择">
+            <el-option
+              v-for="item in statusList"
+              :key="item.value"
+              :label="item.name"
+              :value="item.key"
+            ></el-option>
           </el-select>
-      </el-form-item>
-      <el-form-item label="信息状态：">
-        <el-select v-model="search.status" placeholder="请选择">
-          <el-option
-            v-for="item in statusList"
-            :key="item.value"
-            :label="item.name"
-            :value="item.key"
-          ></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="发布时间：">
-        <el-date-picker
-          v-model="search.publishTime"
-          type="datetimerange"
-          range-separator="至"
-          start-placeholder="开始时间"
-          end-placeholder="结束时间"
-        ></el-date-picker>
-      </el-form-item>
-      <el-form-item label="信息来源：">
-        <el-select v-model="search.datasource" placeholder="请选择">
-          <el-option
-            v-for="item in datasourceList"
-            :key="item.value"
-            :label="item.name"
-            :value="item.key"
-          ></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="warning" @click="handleSearch" :loading="searchloading">查询</el-button>
-        <el-button type="warning" plain @click="handleFlush">刷新</el-button>
-      </el-form-item>
+        </el-form-item>
+        <el-form-item label="发布时间：" prop="publishTime">
+          <el-date-picker
+            v-model="searchKey.publishTime"
+            type="datetimerange"
+            range-separator="至"
+            start-placeholder="开始时间"
+            end-placeholder="结束时间"
+          ></el-date-picker>
+        </el-form-item>
+        <el-form-item label="信息来源："  prop="datasource">
+          <el-select v-model="searchKey.datasource" placeholder="请选择">
+            <el-option
+              v-for="item in datasourceList"
+              :key="item.value"
+              :label="item.name"
+              :value="item.key"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="warning" icon="el-icon-search" @click="searchClick" :loading="searchloading">查询</el-button>
+          <el-button type="warning" plain icon="el-icon-setting" @click="resetClick">重置</el-button>
+        </el-form-item>
     </el-form>
     <el-table
       ref="table"
@@ -127,16 +124,6 @@
         </template>
       </el-table-column>
     </el-table>
-
-    <!-- <el-row class="c-page">
-      <el-pagination
-        background
-        layout="prev, pager, next"
-        :page-size="this.paging.size"
-        :total="this.paging.total"
-        @current-change="pagingChange"
-      ></el-pagination>
-    </el-row> -->
      <!-- 分页 -->
     <pagination :total="pageOption.total" :page.sync="pageOption.page" :size.sync="pageOption.size" @pagination="initData"></pagination>
     <info-history-detail v-if="isShow" :taskCode="taskCode" :detailData="detailData" :content="detailContent" @infoHistoryBack="infoHistoryBack"></info-history-detail>
@@ -157,11 +144,11 @@ export default {
     return {
       dataList: [],
       TDate: TDate,
-      search: {
+      searchKey: {
         eventType: "",
         status: "",
         publishTime: "",
-        startTime: "",
+        beginTime: "",
         endTime: "",
         datasource: ""
       },
@@ -179,16 +166,12 @@ export default {
             },
           }
       },
+      historySearchKey: {},
       pageOption: {
           size: 10,
           total: 0,
           page: 1     //从1开始
       },
-      // paging: {
-      //   index: 0,
-      //   size: 10,
-      //   total: 0
-      // },
       statusList: [
         { id: 1, name: "有效", key: 1 },
         { id: 2, name: "失效", key: 2 },
@@ -207,15 +190,9 @@ export default {
   },
   created() {
     this.initDatasourceList();
-    this.init();
-  },
-  mounted() {
+    this.initData();
   },
   methods: {
-    init() {
-      this.initSearch();
-      this.initData();
-    },
     initPageOption() {
         this.dataList=[];
         this.pageOption.total = 0;
@@ -224,40 +201,15 @@ export default {
     indexMethod(index) {
         return (this.pageOption.page-1) * this.pageOption.size + index + 1;
     },
-    initSearch() {
-      this.search = {
-        eventType: "",
-        status: "",
-        publishTime: "",
-        startTime: "",
-        endTime: "",
-        datasource: ""
-      };
-      this.initPageOption();
-      this.eventTypeOption.filterOption = this.eventTypeOption.defaultOption;
-    },
-    eventTypeRemoteMethod(query) {
-        this.eventTypeOption.searchFilter.publicRemoteMethod({
-            query: query,
-            searchOption: this.eventTypeOption,
-            searchObj: this.search,
-            key: 'eventType'
-        });
-    },
     initData(type) {
+      this.dataList = [];
       this.tableLoading = true;
-      let params = {
-        // code: this.search.code,
-        eventType: this.search.eventType,
-        status: this.search.status,
-        beginTime: this.search.startTime,
-        endTime: this.search.endTime,
-        datasource: this.search.datasource,
-        page: {
-          pageIndex: this.pageOption.page-1,
-          pageSize: this.pageOption.size
-        }
-      };
+      let params = Object.assign({}, this.historySearchKey, {
+          page:{
+              pageSize: this.pageOption.size,
+              pageIndex: this.pageOption.page == 0 ? 0 : this.pageOption.page -1,
+          }
+      });
      taskQueryPage(params).then(res => {
         if (res.status == 200) {
           this.dataList = res.data.list;
@@ -265,10 +217,10 @@ export default {
           this.pageOption.total = res.data.totalCount;
         }
         this.tableLoading = false;
-        this.searchloading=false;
+        this.searchloading = false;
       }).catch(err => {
-         this.searchloading=false;
-         this.tableLoading = false;
+          this.tableLoading = false;
+          this.searchloading = false;
       });
     },
     initDatasourceList() {
@@ -281,27 +233,35 @@ export default {
         }
       });
     },
-    handleSearch() {
-      if (Array.isArray(this.search.publishTime)) {
-        let start = this.search.publishTime[0];
-        let end = this.search.publishTime[1];
-        this.search.startTime = TDate.dateToMs(start);
-        this.search.endTime = TDate.dateToMs(end);
-      }
-      this.searchloading=true;
-      this.initPaging();
-      this.initData();
+    eventTypeRemoteMethod(query) {
+        this.eventTypeOption.searchFilter.publicRemoteMethod({
+            query: query,
+            searchOption: this.eventTypeOption,
+            searchObj: this.searchKey,
+            key: 'eventType'
+        });
     },
-    handleFlush() {
-      this.initSearch();
-      this.initData();
+    searchClick() {
+       this.$refs.searchForm.validate((valid) => {
+          if (valid) {
+              if (Array.isArray(this.searchKey.publishTime)) {
+                let start = this.searchKey.publishTime[0];
+                let end = this.searchKey.publishTime[1];
+                this.searchKey.beginTime = TDate.dateToMs(start);
+                this.searchKey.endTime = TDate.dateToMs(end);
+              }
+              this.searchloading = true;
+              this.historySearchKey = this.searchKey;
+              this.initPageOption();
+              this.initData();
+          } else {
+              return false;
+          }
+      });
     },
-    pagingChange(value) {
-      this.dataList=[];
-      this.paging.index = value - 1;
-      this.initData();
-
-      // this.saveWater();
+    resetClick() {
+      this.$refs.searchForm.resetFields();
+      this.eventTypeOption.filterOption = this.eventTypeOption.defaultOption;
     },
 
     // saving
